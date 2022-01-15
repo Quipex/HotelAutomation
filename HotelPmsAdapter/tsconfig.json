@@ -1,0 +1,20 @@
+{
+  "include": ["src/*"],
+  "exclude": ["node_modules/*"],
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
+    "declaration": true,
+    "lib": ["es2020", "es2017", "DOM"],
+    "module": "commonjs",
+    "noUnusedParameters": true,
+    "outDir": "dist",
+    "paths": {
+      "~/*": ["src/*"]
+    },
+    "suppressImplicitAnyIndexErrors": true,
+		"esModuleInterop": true,
+		"experimentalDecorators": true,
+    "types": ["node"]
+  }
+}

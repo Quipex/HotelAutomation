@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="fe:telegram" pattern="file[HotelAutomation]:HotelTelebot//*" />
+</component>

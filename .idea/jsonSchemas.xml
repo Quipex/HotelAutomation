@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JsonSchemaMappingsProjectConfiguration">
+    <state>
+      <map>
+        <entry key="deno.jsonc">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="deno.jsonc" />
+              <option name="relativePathToSchema" value="https://cdn.deno.land/deno/versions/v1.17.2/raw/cli/schemas/config-file.v1.json" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="deno.jsonc" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+      </map>
+    </state>
+  </component>
+</project>
