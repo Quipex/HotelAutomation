@@ -5,6 +5,13 @@ const log = bunyan.createLogger({
   src: true,
   streams: [
     {
+      level: 'debug',
+      path: 'logs/app/debug.log',
+      period: '1d',
+      type: 'rotating-file',
+      count: 2
+    },
+    {
       level: 'info',
       stream: process.stdout
     },

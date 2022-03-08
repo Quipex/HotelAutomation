@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Context } from 'telegraf';
-import fetchBookingsAddedAfter from '../../../api/calls/fetchBookingsAddedAfter';
+import { BookingsService } from '~/api/services';
 import { parseDateAsUnix } from '../../../utils/dates.helper';
 import BriefBooking from '../../message_components/booking/BriefBooking';
 import briefBookingActions from '../../message_components/booking/BriefBookingActions';
@@ -33,7 +33,7 @@ async function parseCommandFindBookingsAddedAfterAndReply(ctx: Context, next, op
   if (!date) {
     return next();
   }
-  const todayArrivals = await fetchBookingsAddedAfter(date);
+  const todayArrivals = await BookingsService.fetchBookingsAddedAfter(date);
   // eslint-disable-next-line no-restricted-syntax
   for (const booking of todayArrivals) {
     // eslint-disable-next-line no-await-in-loop

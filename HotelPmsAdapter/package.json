@@ -3,7 +3,7 @@
 	"name": "hotel-pms-adapter",
 	"version": "1.0.0",
 	"engines": {
-		"node": "17.3.0",
+		"node": "17.3.x",
 		"npm": "8.x.x"
 	},
 	"scripts": {
@@ -11,8 +11,10 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
 		"lint:js": "npx eslint \"src/**/*.ts\" --fix",
-		"lint": "npm run lint:js"
-	},
+		"lint": "npm run lint:js",
+    "build:ts": "tsc && tscpaths -p tsconfig.json --src ./ --out ./dist",
+    "build": "npm run build:ts && cp -r package.json package-lock.json .npmrc public ./dist"
+  },
 	"devDependencies": {
 		"@types/bunyan": "^1.8.8",
 		"@types/koa": "^2.13.4",

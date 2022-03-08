@@ -7,9 +7,7 @@ import ClientController from './clients/ClientController';
 const appRouter = new Router();
 
 appRouter
-  .get(r(v1['/'].index$get).path, () => {
-    return 'hello';
-  })
+  .get(r(v1['/'].index$get).path, () => 'hello')
   .use(BookingController.routes())
   .use(ClientController.routes());
 

@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import fetchClientsByName from '~/api/calls/fetchClientsByName';
+import { ClientsService } from '~/api/services';
 import BriefClient from '../../message_components/client/BriefClient';
 import briefClientActions from '../../message_components/client/BriefClientActions';
 
@@ -10,7 +10,7 @@ async function parseCommandFindClientAndReply(ctx: Context) {
     return;
   }
   const commandTokens = messageText.split(' ');
-  const clients = await fetchClientsByName(commandTokens.slice(1).join(' '));
+  const clients = await ClientsService.fetchClientsByName(commandTokens.slice(1).join(' '));
 
   const messageId = ctx.message?.message_id;
   const limitedClients = clients.slice(0, 3);

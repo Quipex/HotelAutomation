@@ -1,6 +1,5 @@
 import { Context } from 'telegraf';
-import postMoveBooking from '../../../api/calls/postMoveBooking';
-import postMoveBookingInBatch from '../../../api/calls/postMoveBookingInBatch';
+import { BookingsService } from '~/api/services';
 import { parseDateAndReplyToInvalid } from './bookings_added';
 
 async function replyWithMoveBookingUsageManual(ctx: Context) {
@@ -31,7 +30,7 @@ async function parseCommandMoveBookingAndReply(ctx: Context, next: () => Promise
   } catch (e) {
     await replyWithMoveBookingUsageManual(ctx);
   }
-  await postMoveBooking({ bookingId, roomNumber, date });
+  await BookingsService.moveBooking({ bookingId, roomNumber, date });
   await ctx.reply('Moved ✅', { reply_to_message_id: ctx.message?.message_id });
 }
 
@@ -72,7 +71,7 @@ async function parseCommandMoveBookingInBatchAndReply(ctx: Context): Promise<voi
     await replyWithMoveBookingInBatchUsageManual(ctx);
     return;
   }
-  const reportPlan = await postMoveBookingInBatch({ bookingId, roomsToDays });
+  const reportPlan = await BookingsService.moveBookingInBatch({ bookingId, roomsToDays });
   await ctx.replyWithHTML(
     `Moved ✅\n<code>${JSON.stringify(reportPlan, null, 2)}</code>`,
     { reply_to_message_id: ctx.message?.message_id }

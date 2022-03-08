@@ -154,8 +154,6 @@ export class initial1626634213667 implements MigrationInterface {
 			END;
 
 			$$;
-
-			ALTER FUNCTION pms_bookings_update_trigger_fn() OWNER TO postgres;
 		`);
 
 		// language=PostgreSQL
@@ -169,5 +167,14 @@ export class initial1626634213667 implements MigrationInterface {
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {
+    // language=PostgreSQL
+    await queryRunner.query(`DROP TRIGGER on_pms_bookings_update ON pms_bookings_raw;`);
+
+    // language=PostgreSQL
+    await queryRunner.query(`DROP FUNCTION pms_bookings_update_trigger_fn`);
+
+    await queryRunner.dropTable('pms_clients_raw');
+    await queryRunner.dropTable('pms_bookings_raw_history');
+    await queryRunner.dropTable('pms_bookings_raw')
 	}
 }

@@ -10,7 +10,12 @@
     "noUnusedParameters": true,
     "outDir": "dist",
     "paths": {
-      "~/*": ["src/*"]
+      "~/*": ["src/*"],
+      "@components": ["src/app/message_components/index"],
+      "@services": ["src/api/services/index"],
+      "@commands/*": ["src/app/commands/*"],
+      "@callbacks/*": ["src/app/callbacks/*"],
+      "@entities/*": ["src/api/entities/*"]
     },
     "suppressImplicitAnyIndexErrors": true,
 		"esModuleInterop": true,

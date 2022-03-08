@@ -3,7 +3,7 @@
   "name": "hotel-telebot",
   "version": "1.0.0",
   "engines": {
-    "node": "17.3.0",
+    "node": "17.3.x",
     "npm": "8.x.x"
   },
   "scripts": {
@@ -30,6 +30,7 @@
     "moment": "^2.29.1",
     "node-cron": "^3.0.0",
     "path": "^0.12.7",
-    "telegraf": "git+https://github.com/LetItCode/telegraf.git"
+    "telegraf": "git+https://github.com/LetItCode/telegraf.git",
+    "hotel-automation-common": "file:../HotelCommon/dist"
   }
 }

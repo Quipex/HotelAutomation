@@ -7,7 +7,7 @@ import {
   textBookingRefresh,
   textBookingRemindedPrepayment,
   textClientDetails
-} from '../../callbacks/callback_actions';
+} from '@callbacks/callback_actions';
 
 function detailedBookingActions({ id, status, startDate, customerId }: PmsBookingEntity) {
   const inlineKeyboard: InlineKeyboardButton[][] = [];

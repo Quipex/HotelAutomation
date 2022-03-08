@@ -1,3 +1,5 @@
+import { BookingCreationPayload } from '~/types/routes/routes.v1.types';
+import { createPathReplacer } from './helpers/createPathReplacer';
 import { enhanceWithUuids } from './helpers/enhanceWithUuids';
 import { mapCompactToFullRoutes } from './helpers/mapCompactToFullRoutes';
 
@@ -15,38 +17,47 @@ const routesV1 = {
       relativePath: 'cached'
     },
     arrive$get: {
-      relativePath: 'arrive'
+      relativePath: 'arrive',
+      getQueryParams: (params: { date: number }) => params
     },
     added$get: {
-      relativePath: 'added'
+      relativePath: 'added',
+      getQueryParams: (params: { after: number }) => params
     },
     byId$get: {
-      relativePath: ':id'
+      relativePath: ':id',
+      withPathVariable: createPathReplacer(':id')
     },
     notPayed$get: {
-      relativePath: 'not_payed'
+      relativePath: 'not_payed',
+      getQueryParams: (params: { arrive_after: number }) => params
     },
     sync$put: {
       relativePath: 'sync'
     },
     confirm$put: {
-      relativePath: 'confirm'
+      relativePath: 'confirm',
+      getData: (data: { bookingId: string }) => data
     },
     confirmLiving$put: {
-      relativePath: 'confirm_living'
+      relativePath: 'confirm_living',
+      getData: (data: { bookingId: string }) => data
     },
     remindedPrepayment$put: {
-      relativePath: 'reminded_prepayment'
+      relativePath: 'reminded_prepayment',
+      getData: (data: { bookingId: string }) => data
     },
     expiredRemind$get: {
       relativePath: 'expired_remind'
     },
     create$put: {
-      relativePath: 'create'
+      relativePath: 'create',
+      getData: (data: BookingCreationPayload) => data
     },
     owner: {
       byId$get: {
-        relativePath: ':id'
+        relativePath: ':id',
+        withPathVariable: createPathReplacer(':id')
       }
     }
   },
@@ -55,10 +66,12 @@ const routesV1 = {
       relativePath: 'sync'
     },
     search$post: {
-      relativePath: 'search'
+      relativePath: 'search',
+      getData: (data: { name: string }) => data
     },
     byId$get: {
-      relativePath: ':id'
+      relativePath: ':id',
+      withPathVariable: createPathReplacer(':id')
     }
   }
 };

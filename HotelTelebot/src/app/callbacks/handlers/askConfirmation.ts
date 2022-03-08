@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import Confirmation from '../../message_components/Confirmation';
+import { Confirmation } from '@components';
 import { textCancel } from '../callback_actions';
 
 export async function cancelAction(ctx: Context) {

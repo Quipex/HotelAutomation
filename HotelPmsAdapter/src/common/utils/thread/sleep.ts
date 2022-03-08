@@ -1,7 +1,7 @@
-import util from 'util';
+import { promisify } from 'util';
 
 async function sleep(ms: number): Promise<any> {
-  return util.promisify(setTimeout)(ms);
+  return promisify(setTimeout)(ms);
 }
 
 export { sleep };

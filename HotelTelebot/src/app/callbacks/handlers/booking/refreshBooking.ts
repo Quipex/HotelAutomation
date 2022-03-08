@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import { fetchBookingByIdAndReply } from '../../../commands/booking/bookings_by_id';
+import { fetchBookingByIdAndReply } from '@commands/booking/bookings_by_id';
 
 export async function refreshBooking(ctx: Context, bookingId: string, originalMessageId?: number) {
   await fetchBookingByIdAndReply(bookingId, ctx);

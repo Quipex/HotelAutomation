@@ -1,7 +1,7 @@
 import { Context } from 'telegraf';
-import putRemindedPrepayment from '../../../../api/calls/putRemindedPrepayment';
+import { BookingsService } from '@services';
 
 export async function setRemindedPrepaymentAndReply(ctx: Context, bookingId: string) {
-  await putRemindedPrepayment(bookingId);
+  await BookingsService.putRemindedPrepayment(bookingId);
   await ctx.answerCbQuery('✅ Записано время');
 }

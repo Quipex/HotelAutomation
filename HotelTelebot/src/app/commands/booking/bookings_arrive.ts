@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Context } from 'telegraf';
-import fetchBookingsArriveAt from '~/api/calls/fetchBookingsArriveAt';
-import fetchBookingsArriveAtAndNotLiving from '~/api/calls/fetchBookingsArriveAtAndNotLiving';
+import { BookingsService } from '~/api/services';
 import bot from '~/app/bot';
 import { parseDateAsUnix } from '~/utils/dates.helper';
 import BriefBooking from '../../message_components/booking/BriefBooking';
@@ -15,7 +14,7 @@ async function parseCommandFindBookingsArrivedOnAndReply(ctx: Context, next) {
     return;
   }
 
-  const todayArrivals = await fetchBookingsArriveAt(date);
+  const todayArrivals = await BookingsService.fetchBookingsArriveAt(date);
   todayArrivals.forEach(async (booking) => {
     await ctx.replyWithHTML(BriefBooking(booking), {
       reply_to_message_id: ctx.message?.message_id,
@@ -34,7 +33,7 @@ async function parseCommandFindBookingsArrivedOnNotLivingAndSend(
     return;
   }
 
-  const arrivals = await fetchBookingsArriveAtAndNotLiving(date);
+  const arrivals = await BookingsService.fetchBookingsArriveAtAndNotLiving(date);
   arrivals.forEach(async (booking) => {
     await bot.telegram.sendMessage(chatId, BriefBooking(booking), {
       reply_to_message_id: replyMessageId,

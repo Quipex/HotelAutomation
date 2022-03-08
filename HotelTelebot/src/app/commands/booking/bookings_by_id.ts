@@ -1,11 +1,11 @@
 import { Context } from 'telegraf';
 import { ExtraSendMessage } from 'telegraf/typings/telegram-types';
-import fetchBookingById from '../../../api/calls/fetchBookingById';
+import { BookingsService } from '~/api/services';
 import DetailedBooking from '../../message_components/booking/DetailedBooking';
 import detailedBookingActions from '../../message_components/booking/DetailedBookingActions';
 
 export async function fetchBookingByIdAndReply(bookingId: string, ctx: Context, extra?: ExtraSendMessage) {
-  const foundBooking = await fetchBookingById(bookingId);
+  const foundBooking = await BookingsService.fetchBookingById(bookingId);
   if (foundBooking) {
     return ctx.replyWithHTML(DetailedBooking(foundBooking), {
       reply_markup: { inline_keyboard: detailedBookingActions(foundBooking) },

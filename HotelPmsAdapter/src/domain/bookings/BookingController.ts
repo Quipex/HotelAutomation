@@ -5,20 +5,34 @@ import BookingPmsService from './BookingService';
 
 const bookings = new Router();
 
-const bk = routesV1.bookings;
+const {
+  index$post,
+  cached$get,
+  arrive$get,
+  added$get,
+  byId$get,
+  notPayed$get,
+  owner,
+  sync$put,
+  create$put,
+  remindedPrepayment$put,
+  expiredRemind$get,
+  confirmLiving$put,
+  confirm$put
+} = routesV1.bookings;
 
 const getPathOf = (obj) => resolveV1(obj).path;
 
-bookings.post(getPathOf(bk.index$post), async () => {
+bookings.post(getPathOf(index$post), async () => {
   return BookingPmsService.fetchPmsAndGetAllBookings();
 });
 
-bookings.get(getPathOf(bk.cached$get), async () => {
+bookings.get(getPathOf(cached$get), async () => {
   return BookingPmsService.getAllBookings();
 });
 
-bookings.get(getPathOf(bk.arrive$get), async (ctx) => {
-  const { date: unixDate } = ctx.query;
+bookings.get(getPathOf(arrive$get), async (ctx) => {
+  const { date: unixDate } = ctx.query as unknown as ReturnType<typeof arrive$get.getQueryParams>;
   if (!unixDate) {
     ctx.status = 400;
     return;
@@ -26,8 +40,8 @@ bookings.get(getPathOf(bk.arrive$get), async (ctx) => {
   ctx.body = await BookingPmsService.getArrivalsBy(+unixDate);
 });
 
-bookings.get(getPathOf(bk.added$get), async (ctx) => {
-  const { after: unixDate } = ctx.query;
+bookings.get(getPathOf(added$get), async (ctx) => {
+  const { after: unixDate } = ctx.query as unknown as ReturnType<typeof added$get.getQueryParams>;
   if (!unixDate) {
     ctx.status = 400;
     return;
@@ -35,7 +49,7 @@ bookings.get(getPathOf(bk.added$get), async (ctx) => {
   ctx.body = await BookingPmsService.getBookingsAddedAfter(+unixDate);
 });
 
-bookings.get(getPathOf(bk.byId$get), async (ctx) => {
+bookings.get(getPathOf(byId$get), async (ctx) => {
   const { id } = ctx.params;
   const resp = await BookingPmsService.getBookingById(id);
   if (resp) {
@@ -45,8 +59,8 @@ bookings.get(getPathOf(bk.byId$get), async (ctx) => {
   }
 });
 
-bookings.get(getPathOf(bk.notPayed$get), async (ctx) => {
-  const { arrive_after: unixDate } = ctx.query;
+bookings.get(getPathOf(notPayed$get), async (ctx) => {
+  const { arrive_after: unixDate } = ctx.query as unknown as ReturnType<typeof notPayed$get.getQueryParams>;
   if (!unixDate) {
     ctx.status = 400;
     return;
@@ -54,13 +68,13 @@ bookings.get(getPathOf(bk.notPayed$get), async (ctx) => {
   ctx.body = await BookingPmsService.getBookingsNotPayedArriveAfter(+unixDate);
 });
 
-bookings.put(getPathOf(bk.sync$put), async (ctx) => {
+bookings.put(getPathOf(sync$put), async (ctx) => {
   await BookingPmsService.fetchPmsAndGetAllBookings();
   ctx.status = 200;
 });
 
-bookings.put(getPathOf(bk.confirm$put), async (ctx) => {
-  const { bookingId } = ctx.request.body;
+bookings.put(getPathOf(confirm$put), async (ctx) => {
+  const { bookingId } = ctx.request.body as ReturnType<typeof confirm$put.getData>;
   if (!bookingId) {
     ctx.status = 400;
     ctx.body = { message: 'missing booking id' };
@@ -69,8 +83,8 @@ bookings.put(getPathOf(bk.confirm$put), async (ctx) => {
   ctx.status = 200;
 });
 
-bookings.put(getPathOf(bk.confirmLiving$put), async (ctx) => {
-  const { bookingId } = ctx.request.body;
+bookings.put(getPathOf(confirmLiving$put), async (ctx) => {
+  const { bookingId } = ctx.request.body as ReturnType<typeof confirmLiving$put.getData>;
   if (!bookingId) {
     ctx.status = 400;
     ctx.body = { message: 'missing booking id' };
@@ -79,8 +93,8 @@ bookings.put(getPathOf(bk.confirmLiving$put), async (ctx) => {
   ctx.status = 200;
 });
 
-bookings.put(getPathOf(bk.remindedPrepayment$put), async (ctx) => {
-  const { bookingId } = ctx.request.body;
+bookings.put(getPathOf(remindedPrepayment$put), async (ctx) => {
+  const { bookingId } = ctx.request.body as ReturnType<typeof remindedPrepayment$put.getData>;
   if (!bookingId) {
     ctx.status = 400;
     ctx.body = { message: 'missing booking id' };
@@ -89,14 +103,14 @@ bookings.put(getPathOf(bk.remindedPrepayment$put), async (ctx) => {
   ctx.status = 200;
 });
 
-bookings.get(getPathOf(bk.expiredRemind$get), async (ctx) => {
+bookings.get(getPathOf(expiredRemind$get), async (ctx) => {
   ctx.body = await BookingPmsService.expiredRemindedPrepayment();
 });
 
-bookings.put(getPathOf(bk.create$put), async (ctx) => {
+bookings.put(getPathOf(create$put), async (ctx) => {
   const {
     roomNumber, from, to, guestName
-  } = ctx.request.body;
+  } = ctx.request.body as ReturnType<typeof create$put.getData>;
   const newId = await BookingPmsService.createBooking({
     roomNumber: +roomNumber,
     from: new Date(from),
@@ -106,7 +120,7 @@ bookings.put(getPathOf(bk.create$put), async (ctx) => {
   ctx.body = { newId };
 });
 
-bookings.get(getPathOf(bk.owner.byId$get), async (ctx) => {
+bookings.get(getPathOf(owner.byId$get), async (ctx) => {
   const { id } = ctx.params;
   ctx.body = await BookingPmsService.getBookingsByOwner(id);
 });

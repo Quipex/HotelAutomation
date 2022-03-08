@@ -1,5 +1,5 @@
 import { Context } from 'telegraf';
-import { sendClientById } from '../../../commands/client/client_by_id';
+import { sendClientById } from '@commands/client/client_by_id';
 
 export async function refreshClient(ctx: Context, clientId: string, originalMessageId?: number) {
   await sendClientById(clientId, ctx);

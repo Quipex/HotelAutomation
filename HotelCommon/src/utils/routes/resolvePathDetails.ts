@@ -1,5 +1,5 @@
 import { fullRoutesV1 } from '~/maps/routes/routes.v1';
-import { Route } from '~/types/routes.type';
+import { Route } from '~/types/routes';
 
 const createResolvePathDetails = (fullMap) => (path): Partial<Route> => {
   const idToFind = path[Symbol.for('id')];

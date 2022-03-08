@@ -1,9 +1,8 @@
 import Application from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { createConnection } from 'typeorm';
+import { createConnection, getConnectionOptions } from 'typeorm';
 import { log } from '~/config/logger';
 import env from '~/config/env';
-import dbConfig from '~/config/database';
 import appRouter from '~/domain/AppController';
 import {
   checkHeaderValidAndReject, logRequestAndResponseTime, trackResponseTime, handleErrors
@@ -18,12 +17,11 @@ app.use(logRequestAndResponseTime);
 app.on('error', handleErrors);
 app.use(appRouter.routes());
 
-createConnection(dbConfig).then(() => {
+createConnection().then(async () => {
+  const connectionOpts = await getConnectionOptions();
   log.info('A connection to database is created', {
-    host: dbConfig.host,
-    port: dbConfig.port,
-    username: dbConfig.username,
-    database: dbConfig.database
+    vendor: connectionOpts.type,
+    database: connectionOpts.database
   });
 
   app.listen(env.port, () => {

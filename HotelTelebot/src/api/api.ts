@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import env from '~/app/env';
 import { log } from '~/config/logger';
-import env from '../app/env';
 
 function apiUrl(path: string): string {
   const restUrl = path.startsWith('/') ? path : (`/${path}`);
@@ -18,6 +18,9 @@ async function callApi(path: string, config: AxiosRequestConfig): Promise<unknow
 }
 
 const api = {
+  call: async function call(path: string, config?: AxiosRequestConfig): Promise<unknown> {
+    return callApi(path, config);
+  },
   get: async function get(path: string, config?: AxiosRequestConfig): Promise<unknown> {
     return callApi(path, { method: 'GET', ...config });
   },

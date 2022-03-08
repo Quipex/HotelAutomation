@@ -1,5 +1,5 @@
-import putSyncBookings from '../../../api/calls/putSyncBookings';
-import putSyncClients from '../../../api/calls/putSyncClients';
+import putSyncBookings from '../../../api/services/putSyncBookings';
+import putSyncClients from '../../../api/services/putSyncClients';
 import { createSchedule } from '../schedule.helper';
 
 // every 10 minutes
