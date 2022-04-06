@@ -1,4 +1,4 @@
-import { CreateBookingPayload } from '~/common/types/payloads/create_booking.type';
+import { CreateBookingPayload } from '~/common/types';
 import { dateToUnixSeconds } from '~/common/utils/dates';
 import { pmsRoomTypeIdFromRealRoomNumber } from './room_categories_constants';
 import { getRoomPmsId } from './room_constants';

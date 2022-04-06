@@ -1,5 +1,5 @@
 import api from '~/integrations/pms_cloud/api';
-import { CreateBookingPayload } from '~/common/types/payloads';
+import { CreateBookingPayload } from '~/common/types';
 import { encodeObjectAsUrl } from '~/common/utils/url';
 import { dateToUnixSeconds, unixDateToDate } from '~/common/utils/dates';
 import { getRoom } from '~/integrations/pms_cloud/room_constants';

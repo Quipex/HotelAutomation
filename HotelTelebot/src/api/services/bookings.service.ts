@@ -11,14 +11,14 @@ async function fetchBookingById(bookingId: string): Promise<PmsBookingEntity> {
 }
 
 async function fetchBookingsAddedAfter(unixDate: number): Promise<PmsBookingEntity[]> {
-  const { path, method, compactPath: { getParams } } = rv1(routesV1.bookings.added$get);
-  const params = getParams({ after: unixDate });
+  const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.added$get);
+  const params = getQueryParams({ after: unixDate });
   return await api.call(path, { method, params }) as [];
 }
 
 async function fetchBookingsArriveAt(unixDate: number): Promise<PmsBookingEntity[]> {
-  const { path, method, compactPath: { getParams } } = rv1(routesV1.bookings.arrive$get);
-  const params = getParams({ date: unixDate });
+  const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.arrive$get);
+  const params = getQueryParams({ date: unixDate });
   return await api.call(path, { method, params }) as [];
 }
 
@@ -28,8 +28,8 @@ async function fetchBookingsExpiredAndReminded(): Promise<PmsBookingEntity[]> {
 }
 
 async function fetchNotPayedBookingsArriveAfter(unixDate: number): Promise<PmsBookingEntity[]> {
-  const { path, method, compactPath: { getParams } } = rv1(routesV1.bookings.notPayed$get);
-  const params = getParams({ arrive_after: unixDate });
+  const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.notPayed$get);
+  const params = getQueryParams({ arrive_after: unixDate });
   return await api.call(path, { method, params }) as [];
 }
 
