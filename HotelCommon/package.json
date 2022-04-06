@@ -1,20 +1,21 @@
 {
-  "private": true,
+  "name": "hotel-common",
   "version": "1.0.0",
+  "private": true,
   "engines": {
     "node": "17.3.x",
-    "npm": "8.x.x"
+    "yarn": "1.22.x"
   },
   "scripts": {
     "lint:js": "npx eslint \"src/**/*.ts\" --fix",
-    "lint": "npm run lint:js",
-    "build:ts": "tsc && tscpaths -p tsconfig.json -s ./src -o ./dist",
-    "build": "npm run build:ts && cp package.json dist",
+    "lint": "yarn run lint:js",
+    "build": "tsc && resolve-tspaths -p tsconfig.json",
     "start": "node ./dist/index.js"
   },
   "devDependencies": {
+    "@types/node": "^17.0.23",
     "@types/uuid": "^8.3.4",
-    "tscpaths": "0.0.9",
+    "resolve-tspaths": "^0.2.4",
     "typescript": "^4.5.4"
   },
   "dependencies": {

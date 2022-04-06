@@ -1,16 +1,25 @@
 {
+  "name": "hotel-automation-root",
+  "license": "UNLICENSED",
   "scripts": {
-    "start:server": "cd HotelPmsAdapter && npm run start",
-    "start:tg": "cd HotelTelebot && npm run start",
-    "build:common": "cd HotelCommon && npm install && npm run build",
-    "install:all": "npm run build:common && npm run install:server && npm run install:tg",
-    "install:server": "cd HotelPmsAdapter && npm install",
-    "install:tg": "cd HotelTelebot && npm install",
-    "lint:all": "npm run lint:common && npm run lint:server && npm run lint:tg",
-    "lint:common": "cd HotelCommon && npm run lint",
-    "lint:server": "cd HotelPmsAdapter && npm run lint",
-    "lint:tg": "cd HotelTelebot && npm run lint",
-    "migrate:server": "cd HotelPmsAdapter && npm run migrate"
+    "start:server": "cd HotelPmsAdapter && yarn run start",
+    "start:tg": "cd HotelTelebot && yarn run start",
+    "build:common": "cd HotelCommon && yarn install && yarn run build",
+    "install:all": "yarn install && yarn run build:common && yarn run install:server && yarn run install:tg",
+    "install:server": "cd HotelPmsAdapter && yarn install",
+    "install:tg": "cd HotelTelebot && yarn install",
+    "lint:all": "yarn run lint:common && yarn run lint:server && yarn run lint:tg",
+    "lint:common": "cd HotelCommon && yarn run lint",
+    "lint:server": "cd HotelPmsAdapter && yarn run lint",
+    "lint:tg": "cd HotelTelebot && yarn run lint",
+    "migrate:server": "cd HotelPmsAdapter && yarn run migration:run",
+    "audit:all": "yarn run audit:common && yarn run audit:server && yarn run audit:tg",
+    "audit:common": "cd HotelCommon && yarn audit",
+    "audit:server": "cd HotelPmsAdapter && yarn audit",
+    "audit:tg": "cd HotelTelebot && yarn audit",
+    "setupdev": "zx scripts/setupDev.mjs",
+    "syncenv": "zx scripts/checkEnvsSync.mjs",
+    "dockerfile:server": "docker build -f .docker/images/PmsAdapter.Dockerfile -t quipex/pms-adapter ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.9.1",
@@ -19,6 +28,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^16.1.0",
     "eslint-plugin-import": "^2.25.4",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "zx": "^6.0.7"
   }
 }
