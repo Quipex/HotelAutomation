@@ -1,0 +1,62 @@
+version: "3.8"
+
+networks:
+  app:
+
+volumes:
+  hoteldb-data:
+    driver: local
+  hoteldb-conf:
+    driver: local
+  hoteldb-logs:
+    driver: local
+  pms-adapter-logs:
+    driver: local
+
+services:
+  hotel-db:
+    build:
+      context: ../images
+      dockerfile: Postgres.Dockerfile
+    container_name: 'hotel-db'
+    hostname: hoteldb
+    restart: always
+    ports:
+      - "5445:5432/tcp"
+    env_file:
+      - ../.env/hotel-db.env
+    volumes:
+      - hoteldb-data:/var/lib/postgresql/data
+      - hoteldb-conf:/etc/postgresql
+      - hoteldb-logs:/var/log/postgresql
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: "pg_isready --username=postgres && psql --username=postgres --list"
+      timeout: 10s
+      retries: 20
+    networks:
+      - app
+
+  pms-adapter:
+    image: quipex/pms-adapter
+    container_name: 'pms-adapter'
+    env_file:
+      - "../../HotelPmsAdapter/.env"
+    ports:
+      - "3030:3030/tcp"
+    volumes:
+      - pms-adapter-logs:/HotelAdapter/logs
+    depends_on:
+      hotel-db:
+        condition: service_healthy
+    networks:
+      - app
+    # Overriding .env
+    environment:
+      DB_HOST: hoteldb # points to db instance in docker network
+      DB_PORT: 5432
+      APP_PORT: 3030
