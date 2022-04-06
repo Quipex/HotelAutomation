@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import { getRepository } from '../helpers/orm';
 import { PmsClientEntity } from './ClientPmsModel';
 
 export const saveClients = async (clients: PmsClientEntity[]): Promise<PmsClientEntity[]> => {
@@ -18,5 +18,5 @@ export const searchClients = async (name: string): Promise<PmsClientEntity[]> =>
 
 export async function findClient(id: number): Promise<PmsClientEntity | undefined> {
   const clientsRepo = getRepository(PmsClientEntity);
-  return clientsRepo.findOne(id);
+  return clientsRepo.findOneBy({ id });
 }

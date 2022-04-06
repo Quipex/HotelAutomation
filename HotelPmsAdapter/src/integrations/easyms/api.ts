@@ -1,9 +1,9 @@
 import { AxiosError, AxiosRequestConfig } from 'axios';
-import fetch from '~/common/utils/fetch';
-import { sleep } from '~/common/utils/thread';
 import env from '~/config/env';
-import { log } from '~/config/logger';
 import { authenticateAndGetToken } from '~/integrations/easyms/auth';
+import { fetch } from '~/common/utils/web';
+import { sleep } from '~/common/utils/thread';
+import { log } from '~/config/logger';
 
 type CallPmsApiConfig = {
   requestConfig: AxiosRequestConfig;

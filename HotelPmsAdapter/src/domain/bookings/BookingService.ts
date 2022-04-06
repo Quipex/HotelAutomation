@@ -1,10 +1,11 @@
-import { encodeObjectAsUrl } from 'src/common/utils/url/encodeObjectAsUrl';
+import api from '~/integrations/pms_cloud/api';
+import { CreateBookingPayload } from '~/common/types/payloads';
+import { encodeObjectAsUrl } from '~/common/utils/url';
 import { dateToUnixSeconds, unixDateToDate } from '~/common/utils/dates';
-import api from '~/pms_cloud/api';
-import { getRoom } from '~/pms_cloud/room_constants';
-import { getRoomCategory } from '~/pms_cloud/room_categories_constants';
-import createBookingPayload from '~/pms_cloud/create_booking';
-import { and, SearchFilter, SearchParam } from '~/pms_cloud/search';
+import { getRoom } from '~/integrations/pms_cloud/room_constants';
+import { getRoomCategory } from '~/integrations/pms_cloud/room_categories_constants';
+import createBookingPayload from '~/integrations/pms_cloud/create_booking';
+import { and, SearchFilter, SearchParam } from '~/integrations/pms_cloud/search';
 import { PmsClientEntity } from '../clients/ClientPmsModel';
 import { mapPmsBookingsToEntities, PmsBooking, PmsBookingEntity } from './BookingModel';
 import {
@@ -20,7 +21,6 @@ import {
   setBookingToConfirmed,
   setBookingToLiving
 } from './BookingRepository';
-import { CreateBookingPayload } from './common/create_booking_payload.type';
 
 function datesFilters(startTime: number, endTime: number): SearchParam[] {
   return [
@@ -78,7 +78,7 @@ async function getBookingsAddedAfter(unixSeconds: number): Promise<PmsBookingEnt
 }
 
 async function getBookingById(id: string): Promise<PmsBookingEntity | undefined> {
-  return findById(id);
+  return findById(+id);
 }
 
 async function getBookingsNotPayedArriveAfter(unixDate: number): Promise<PmsBookingEntity[]> {
@@ -91,7 +91,7 @@ async function confirmPrepayment(bookingId: string): Promise<void> {
 }
 
 async function confirmLiving(bookingId: string): Promise<void> {
-  const booking = await findById(bookingId);
+  const booking = await findById(+bookingId);
   if (booking?.status === 'BOOKING_FREE') {
     await confirmPrepayment(bookingId);
   }

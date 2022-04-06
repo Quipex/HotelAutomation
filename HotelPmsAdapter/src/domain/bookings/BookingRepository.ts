@@ -1,8 +1,7 @@
-import {
-  getRepository, In, LessThan, MoreThan
-} from 'typeorm';
-import { formatDate, subtractFromDate } from '~/common/utils/dates';
+import { In } from 'typeorm';
+import { subtractFromDate } from '~/common/utils/dates';
 import { PmsClientEntity } from '../clients/ClientPmsModel';
+import { getRepository, lessThanDate, moreThanDate } from '../helpers/orm';
 import { PmsBookingEntity } from './BookingModel';
 
 export const saveBookings = async (bookings: PmsBookingEntity[]): Promise<PmsBookingEntity[]> => {
@@ -33,7 +32,7 @@ export const findBookingsAddedAfter = async (date: Date): Promise<PmsBookingEnti
   const bookingsRepository = getRepository(PmsBookingEntity);
   return bookingsRepository.find({
     where: {
-      addedDate: MoreThan(formatDate(date)),
+      addedDate: moreThanDate(date),
       moved: false
     },
     order: {
@@ -43,16 +42,16 @@ export const findBookingsAddedAfter = async (date: Date): Promise<PmsBookingEnti
   });
 };
 
-export async function findById(id: string): Promise<PmsBookingEntity | undefined> {
+export async function findById(id: number): Promise<PmsBookingEntity | undefined> {
   const bookingsRepository = getRepository(PmsBookingEntity);
-  return bookingsRepository.findOne(id);
+  return bookingsRepository.findOneBy({ id });
 }
 
 export async function findBookingsNotPayedArriveAfter(date: Date): Promise<PmsBookingEntity[]> {
   const bookingsRepository = getRepository(PmsBookingEntity);
   return bookingsRepository.find({
     where: {
-      startDate: MoreThan(formatDate(date)),
+      startDate: moreThanDate(date),
       status: 'BOOKING_FREE',
       moved: false
     },
@@ -82,7 +81,7 @@ export async function findBookingsWhoRemindedAndExpired(): Promise<PmsBookingEnt
   const bookingsRepository = getRepository(PmsBookingEntity);
   return bookingsRepository.find({
     where: {
-      remindedPrepayment: LessThan(subtractFromDate({ amount: 24, unit: 'hours' })),
+      remindedPrepayment: lessThanDate(subtractFromDate({ amount: 24, unit: 'hours' }).toDate()),
       status: 'BOOKING_FREE',
       moved: false
     },

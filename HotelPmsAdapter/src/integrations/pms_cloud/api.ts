@@ -4,7 +4,7 @@ import { stringifyUrl } from '~/common/utils/url';
 import { sleep } from '~/common/utils/thread';
 import { log } from '~/config/logger';
 import { authAndGetCookies } from './auth';
-import env from '../config/env';
+import env from '~/config/env';
 
 let cookies: IWebDriverCookie[] = [];
 const MAX_RETRIES = env.maxApiRetries;

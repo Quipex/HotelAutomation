@@ -1,4 +1,4 @@
-import { resolveV1 } from '~/common/maps';
+import { resolveV1 } from '~/common/utils/routes';
 
 const getPathOf = (obj) => resolveV1(obj).path;
 

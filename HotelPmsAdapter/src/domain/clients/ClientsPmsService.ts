@@ -1,5 +1,5 @@
-import { encodeObjectAsUrl } from 'src/common/utils/url/encodeObjectAsUrl';
-import api from '~/pms_cloud/api';
+import { encodeObjectAsUrl } from '~/common/utils/url/encodeObjectAsUrl';
+import api from '~/integrations/pms_cloud/api';
 import { translateClientName } from '~/common/utils/translation';
 import { mapPmsClientToEntity, PmsClient, PmsClientEntity } from './ClientPmsModel';
 import { findClient, saveClients, searchClients } from './ClientPmsRepository';

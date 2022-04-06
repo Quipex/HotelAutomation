@@ -1,6 +1,6 @@
-import fetch from '~/common/utils/fetch';
 import env from '~/config/env';
 import { log } from '~/config/logger';
+import { fetch } from '~/common/utils/web';
 import { isEpochExpired } from '~/common/utils/dates';
 import { decodeBase64String } from '~/common/utils/encoding';
 

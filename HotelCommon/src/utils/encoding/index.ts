@@ -1,1 +1,1 @@
-export * from 'src/utils/encoding/decodeBase64String';
+export * from './decodeBase64String';
