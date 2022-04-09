@@ -9,7 +9,7 @@
   "scripts": {
     "start": "nodemon -r ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint:js": "npx eslint \"src/**/*.ts\" --fix",
+    "lint:js": "npx eslint --ext .ts,.tsx,.js,.jsx --fix",
     "lint": "yarn run lint:js",
     "build": "tsc"
   },

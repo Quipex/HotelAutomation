@@ -7,7 +7,7 @@
     "yarn": "1.22.x"
   },
   "scripts": {
-    "lint:js": "npx eslint \"src/**/*.ts\" --fix",
+    "lint:js": "npx eslint --ext .ts,.tsx,.js,.jsx --fix",
     "lint": "yarn run lint:js",
     "build": "tsc && resolve-tspaths -p tsconfig.json",
     "start": "node ./dist/index.js"
