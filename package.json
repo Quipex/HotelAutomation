@@ -22,7 +22,7 @@
     "setupenv": "zx scripts/setupEnv.mjs",
     "dockerfile:server": "docker build -f .docker/images/PmsAdapter.Dockerfile -t quipex/pms-adapter .",
     "lintstaged": "zx scripts/lintStaged.mjs",
-    "test": "echo not implemented yet 😩"
+    "test": "echo Tests are not implemented yet 😩"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.9.1",
