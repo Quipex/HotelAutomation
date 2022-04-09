@@ -1,8 +1,14 @@
+import { EOL_REGEX } from "../constants/textFileRegex.mjs";
+
 /**
  * @param {string} pathToRead
  * @return {Array}
  */
 const readEnv = pathToRead => {
+  if (!fs.pathExistsSync(pathToRead)) {
+    console.warn(`⚠ '${pathToRead}' does not exist`)
+    return [];
+  }
   const stats = fs.lstatSync(pathToRead);
   if (stats.isDirectory()) {
     return fs.readdirSync(pathToRead, { withFileTypes: true })
@@ -11,19 +17,18 @@ const readEnv = pathToRead => {
       .flatMap(itemPath => readEnv(itemPath));
   }
   if (!stats.isFile()) {
-    console.warn(`'${pathToRead}' is not a file, nor a directory`);
+    console.warn(`⚠ '${pathToRead}' is not a file, nor a directory`);
     return [];
   }
   return [readEnvFile(pathToRead)];
 };
 
 const envLineRegex = /^([^=]+)=([^=]*)$/;
-const eolRegex = /\r\n|\r|\n/g;
 
 const readEnvFile = pathToRead => {
   const fileBuf = fs.readFileSync(pathToRead);
   const envLines = fileBuf.toString()
-    .split(eolRegex)
+    .split(EOL_REGEX)
     .filter(line => envLineRegex.test(line));
 
   const map = envLines.reduce((acc, currLine) => {
