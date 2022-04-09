@@ -2,7 +2,7 @@
 
 [🔝 root](../README.md)
 
-> Every command is intended to be run from project root.
+> 💡 Every command is intended to be run from project root.
 
 ## 🏃‍♂️ Run composed app
 
