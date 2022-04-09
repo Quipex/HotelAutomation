@@ -1,0 +1,41 @@
+version: 2
+updates:
+  - directory: /
+    package-ecosystem: npm
+    target-branch: dev
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+    versioning-strategy: auto
+
+  - directory: /HotelCommon
+    package-ecosystem: npm
+    target-branch: dev
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+    versioning-strategy: auto
+
+  - directory: /HotelPmsAdapter
+    package-ecosystem: npm
+    target-branch: dev
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+    versioning-strategy: auto
+
+  - directory: /HotelTelebot
+    package-ecosystem: npm
+    target-branch: dev
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+    versioning-strategy: auto
