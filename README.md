@@ -5,6 +5,8 @@
 Run `yarn run setupdev` at the root of the project. This will set up the dev environment and instruct you what to do
 next.
 
+After initial setup, run `yarn run start:server` to start the server and `yarn run start:tg` to start telegram bot.
+
 ## 🐳 Docker
 
 [➡ Docker README](.docker/README.md)
