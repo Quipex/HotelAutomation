@@ -8,22 +8,25 @@
   },
   "scripts": {
     "start": "nodemon -r ts-node -r tsconfig-paths/register --files ./src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
     "migration:run": "yarn run typeorm migration:run -d ./src/config/datasource.ts",
     "migration:generate": "yarn run typeorm migration:create",
     "lint:js": "npx eslint --ext .ts,.tsx,.js,.jsx --fix",
     "lint": "yarn run lint:js",
-    "build": "tsc && resolve-tspaths -p tsconfig.json"
+    "build": "tsc && resolve-tspaths -p tsconfig.json",
+    "test": "cross-env NODE_ENV=test jest --config jest.config.js --testTimeout=25000 --runInBand"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.8",
+    "@types/jest": "^27.4.1",
     "@types/koa": "^2.13.4",
     "@types/koa-bodyparser": "^4.3.5",
     "@types/koa-router": "^7.4.4",
     "@types/node": "^17.0.23",
     "@types/selenium-webdriver": "^4.0.16",
+    "jest": "^27.5.1",
     "nodemon": "^2.0.15",
+    "ts-jest": "^27.1.4",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.12.0",
     "typescript": "^4.5.4"

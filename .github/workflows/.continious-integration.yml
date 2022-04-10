@@ -1,0 +1,38 @@
+name: CI
+on:
+  pull_request:
+    paths:
+      - HotelCommon/**/*
+      - HotelPmsAdapter/**/*
+      - HotelTelebot/**/*
+
+jobs:
+  test:
+    name: Running Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Read constants from file
+        uses: cardinalby/export-env-action@v1
+        with:
+          envFile: 'constants.env'
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setting up NodeJS v${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Installing Dependencies
+        run: |
+          npm i -g yarn
+          yarn run install:all
+
+      - name: Testing Common
+        run: yarn run test:common
+
+      - name: Testing PmsAdapter
+        run: yarn run test:backend
