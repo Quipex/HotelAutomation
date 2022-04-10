@@ -35,4 +35,4 @@ jobs:
         run: yarn run test:common
 
       - name: Testing PmsAdapter
-        run: yarn run test:backend
+        run: yarn run test:server
