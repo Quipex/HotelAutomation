@@ -1,5 +1,5 @@
 describe('InitialTests', () => {
-  test('tests are running', () => {
+  test('Tests are running', () => {
     expect(true).toBe(true);
   });
 });
