@@ -16,7 +16,7 @@ jobs:
       - name: Read constants from file
         uses: cardinalby/export-env-action@v1
         with:
-          envFile: 'constants.env'
+          envFile: '.github/workflows/constants.env'
 
       - name: Checkout
         uses: actions/checkout@v2
