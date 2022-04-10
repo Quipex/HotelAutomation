@@ -24,7 +24,8 @@
     "lintstaged": "zx scripts/lintStaged.mjs",
     "test:common": "cd HotelCommon && yarn test",
     "test:server": "cd HotelPmsAdapter && yarn test",
-    "test:all": "yarn run test:common && yarn run test:server"
+    "test:all": "yarn run test:common && yarn run test:server",
+    "test": "yarn run test:all"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.9.1",
