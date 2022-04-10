@@ -7,14 +7,14 @@ on:
       - HotelTelebot/**/*
 
 jobs:
-  test:
-    name: Running Unit Tests
+  linting:
+    name: Linting
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Read constants from file
         uses: cardinalby/export-env-action@v1
@@ -26,6 +26,18 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
       - name: Installing Dependencies
         run: |
           npm i -g yarn
@@ -36,3 +48,48 @@ jobs:
 
       - name: Testing PmsAdapter
         run: yarn run test:server
+
+  testing:
+    name: Running Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Read constants from file
+        uses: cardinalby/export-env-action@v1
+        with:
+          envFile: '.github/workflows/constants.env'
+
+      - name: Setting up NodeJS v${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Installing Dependencies
+        run: |
+          npm i -g yarn
+          yarn run install:all
+
+      - name: Linting Common
+        run: yarn run lint:common
+
+      - name: Linting PmsAdapter
+        run: yarn run lint:server
+
+      - name: Linting Telebot
+        run: yarn run lint:tg
