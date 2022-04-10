@@ -13,13 +13,13 @@ jobs:
     timeout-minutes: 20
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Read constants from file
         uses: cardinalby/export-env-action@v1
         with:
           envFile: '.github/workflows/constants.env'
-
-      - name: Checkout
-        uses: actions/checkout@v2
 
       - name: Setting up NodeJS v${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
