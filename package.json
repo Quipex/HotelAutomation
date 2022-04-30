@@ -37,7 +37,7 @@
     "eslint-plugin-import": "^2.26.0",
     "husky": "^7.0.4",
     "resolve-tspaths": "^0.3.0",
-    "typescript": "^4.5.4",
+    "typescript": "^4.6.4",
     "zx": "^6.1.0"
   }
 }
