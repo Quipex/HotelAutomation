@@ -24,7 +24,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "bunyan": "^1.8.15",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.1",
     "express-async-handler": "^1.1.4",
     "glob": "^8.0.1",
     "hotel-automation-common": "file:../HotelCommon/dist",
