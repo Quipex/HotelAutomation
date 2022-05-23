@@ -26,7 +26,7 @@
     "bunyan": "^1.8.15",
     "dotenv": "^16.0.1",
     "express-async-handler": "^1.1.4",
-    "glob": "^8.0.1",
+    "glob": "^8.0.3",
     "hotel-automation-common": "file:../HotelCommon/dist",
     "lowdb": "github:dankreiger/lowdb#chore/esm-cjs-hybrid-WITH-LIB",
     "moment": "^2.29.3",
