@@ -35,7 +35,7 @@
     "axios": "^0.27.2",
     "body-parser": "^1.19.1",
     "bunyan": "^1.8.15",
-    "cyrillic-to-translit-js": "^3.1.0",
+    "cyrillic-to-translit-js": "^3.2.1",
     "dotenv": "^16.0.1",
     "hotel-automation-common": "file:../HotelCommon/dist",
     "koa": "^2.13.4",
