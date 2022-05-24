@@ -28,7 +28,7 @@ async function fetchBookingsExpiredAndReminded(): Promise<PmsBookingEntity[]> {
 }
 
 async function fetchNotPayedBookingsArriveAfter(unixDate: number): Promise<PmsBookingEntity[]> {
-  const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.notPayed$get);
+  const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.notPaid$get);
   const params = getQueryParams({ arrive_after: unixDate });
   return await api.call(path, { method, params }) as [];
 }
