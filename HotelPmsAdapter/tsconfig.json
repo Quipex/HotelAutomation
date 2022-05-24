@@ -1,5 +1,5 @@
 {
-  "include": ["src/*", "**/migrations/*"],
+  "include": ["src/*", "**/migrations/*", "tests/**/*"],
   "exclude": ["node_modules/*", "jest.config.js"],
   "compilerOptions": {
     "allowJs": true,
