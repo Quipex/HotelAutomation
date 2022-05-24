@@ -16,12 +16,14 @@ interface Env {
   chromePath: string;
   maxApiRetries: number;
   msToSleep_429: number;
+  nodeEnv: string;
   db: {
     type: string;
     host: string;
     username: string;
     password: string;
     database: string;
+    databaseTest: string;
     port: number;
   },
   typeorm: {
@@ -47,9 +49,11 @@ const env: Env = {
   chromePath: getOptionalEnv('CHROME_PATH'),
   maxApiRetries: Number(getEnv('MAX_API_RETRIES')),
   msToSleep_429: Number(getEnv('TIME_TO_SLEEP')),
+  nodeEnv: getOptionalEnv('NODE_ENV') ?? 'UNDEFINED',
   db: {
     type: getEnv('DB_TYPE'),
     database: getEnv('DB_DATABASE'),
+    databaseTest: getEnv('DB_DATABASE_TEST'),
     host: getEnv('DB_HOST'),
     username: getEnv('DB_USERNAME'),
     password: getEnv('DB_PASSWORD'),
