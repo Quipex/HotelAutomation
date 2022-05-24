@@ -1,7 +1,7 @@
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 import env from '~/config/env';
 
-const appDataSource = new DataSource({
+const defaultConfig: DataSourceOptions = {
   type: env.db.type as any,
   host: env.db.host,
   port: env.db.port,
@@ -12,7 +12,16 @@ const appDataSource = new DataSource({
   entities: ['**/domain/**/*Model.{ts,js}'],
   migrationsRun: env.typeorm.migrationsRun,
   logging: env.typeorm.logging,
-  synchronize: env.typeorm.synchronize,
-});
+  synchronize: env.typeorm.synchronize
+};
+
+const testConfig: DataSourceOptions = {
+  ...defaultConfig,
+  database: env.db.databaseTest
+};
+
+const config = process.env.NODE_ENV === 'test' ? testConfig : defaultConfig;
+
+const appDataSource = new DataSource(config);
 
 export default appDataSource;
