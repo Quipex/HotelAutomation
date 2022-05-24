@@ -6,6 +6,6 @@ const getEnv = (key: string): string => {
     throw new Error(`Env variable ${key} is not defined`);
   }
   return val;
-}
+};
 
 export { getEnv };
