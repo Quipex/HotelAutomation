@@ -1,5 +1,8 @@
-function unixDateToDate(unixDate: number): Date {
-  return new Date(unixDate * 1000);
+// noinspection ES6PreferShortImport
+import { unixMillisecondsToDate } from './unixMillisecondsToDate';
+
+function unixSecondsToDate(unixSeconds: number): Date {
+  return unixMillisecondsToDate(unixSeconds * 1000);
 }
 
-export { unixDateToDate };
+export { unixSecondsToDate };
