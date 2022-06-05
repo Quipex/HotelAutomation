@@ -60,3 +60,6 @@ jobs:
 
       - name: Testing PmsAdapter
         run: yarn run test:server
+
+      - name: Testing Telebot
+        run: yarn run test:tg
