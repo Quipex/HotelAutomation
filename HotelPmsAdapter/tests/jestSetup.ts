@@ -8,5 +8,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
   testsLog.info('After tests');
+  await appDataSource.undoLastMigration({ transaction: 'all' });
   await appDataSource.destroy();
 });

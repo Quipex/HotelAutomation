@@ -531,7 +531,7 @@ export class tablesReorganizing1653653473387 implements MigrationInterface {
 
       DROP TRIGGER trg__clients__updatedAt ON clients;
 
-      DROP FUNCTION set_updatedAt_timestamp;
+      DROP FUNCTION set_updatedAt_timestamp cascade;
 
 
 -- DROP NEW TABLES
