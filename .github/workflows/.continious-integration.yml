@@ -45,6 +45,7 @@ jobs:
         run: |
           npm i -g yarn
           yarn run install:all
+          yarn run setupenv
 
       - name: Linting Common
         run: yarn run lint:common
