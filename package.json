@@ -17,7 +17,7 @@
     "audit:common": "cd HotelCommon && yarn audit",
     "audit:server": "cd HotelPmsAdapter && yarn audit",
     "audit:tg": "cd HotelTelebot && yarn audit",
-    "setupdev": "yarn run setupenv && yarn run install:all && husky install",
+    "setupdev": "yarn run setupenv && yarn run createdirs && yarn run install:all && husky install",
     "checkenv": "zx scripts/checkEnv.mjs",
     "setupenv": "zx scripts/setupEnv.mjs",
     "createdirs": "zx scripts/createDirs.mjs",
