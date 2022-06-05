@@ -34,7 +34,9 @@ interface Env {
   }
 }
 
-const pmsProvider = getEnv('PMS_PROVIDER');
+const isTestEnv = getEnv('NODE_ENV') === 'test';
+
+const pmsProvider = isTestEnv ? getOptionalEnv('PMS_PROVIDER') : getEnv('PMS_PROVIDER');
 const isPmsCloud = pmsProvider === 'PMS_CLOUD';
 const isEasyMs = pmsProvider === 'EASY_MS';
 
