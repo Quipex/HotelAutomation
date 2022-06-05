@@ -3,11 +3,19 @@ import { testsLog } from '~/config/logger';
 
 beforeAll(async () => {
   testsLog.info('Before tests');
-  await appDataSource.initialize();
+  try {
+    await appDataSource.initialize();
+  } catch (e) {
+    process.exit(1);
+  }
 });
 
 afterAll(async () => {
   testsLog.info('After tests');
-  await appDataSource.undoLastMigration({ transaction: 'all' });
-  await appDataSource.destroy();
+  try {
+    await appDataSource.undoLastMigration({ transaction: 'all' });
+    await appDataSource.destroy();
+  } catch (e) {
+    process.exit(1);
+  }
 });
