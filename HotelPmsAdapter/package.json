@@ -15,7 +15,7 @@
     "lint:js": "npx eslint \"src/**/*.ts\" \"tests/**/*.ts\" --fix",
     "lint": "yarn run lint:js",
     "build": "tsc && resolve-tspaths -p tsconfig.json",
-    "test": "cross-env NODE_ENV=test jest --config jest.config.js --testTimeout=30000 --runInBand --verbose | bunyan"
+    "test": "cross-env NODE_ENV=test jest --config jest.config.js --testTimeout=30000 --runInBand --verbose"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.8",
