@@ -20,6 +20,7 @@
     "setupdev": "yarn run setupenv && yarn run install:all && husky install",
     "checkenv": "zx scripts/checkEnv.mjs",
     "setupenv": "zx scripts/setupEnv.mjs",
+    "createdirs": "zx scripts/createDirs.mjs",
     "dockerfile:server": "docker build -f .docker/images/PmsAdapter.Dockerfile -t quipex/pms-adapter .",
     "lintstaged": "zx scripts/lintStaged.mjs",
     "test:common": "cd HotelCommon && yarn test",
