@@ -51,8 +51,8 @@ const env: Env = {
   port: Number(getOptionalEnv('APP_PORT') ?? 3000),
   xSecHeader: isTestEnv ? getOptionalEnv('X_SEC_HEADER') : getEnv('X_SEC_HEADER'),
   chromePath: getOptionalEnv('CHROME_PATH'),
-  maxApiRetries: isTestEnv ? Number(getOptionalEnv('MAX_API_RETRIES')) : Number(getEnv('MAX_API_RETRIES')),
-  msToSleep_429: isTestEnv ? Number(getOptionalEnv('TIME_TO_SLEEP')) : Number(getEnv('TIME_TO_SLEEP')),
+  maxApiRetries: Number(getEnv('MAX_API_RETRIES')),
+  msToSleep_429: Number(getEnv('TIME_TO_SLEEP')),
   nodeEnv: getEnv('NODE_ENV'),
   db: {
     type: getEnv('DB_TYPE'),
