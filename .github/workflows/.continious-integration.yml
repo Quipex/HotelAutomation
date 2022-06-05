@@ -46,6 +46,7 @@ jobs:
           npm i -g yarn
           yarn run install:all
           yarn run setupenv
+          yarn run createdirs
 
       - name: Linting Common
         run: yarn run lint:common
