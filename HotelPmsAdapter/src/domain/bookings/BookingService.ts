@@ -1,126 +1,108 @@
-import api from '~/integrations/pms_cloud/api';
-import { CreateBookingPayload } from '~/common/types';
-import { encodeObjectAsUrl } from '~/common/utils/url';
-import { dateToUnixSeconds, unixDateToDate } from '~/common/utils/dates';
-import { getRoom } from '~/integrations/pms_cloud/room_constants';
-import { getRoomCategory } from '~/integrations/pms_cloud/room_categories_constants';
-import createBookingPayload from '~/integrations/pms_cloud/create_booking';
-import { and, SearchFilter, SearchParam } from '~/integrations/pms_cloud/search';
-import { PmsClientEntity } from '../clients/ClientPmsModel';
-import { mapPmsBookingsToEntities, PmsBooking, PmsBookingEntity } from './BookingModel';
-import {
-  findAllBookings,
-  findArrivalsAt,
-  findBookingsAddedAfter,
-  findBookingsByOwner,
-  findBookingsNotPayedArriveAfter,
-  findBookingsWhoRemindedAndExpired,
-  findById,
-  saveBookings,
-  setBookingPrepaymentWasReminded,
-  setBookingToConfirmed,
-  setBookingToLiving
-} from './BookingRepository';
+import { mapBookingModel2dto } from '~/common/mappings/dto';
+import { transientBookings2bookingModels } from '~/common/mappings/transient';
+import { BookingDto, CreateBookingPayload } from '~/common/types';
+import { BookingTransientModel } from '~/common/types/domain/transient_models';
+import { unixSecondsToDate } from '~/common/utils/dates';
+import { BookingId, BookingModel } from '~/domain/bookings/BookingModel';
+import { ClientModel } from '~/domain/clients/ClientModel';
+import { getRepository } from '~/domain/helpers/orm';
+import { RoomModel } from '~/domain/rooms/RoomModel';
+import { getCloudProvider } from '~/integrations/getCloudProvider';
+import * as BookingRepository from './BookingRepository';
+import { extractClientModelsFromTransientBookings } from './helpers/service';
 
-function datesFilters(startTime: number, endTime: number): SearchParam[] {
-  return [
-    {
-      field: 'startDate',
-      comparison: 'lte',
-      type: 'date',
-      // this is not a mistake, we invert dates on purpose
-      value: String(endTime)
-    },
-    {
-      field: 'endDate',
-      comparison: 'gte',
-      type: 'date',
-      // this is not a mistake, we invert dates on purpose
-      value: String(startTime)
-    }
-  ];
+function linkBookingsToClients(clientModels: ClientModel[], bookingsToSave: BookingModel[]) {
+  clientModels.forEach((cl) => {
+    cl.bookings = Promise.resolve(bookingsToSave.filter((b) => b.client.id === cl.id));
+  });
 }
 
-function composeBookingsUrlWithFilter(filter: SearchFilter) {
-  const urlEncodedFilter = encodeObjectAsUrl(filter);
-  return `/frontDesk?_dc=${Date.now()}&withFilter=${urlEncodedFilter}&ajax_request=true`;
+async function saveTransientBookingsAndIncludedClients(
+  transientBookings: BookingTransientModel[]
+): Promise<BookingDto[]> {
+  const savedRooms = await getRepository(RoomModel).find();
+  const clientModels = extractClientModelsFromTransientBookings(transientBookings);
+  const bookingsToSave = transientBookings2bookingModels({ transientBookings, clientModels, savedRooms });
+  linkBookingsToClients(clientModels, bookingsToSave);
+  const savedBookings = await getRepository(BookingModel).save(bookingsToSave);
+  return (await BookingRepository.findBookingsByIds(savedBookings.map((b) => b.id))).map(mapBookingModel2dto);
 }
 
-const todayYear = new Date().getFullYear();
-const startTime = Date.UTC(todayYear, 5, 1) / 1000;
-const endTime = Date.UTC(todayYear, 8, 30) / 1000;
+async function fetchPmsAndGetAllActiveBookings(): Promise<BookingDto[]> {
+  const todayYear = new Date().getFullYear();
+  const startDate = new Date(todayYear, 5, 1);
+  const endDate = new Date(todayYear, 8, 30);
 
-async function fetchPmsAndGetAllBookings(): Promise<PmsBooking[]> {
-  const bookingsByDatesPath = composeBookingsUrlWithFilter(and(...datesFilters(startTime, endTime)));
-  const pmsBookings = (await api.get(bookingsByDatesPath, { extra: { limit: 100 } })) as PmsBooking[];
-  const pmsBookingsWithRooms = pmsBookings.map((b) => ({
-    ...b,
-    realRoomNumber: getRoom(b.roomId),
-    realRoomType: getRoomCategory(b.roomTypeId)
-  }));
-  const pmsBookingEntities = pmsBookingsWithRooms.map(mapPmsBookingsToEntities);
+  const transientBookings = await getCloudProvider().fetchBookingsByDates(startDate, endDate);
 
-  await saveBookings(pmsBookingEntities);
+  const savedBookings = await saveTransientBookingsAndIncludedClients(transientBookings);
 
-  return pmsBookingsWithRooms.filter((b) => (b.status !== 'REFUSE' && b.status !== 'NOT_ARRIVED'));
+  return savedBookings.filter((b) => !b.cancelled);
 }
 
-async function getAllBookings(): Promise<PmsBookingEntity[]> {
-  return findAllBookings();
+async function getAllBookings(): Promise<BookingDto[]> {
+  return (await BookingRepository.findAllBookings())
+    .map(mapBookingModel2dto);
 }
 
-async function getArrivalsBy(unixDate: number): Promise<PmsBookingEntity[]> {
-  return findArrivalsAt(unixDateToDate(unixDate));
+async function getArrivalsBy(unixDate: number): Promise<BookingDto[]> {
+  return (await BookingRepository.findArrivalsAt(unixSecondsToDate(unixDate)))
+    .map(mapBookingModel2dto);
 }
 
-async function getBookingsAddedAfter(unixSeconds: number): Promise<PmsBookingEntity[]> {
-  return findBookingsAddedAfter(unixDateToDate(unixSeconds));
+async function getBookingsAddedAfter(unixSeconds: number): Promise<BookingDto[]> {
+  return (await BookingRepository.findBookingsAddedAfter(unixSecondsToDate(unixSeconds)))
+    .map(mapBookingModel2dto);
 }
 
-async function getBookingById(id: string): Promise<PmsBookingEntity | undefined> {
-  return findById(+id);
+async function getBookingById(id: string): Promise<BookingDto | null> {
+  const bookingModel = await BookingRepository.findById(id);
+  return bookingModel ? mapBookingModel2dto(bookingModel) : null;
 }
 
-async function getBookingsNotPayedArriveAfter(unixDate: number): Promise<PmsBookingEntity[]> {
-  return findBookingsNotPayedArriveAfter(unixDateToDate(unixDate));
+async function getBookingsNotPayedArriveAfter(unixDate: number): Promise<BookingDto[]> {
+  return (await BookingRepository.findBookingsNotPayedArriveAfter(unixSecondsToDate(unixDate)))
+    .map(mapBookingModel2dto);
 }
 
 async function confirmPrepayment(bookingId: string): Promise<void> {
-  await api.post(`/roomUse/${bookingId}/confirmed`);
-  await setBookingToConfirmed(+bookingId);
+  await getCloudProvider().markBookingAsPrepaid(bookingId);
+  await BookingRepository.setBookingToConfirmed(bookingId);
 }
 
 async function confirmLiving(bookingId: string): Promise<void> {
-  const booking = await findById(+bookingId);
-  if (booking?.status === 'BOOKING_FREE') {
+  const booking = await BookingRepository.findById(bookingId);
+  if (!booking.prepaid) {
     await confirmPrepayment(bookingId);
   }
-  await api.post(`/roomUse/${bookingId}/checkedIn`, { data: { time: dateToUnixSeconds(new Date()) } });
-  await setBookingToLiving(+bookingId);
+
+  await getCloudProvider().markBookingAsCheckedIn(bookingId);
+  await BookingRepository.setBookingToLiving(bookingId);
 }
 
 async function remindedOfPrepayment(bookingId: string): Promise<void> {
-  await setBookingPrepaymentWasReminded(+bookingId);
+  await BookingRepository.setBookingPrepaymentWasReminded(bookingId);
 }
 
-async function expiredRemindedPrepayment(): Promise<PmsBookingEntity[]> {
-  return findBookingsWhoRemindedAndExpired();
+async function expiredRemindedPrepayment(): Promise<BookingDto[]> {
+  return (await BookingRepository.findBookingsWhoRemindedAndExpired())
+    .map(mapBookingModel2dto);
 }
 
-async function getBookingsByOwner(clientId: string): Promise<PmsClientEntity[]> {
-  return findBookingsByOwner(+clientId);
+async function getBookingsByOwner(clientId: string): Promise<BookingDto[]> {
+  return (await BookingRepository.findBookingsByOwner(clientId))
+    .map(mapBookingModel2dto);
 }
 
-async function createBooking(payload: CreateBookingPayload) {
-  const apiPayload = createBookingPayload(payload);
-  const respContent = await api.post('roomUse', { data: apiPayload });
+async function createBooking(payload: CreateBookingPayload): Promise<BookingId> {
+  const resp = await getCloudProvider().createBooking(payload);
   // todo: replace with the response from api call persisted to db
-  await fetchPmsAndGetAllBookings();
-  return (respContent as any).id;
+  await fetchPmsAndGetAllActiveBookings();
+  return resp.id;
 }
 
 export default {
-  fetchPmsAndGetAllBookings,
+  fetchPmsAndGetAllActiveBookings,
   getAllBookings,
   getArrivalsBy,
   getBookingsAddedAfter,

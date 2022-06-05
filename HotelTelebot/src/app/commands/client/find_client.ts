@@ -1,7 +1,6 @@
+import { BriefClient, BriefClientActions } from '@components';
 import { Context } from 'telegraf';
 import { ClientsService } from '~/api/services';
-import BriefClient from '../../message_components/client/BriefClient';
-import briefClientActions from '../../message_components/client/BriefClientActions';
 
 async function parseCommandFindClientAndReply(ctx: Context) {
   const messageText = ctx.message?.text;
@@ -23,7 +22,7 @@ async function parseCommandFindClientAndReply(ctx: Context) {
           reply_to_message_id: messageId,
           reply_markup:
             {
-              inline_keyboard: briefClientActions(client)
+              inline_keyboard: BriefClientActions(client)
             }
         }
       );

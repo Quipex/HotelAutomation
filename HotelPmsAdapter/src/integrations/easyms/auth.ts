@@ -1,13 +1,13 @@
+import { isTimestampInSecondsExpired } from '~/common/utils/dates';
+import { decodeBase64String } from '~/common/utils/encoding';
+import { fetch } from '~/common/utils/web';
 import env from '~/config/env';
 import { log } from '~/config/logger';
-import { fetch } from '~/common/utils/web';
-import { isEpochExpired } from '~/common/utils/dates';
-import { decodeBase64String } from '~/common/utils/encoding';
 
 type SecurityContext = {
   token: null | string;
   expiresAt: null | number;
-}
+};
 
 const EMPTY_CONTEXT: SecurityContext = {
   token: null,
@@ -21,7 +21,7 @@ function checkIfTokenIsValid(context: SecurityContext) {
   if (!expiresAt || !token) {
     return false;
   }
-  if (isEpochExpired(expiresAt)) {
+  if (isTimestampInSecondsExpired(expiresAt)) {
     log.debug('Auth token is expired');
     return false;
   }
@@ -31,11 +31,26 @@ function checkIfTokenIsValid(context: SecurityContext) {
 async function authAndGetContext(): Promise<SecurityContext> {
   const username = env.easyMsLogin;
   const password = env.easyMsPw;
+  const grantType = 'password';
+  const Authorization = 'Basic ZWFzeW1zOnNlY3JldA==';
+  const Origin = 'https://my.easyms.co';
+  const referer = 'https://my.easyms.co/login';
   const baseURL = env.easyMsBaseUrl;
   try {
-    const { data: { access_token: jwt } } = await fetch('integration/auth', {
+    const { data: { access_token: jwt } } = await fetch('oauth/token', {
+      method: 'post',
       baseURL,
-      data: { username, password }
+      data: {
+        username,
+        password,
+        grant_type: grantType
+      },
+      headers: {
+        Authorization,
+        Origin,
+        referer,
+        'Content-Type': 'multipart/form-data'
+      }
     });
     if (typeof jwt !== 'string') {
       log.error('Token is not a string', jwt);
@@ -49,7 +64,7 @@ async function authAndGetContext(): Promise<SecurityContext> {
       expiresAt: payload.exp
     };
   } catch (e: unknown) {
-    log.error('Error while trying to auth', e);
+    log.error('Error while trying to auth:', e);
     return EMPTY_CONTEXT;
   }
 }
@@ -71,4 +86,4 @@ async function authenticateAndGetToken(): Promise<string> {
   return securityContext.token;
 }
 
-export { authenticateAndGetToken, authenticateAndFillContext };
+export { authenticateAndGetToken };

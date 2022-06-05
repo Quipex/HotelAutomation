@@ -6,6 +6,7 @@ import moment from 'moment';
 function parseDateFromLiterals(dateLiterals: string): Date | null {
   const dateTextLower = dateLiterals.toLowerCase();
   const now = new Date();
+  now.setHours(0, 0, 0, 0);
   if (dateTextLower === 'today' || dateTextLower === 'сегодня') {
     return now;
   }

@@ -1,7 +1,7 @@
 import bunyan from 'bunyan';
 
 const log = bunyan.createLogger({
-  name: 'main',
+  name: 'General',
   src: true,
   streams: [
     {
@@ -12,7 +12,7 @@ const log = bunyan.createLogger({
       count: 2
     },
     {
-      level: 'info',
+      level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
       stream: process.stdout
     },
     {
@@ -33,7 +33,7 @@ const log = bunyan.createLogger({
 });
 
 const usersLog = bunyan.createLogger({
-  name: 'Users activity',
+  name: 'Users_Activity',
   streams: [
     {
       level: 'info',
@@ -49,4 +49,22 @@ const usersLog = bunyan.createLogger({
   ]
 });
 
-export { log, usersLog };
+const testsLog = bunyan.createLogger({
+  name: 'Tests',
+  src: true,
+  streams: [
+    {
+      level: 'debug',
+      path: 'logs/app/tests.log',
+      period: '1d',
+      type: 'rotating-file',
+      count: 2
+    },
+    {
+      level: 'debug',
+      stream: process.stdout
+    }
+  ]
+});
+
+export { log, usersLog, testsLog };

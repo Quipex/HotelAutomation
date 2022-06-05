@@ -2,6 +2,8 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class initial1626634213667 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query('create extension if not exists "pg_trgm";');
+
     await queryRunner.query(`
       CREATE TABLE pms_bookings_raw
       (
@@ -137,12 +139,12 @@ export class initial1626634213667 implements MigrationInterface {
                                                "groupTotalPaid", moved, "roomId", "roomTypeId", source, total, status,
                                                "totalPaid", type, "realRoomNumber", "addedDate", "realRoomType",
                                                "remindedPrepayment")
-            VALUES (OLD.id, OLD."cdsCustomerBalance", OLD."cdsCustomerFirstName", OLD."cdsCustomerId",
-                    OLD."cdsCustomerLastName", OLD."cdsTotal", OLD."customerFirstName", OLD."customerLastName",
-                    OLD."customerId", OLD."startDate", OLD."endDate", OLD."groupId", OLD."groupTotal",
-                    OLD."groupTotalPaid", OLD.moved, OLD."roomId", OLD."roomTypeId", OLD.source, OLD.total,
-                    OLD.status, OLD."totalPaid", OLD.type, OLD."realRoomNumber", OLD."addedDate", OLD."realRoomType",
-                    OLD."remindedPrepayment");
+          VALUES (OLD.id, OLD."cdsCustomerBalance", OLD."cdsCustomerFirstName", OLD."cdsCustomerId",
+                  OLD."cdsCustomerLastName", OLD."cdsTotal", OLD."customerFirstName", OLD."customerLastName",
+                  OLD."customerId", OLD."startDate", OLD."endDate", OLD."groupId", OLD."groupTotal",
+                  OLD."groupTotalPaid", OLD.moved, OLD."roomId", OLD."roomTypeId", OLD.source, OLD.total,
+                  OLD.status, OLD."totalPaid", OLD.type, OLD."realRoomNumber", OLD."addedDate", OLD."realRoomType",
+                  OLD."remindedPrepayment");
 
           f :=
             ROW (NEW.id, NEW."cdsCustomerBalance", NEW."cdsCustomerFirstName", NEW."cdsCustomerId", NEW."cdsCustomerLastName", NEW."cdsTotal", NEW."customerFirstName", NEW."customerLastName", NEW."customerId", NEW."startDate", NEW."endDate", NEW."groupId", NEW."groupTotal", NEW."groupTotalPaid", NEW.moved, NEW."roomId", NEW."roomTypeId", NEW.source, NEW.total, NEW.status, NEW."totalPaid", NEW.type, NEW."realRoomNumber", CURRENT_TIMESTAMP, NEW."realRoomType", NEW."remindedPrepayment");
@@ -192,5 +194,7 @@ export class initial1626634213667 implements MigrationInterface {
     await queryRunner.dropTable('pms_clients_raw');
     await queryRunner.dropTable('pms_bookings_raw_history');
     await queryRunner.dropTable('pms_bookings_raw');
+
+    await queryRunner.query('drop extension "pg_trgm";');
   }
 }

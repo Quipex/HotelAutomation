@@ -1,4 +1,4 @@
 export * from './http_method.type';
 export * from './unit_of_time.type';
 export * from './routes';
-export * from './integrations';
+export * from './dtos';

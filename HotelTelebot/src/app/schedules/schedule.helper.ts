@@ -1,8 +1,9 @@
-import moment from 'moment';
 import { schedule, ScheduleOptions } from 'node-cron';
+import { DATETIME_DAYOFWEEK_MOMENTJS } from '~/common/constants';
+import { formatDate } from '~/common/utils/dates';
 import { log } from '~/config/logger';
 
-const time = () => moment().format('llll');
+const time = () => formatDate(DATETIME_DAYOFWEEK_MOMENTJS);
 
 export function createSchedule(cronExpression: string, func: () => void, options?: ScheduleOptions) {
   schedule(cronExpression, () => {

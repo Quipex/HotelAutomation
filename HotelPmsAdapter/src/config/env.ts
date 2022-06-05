@@ -5,6 +5,7 @@ import { resolveBoolean } from '~/config/helpers/env/resolveBoolean';
 dotenv.config();
 
 interface Env {
+  pmsProvider: string;
   pmsCloudId: string;
   pmsCloudLogin: string;
   pmsCloudPw: string;
@@ -38,6 +39,7 @@ const isPmsCloud = pmsProvider === 'PMS_CLOUD';
 const isEasyMs = pmsProvider === 'EASY_MS';
 
 const env: Env = {
+  pmsProvider,
   pmsCloudId: isPmsCloud ? getEnv('PMS_CLOUD_ID') : getOptionalEnv('PMS_CLOUD_ID'),
   pmsCloudLogin: isPmsCloud ? getEnv('PMS_CLOUD_LOGIN') : getOptionalEnv('PMS_CLOUD_LOGIN'),
   pmsCloudPw: isPmsCloud ? getEnv('PMS_CLOUD_PW') : getOptionalEnv('PMS_CLOUD_PW'),

@@ -24,7 +24,8 @@
     "lintstaged": "zx scripts/lintStaged.mjs",
     "test:common": "cd HotelCommon && yarn test",
     "test:server": "cd HotelPmsAdapter && yarn test",
-    "test:all": "yarn run test:common && yarn run test:server",
+    "test:tg": "cd HotelTelebot && yarn test",
+    "test:all": "yarn run test:common && yarn run test:server && yarn run test:tg",
     "test": "yarn run test:all"
   },
   "devDependencies": {

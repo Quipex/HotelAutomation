@@ -1,8 +1,12 @@
-import { app } from '../src/server';
+import appDataSource from '~/config/dataSource';
+import { testsLog } from '~/config/logger';
 
 beforeAll(async () => {
+  testsLog.info('Before tests');
+  await appDataSource.initialize();
 });
 
 afterAll(async () => {
-  return app.emit('close');
+  testsLog.info('After tests');
+  await appDataSource.destroy();
 });

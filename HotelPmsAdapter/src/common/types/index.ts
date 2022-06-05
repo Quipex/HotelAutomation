@@ -1,2 +1,3 @@
 export * from './payloads';
-export * from './routes';
+export * from './cloud_provider';
+export * from 'hotel-automation-common/types';

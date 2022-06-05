@@ -1,14 +1,21 @@
 import CyrillicToTranslit from 'cyrillic-to-translit-js';
-import { PmsClientEntity } from '~/domain/clients/ClientPmsModel';
 
 const latin = /^[a-zA-Z\s]+$/;
-const transUa = new CyrillicToTranslit({ preset: 'uk' });
-const transRu = new CyrillicToTranslit({ preset: 'ru' });
+const transUa = CyrillicToTranslit({ preset: 'uk' });
+const transRu = CyrillicToTranslit({ preset: 'ru' });
 
-function translateClientName(client: PmsClientEntity): PmsClientEntity {
-  const fullNameOrig = `${client.lastName} ${client.firstName}`;
-  let fullNameEn; let fullNameRu; let
-    fullNameUa;
+type TranslateClientName = (firstName: string, lastName: string) => {
+  fullNameOrig: string,
+  fullNameEn: string,
+  fullNameRu: string,
+  fullNameUa: string
+};
+
+const translateClientName: TranslateClientName = (firstName, lastName) => {
+  const fullNameOrig = `${lastName} ${firstName}`;
+  let fullNameEn: string;
+  let fullNameRu: string;
+  let fullNameUa: string;
   if (latin.test(fullNameOrig)) {
     fullNameEn = fullNameOrig;
     fullNameRu = transRu.reverse(fullNameOrig);
@@ -20,12 +27,11 @@ function translateClientName(client: PmsClientEntity): PmsClientEntity {
   }
 
   return {
-    ...client,
     fullNameOrig,
     fullNameEn,
     fullNameRu,
     fullNameUa
   };
-}
+};
 
 export { translateClientName };

@@ -1,4 +1,5 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { TypeormLogger } from '~/config/TypeormLogger';
 import env from '~/config/env';
 
 const defaultConfig: DataSourceOptions = {
@@ -12,7 +13,8 @@ const defaultConfig: DataSourceOptions = {
   entities: ['**/domain/**/*Model.{ts,js}'],
   migrationsRun: env.typeorm.migrationsRun,
   logging: env.typeorm.logging,
-  synchronize: env.typeorm.synchronize
+  synchronize: env.typeorm.synchronize,
+  logger: new TypeormLogger()
 };
 
 const testConfig: DataSourceOptions = {
@@ -20,7 +22,7 @@ const testConfig: DataSourceOptions = {
   database: env.db.databaseTest
 };
 
-const config = process.env.NODE_ENV === 'test' ? testConfig : defaultConfig;
+const config = env.nodeEnv === 'test' ? testConfig : defaultConfig;
 
 const appDataSource = new DataSource(config);
 

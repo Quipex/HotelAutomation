@@ -1,34 +1,39 @@
-import moment from 'moment';
-import PmsBookingEntity from '../../../api/entities/PmsBookingEntity';
-import { fromSource, fromStatus } from '../../../utils/constants_mapper.helper';
-import { daysBetween, toShortDate } from '../../../utils/dates.helper';
+import { DATE_SHORT, DATETIME_DAYOFWEEK_MOMENTJS } from '~/common/constants';
+import { BookingDto } from '~/common/types';
+import { daysBetween, formatDate } from '~/common/utils/dates';
+import { sourceToText, getStatusText } from '~/common/utils/constants_mapper';
 
 function BriefBooking(
   {
-    moved,
     startDate,
-    endDate,
-    realRoomNumber,
+    endDateExclusive,
+    room: { realRoomNumber },
     source,
-    status,
-    customerFirstName,
-    customerLastName,
-    addedDate,
+    living,
+    cancelled,
+    prepaid,
+    client: { fullNameOrig },
+    updatedAt,
     id,
-    cdsTotal
-  }: PmsBookingEntity
+    totalUahCoins
+  }: BookingDto
 ): string {
-  const partOfBooking = moved ? ' ⚠ Это часть бронирования.' : '';
+  const statusText = getStatusText({
+    living,
+    cancelled,
+    prepaid
+  });
+  const price = (Number(totalUahCoins) / 100).toFixed(2);
   return (
-    `🧑️ ${customerFirstName} ${customerLastName}\n`
-    + `📅 С ${toShortDate(startDate)} по ${toShortDate(endDate)}.`
-    + ` ${daysBetween(startDate, endDate)} дней.\n`
-    + `🚪 Комната <b>№${realRoomNumber}.${partOfBooking}</b>\n`
-    + `Источник: <b>${fromSource(source)}</b>\n`
-    + `Статус: <b>${fromStatus(status)}</b>\n`
-    + `💳 Сумма: <b>${cdsTotal}</b>\n\n`
-    + `<i>Обновлено ${moment(addedDate).format('llll')}\n</i>`
-    + `<i>/id ${id}</i>`
+    `🧑️ ${fullNameOrig}\n`
+    + `📅 С ${formatDate(startDate, DATE_SHORT)} по ${formatDate(endDateExclusive, DATE_SHORT)}.`
+    + ` ${daysBetween(startDate, endDateExclusive)} дней.\n`
+    + `🚪 Комната <b>№${realRoomNumber}</b>\n`
+    + `Источник: <b>${sourceToText(source)}</b>\n`
+    + `Статус: <b>${statusText}</b>\n`
+    + `💳 Сумма: <b>${price}</b>\n\n`
+    + `<i>Обновлено ${formatDate(updatedAt, DATETIME_DAYOFWEEK_MOMENTJS)}\n</i>`
+    + `<code>/id ${id}</code>`
   );
 }
 

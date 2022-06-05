@@ -24,7 +24,7 @@ const {
 const getPathOf = (obj) => resolveV1(obj).path;
 
 bookings.post(getPathOf(index$post), async (ctx) => {
-  ctx.body = await BookingPmsService.fetchPmsAndGetAllBookings();
+  ctx.body = await BookingPmsService.fetchPmsAndGetAllActiveBookings();
 });
 
 bookings.get(getPathOf(cached$get), async (ctx) => {
@@ -69,7 +69,7 @@ bookings.get(getPathOf(notPaid$get), async (ctx) => {
 });
 
 bookings.put(getPathOf(sync$put), async (ctx) => {
-  await BookingPmsService.fetchPmsAndGetAllBookings();
+  await BookingPmsService.fetchPmsAndGetAllActiveBookings();
   ctx.status = 200;
 });
 

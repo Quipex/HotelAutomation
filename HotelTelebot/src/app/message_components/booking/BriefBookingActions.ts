@@ -1,12 +1,12 @@
 import { InlineKeyboardButton } from 'telegraf/typings/markup';
-import PmsBookingEntity from '../../../api/entities/PmsBookingEntity';
-import { textBookingDetails } from '../../callbacks/callback_actions';
+import { textBookingDetails } from '@callbacks/callback_actions';
+import { BookingDto } from '~/common/types';
 import detailedBookingActions from './DetailedBookingActions';
 
-function briefBookingActions(booking: PmsBookingEntity) {
+function briefBookingActions(booking: BookingDto) {
   const inlineKeyboard: InlineKeyboardButton[][] = [];
 
-  inlineKeyboard.push([{ text: 'Подробнее 🔍', callback_data: textBookingDetails(booking.id) }]);
+  inlineKeyboard.push([{ text: 'Подробнее 🔍', callback_data: textBookingDetails(booking.id), hide: true }]);
 
   return [...inlineKeyboard, ...detailedBookingActions(booking)];
 }
