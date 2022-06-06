@@ -1,4 +1,4 @@
-import { ORGANIZATION_ID } from '~/common/constants/cloud_provider/easyms';
+import env from '~/config/env';
 
 const GENERATED_NUMS = 8;
 const GENERATED_CHARS = 2;
@@ -27,7 +27,7 @@ const generateStringChunk = (lengthOfGenerated, generationFn) => {
 const generateEasyMsId = () => {
   const suffix = generateStringChunk(GENERATED_CHARS, getRandChar);
   const prefix = generateStringChunk(GENERATED_NUMS, () => getRandomInt(0, 10));
-  return suffix + ORGANIZATION_ID + prefix;
+  return suffix + env.easyMsOrgId + prefix;
 };
 
 export { generateEasyMsId };
