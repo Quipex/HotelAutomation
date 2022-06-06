@@ -1,6 +1,6 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import env from '~/app/env';
-import { RESPONSE_TIME } from '~/common/constants';
+import { RESPONSE_TIME_HEADER, X_SEC_HEADER } from '~/common/constants';
 import { log } from '~/config/logger';
 
 async function callApi(path: string, config: AxiosRequestConfig): Promise<unknown> {
@@ -10,12 +10,16 @@ async function callApi(path: string, config: AxiosRequestConfig): Promise<unknow
     ...config,
     baseURL: env.pmsAdapterUrl,
     headers: {
-      x_security_header: env.xSecHeader
-    }
+      [X_SEC_HEADER]: env.xSecHeader
+    },
+    validateStatus: () => true
   });
   const realMs = Date.now() - timeBeforeRequest;
-  const backendResponseTime = response.headers[RESPONSE_TIME];
-  log.debug(`Got response ${response.status} (${realMs}ms, server: ${backendResponseTime}ms)`, { data: response.data });
+  const backendResponseTime = response.headers[RESPONSE_TIME_HEADER];
+  log.debug(`Got response ${response.status} (${realMs}ms, server: ${backendResponseTime})`, { data: response.data });
+  if (response.status >= 300) {
+    throw new AxiosError(response.statusText, response.status.toString(), response.config, response.request, response);
+  }
   return response.data;
 }
 

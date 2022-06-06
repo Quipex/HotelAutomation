@@ -3,7 +3,7 @@ import { DATETIME_DAYOFWEEK_MOMENTJS } from '~/common/constants';
 import { formatDate } from '~/common/utils/dates';
 import { log } from '~/config/logger';
 
-const time = () => formatDate(DATETIME_DAYOFWEEK_MOMENTJS);
+const time = () => formatDate(new Date(), DATETIME_DAYOFWEEK_MOMENTJS);
 
 export function createSchedule(cronExpression: string, func: () => void, options?: ScheduleOptions) {
   schedule(cronExpression, () => {

@@ -11,21 +11,16 @@ import parseCommandCreateBookingAndReply from '@commands/booking/create_booking'
 import parseCommandFindClientByIdAndReply from '@commands/client/client_by_id';
 import parseCommandFindClientAndReply from '@commands/client/find_client';
 import synchronizeBookingsAndClientsAndReply from '@commands/synchronize_bookings_and_clients';
-import { Context, Telegraf } from 'telegraf';
+import { Telegraf } from 'telegraf';
+import { authorizeRequest, handleErrors, validateMessage } from '~/app/middlewares';
 import { log } from '~/config/logger';
 import handleCallbackQueries from './callbacks';
 import env from './env';
-import validateMessage from './middlewares/message_validation';
-import security from './middlewares/security';
 
 const bot = new Telegraf(env.botToken);
 
-bot.catch(async (err, ctx: Context) => {
-  await ctx.replyWithHTML('☠ Got error ☠\n\n'
-    + `<code>${err.message}</code>`);
-  log.error(`Got an error for update of type '${ctx.updateType}':`, err);
-});
-bot.use(security);
+bot.catch(handleErrors);
+bot.use(authorizeRequest);
 bot.on('text', validateMessage);
 bot.on('callback_query', handleCallbackQueries);
 

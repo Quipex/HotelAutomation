@@ -65,7 +65,7 @@ async function syncBookings() {
 
 async function fetchClientBookings(clientId: string): Promise<BookingDto[]> {
   const { path: fullPath, method, compactPath: { withPathVariable } } = rv1(routesV1.bookings.owner.byId$get);
-  const path = withPathVariable(clientId, fullPath);
+  const path = withPathVariable(fullPath, clientId);
   return await api.call(path, { method }) as [];
 }
 

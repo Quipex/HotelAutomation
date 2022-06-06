@@ -23,8 +23,8 @@ const transientBookings2bookingModels: TransientBookings2bookingModels = (
     return new BookingModel({
       ...transientBooking,
       totalUahCoins: transientBooking.totalUahCoins.toString(),
-      createdAt: null,
-      updatedAt: null,
+      createdAt: undefined,
+      updatedAt: undefined,
       carPlates: null,
       prepaymentRemindings: null,
       client,

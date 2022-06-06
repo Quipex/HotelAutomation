@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import { BookingCreationConflictError } from '~/common/errors';
 import { routesV1 } from '~/common/maps';
 import { resolveV1 } from '~/common/utils/routes';
 import BookingPmsService from './BookingService';
@@ -111,13 +112,22 @@ bookings.put(getPathOf(create$put), async (ctx) => {
   const {
     roomNumber, from, to, guestName
   } = ctx.request.body as ReturnType<typeof create$put.getData>;
-  const newId = await BookingPmsService.createBooking({
-    roomNumber: +roomNumber,
-    from: new Date(from),
-    to: new Date(to),
-    guestName
-  });
-  ctx.body = { newId };
+  try {
+    const newId = await BookingPmsService.createBookingAndSyncBookings({
+      roomNumber: +roomNumber,
+      from: new Date(from),
+      to: new Date(to),
+      guestName
+    });
+    ctx.body = { newId };
+  } catch (e: unknown) {
+    if (e instanceof BookingCreationConflictError) {
+      ctx.status = 409;
+      ctx.body = { message: e.message };
+      return;
+    }
+    throw e;
+  }
 });
 
 bookings.get(getPathOf(owner.byId$get), async (ctx) => {

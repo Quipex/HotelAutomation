@@ -1,6 +1,6 @@
+import axios from 'axios';
 import { isTimestampInSecondsExpired } from '~/common/utils/dates';
 import { decodeBase64String } from '~/common/utils/encoding';
-import { fetch } from '~/common/utils/web';
 import env from '~/config/env';
 import { log } from '~/config/logger';
 
@@ -37,7 +37,7 @@ async function authAndGetContext(): Promise<SecurityContext> {
   const referer = 'https://my.easyms.co/login';
   const baseURL = env.easyMsBaseUrl;
   try {
-    const { data: { access_token: jwt } } = await fetch('oauth/token', {
+    const { data: { access_token: jwt } } = await axios('oauth/token', {
       method: 'post',
       baseURL,
       data: {
@@ -78,9 +78,9 @@ async function authenticateAndFillContext(): Promise<void> {
  * otherwise, returns the cached token
  * @return string jwt
  */
-async function authenticateAndGetToken(): Promise<string> {
+async function authenticateAndGetToken(forceLogin: boolean): Promise<string> {
   const tokenIsValid = checkIfTokenIsValid(securityContext);
-  if (!tokenIsValid) {
+  if (!tokenIsValid || forceLogin) {
     await authenticateAndFillContext();
   }
   return securityContext.token;

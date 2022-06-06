@@ -1,7 +1,7 @@
-import moment, { MomentInput } from 'moment';
+import dayjs, { ConfigType } from 'dayjs';
 
-function daysBetween(date1: MomentInput, date2: MomentInput): number {
-  return Math.abs(moment(date1).diff(moment(date2), 'days'));
+function daysBetween(date1: ConfigType, date2: ConfigType): number {
+  return Math.abs(dayjs(date1).diff(dayjs(date2), 'days'));
 }
 
 export { daysBetween };

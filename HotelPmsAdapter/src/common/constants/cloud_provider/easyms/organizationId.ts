@@ -1,3 +1,0 @@
-const ORGANIZATION_ID = 446;
-
-export { ORGANIZATION_ID };
