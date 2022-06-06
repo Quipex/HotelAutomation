@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { getOsEnvArray } from '../utils/path.helper';
+import { getEnvArray } from '~/common/utils/env';
 
 dotenv.config();
 
@@ -26,7 +26,7 @@ const env: Env = {
   pmsAdapterUrl: getEnv('PMS_ADAPTER_URL'),
   xSecHeader: getEnv('X_SEC_HEADER'),
   botToken: getEnv('BOT_TOKEN'),
-  telegramIds: getOsEnvArray('TELEGRAM_IDS')
+  telegramIds: getEnvArray('TELEGRAM_IDS')
 };
 
 export default env;

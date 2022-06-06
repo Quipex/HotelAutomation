@@ -1,8 +1,8 @@
-import PmsClientEntity from '../../../api/entities/PmsClientEntity';
+import { ClientDto } from '~/common/types';
 import BriefClientMessage from './BriefClient';
 
 function DetailedClientMessage(
-  client: PmsClientEntity
+  client: ClientDto
 ): string {
   const { country, city, address, email } = client;
   return (

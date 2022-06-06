@@ -1,6 +1,6 @@
 import { Context } from 'telegraf';
 import { BookingsService } from '~/api/services';
-import { parseDate } from '~/common/utils/dates.helper';
+import { parseDateFromLiterals } from '~/common/utils/dates';
 
 async function replyWithUsageManual(ctx: Context) {
   return ctx.replyWithHTML(
@@ -14,8 +14,8 @@ async function parseCommandCreateBookingAndReply(ctx: Context) {
     const messageText = ctx.message!.text;
     const commandTokens = messageText.split(' ');
     const [rawFromDate, rawToDate, roomNumber] = commandTokens;
-    const fromDate = parseDate(rawFromDate);
-    const toDate = parseDate(rawToDate);
+    const fromDate = parseDateFromLiterals(rawFromDate);
+    const toDate = parseDateFromLiterals(rawToDate);
     const guestName = commandTokens.slice(4).join(' ');
     if (!fromDate || !toDate || !commandTokens[4]) {
       await replyWithUsageManual(ctx);
@@ -23,7 +23,9 @@ async function parseCommandCreateBookingAndReply(ctx: Context) {
     }
 
     const { newId } = await BookingsService.createBooking({ from: fromDate, to: toDate, roomNumber, guestName }) as any;
-    await ctx.reply(`Created ✅ /id ${newId}`, { reply_to_message_id: ctx.message?.message_id });
+    await ctx.replyWithHTML(`Created ✅ <code>/id ${newId}</code>`, {
+      reply_to_message_id: ctx.message?.message_id
+    });
   } catch (e) {
     await replyWithUsageManual(ctx);
   }

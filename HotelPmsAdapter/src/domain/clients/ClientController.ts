@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import { routesV1 } from '~/common/maps';
 import { getPathOf } from '../helpers/routes';
-import ClientsPmsService from './ClientsPmsService';
+import ClientsPmsService from './ClientService';
 
 const clients = new Router();
 

@@ -17,14 +17,16 @@
     "audit:common": "cd HotelCommon && yarn audit",
     "audit:server": "cd HotelPmsAdapter && yarn audit",
     "audit:tg": "cd HotelTelebot && yarn audit",
-    "setupdev": "yarn run setupenv && yarn run install:all && husky install",
+    "setupdev": "yarn run setupenv && yarn run createdirs && yarn run install:all && husky install",
     "checkenv": "zx scripts/checkEnv.mjs",
     "setupenv": "zx scripts/setupEnv.mjs",
+    "createdirs": "zx scripts/createDirs.mjs",
     "dockerfile:server": "docker build -f .docker/images/PmsAdapter.Dockerfile -t quipex/pms-adapter .",
     "lintstaged": "zx scripts/lintStaged.mjs",
     "test:common": "cd HotelCommon && yarn test",
     "test:server": "cd HotelPmsAdapter && yarn test",
-    "test:all": "yarn run test:common && yarn run test:server",
+    "test:tg": "cd HotelTelebot && yarn test",
+    "test:all": "yarn run test:common && yarn run test:server && yarn run test:tg",
     "test": "yarn run test:all"
   },
   "devDependencies": {

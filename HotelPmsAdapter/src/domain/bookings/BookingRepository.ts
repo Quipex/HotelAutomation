@@ -1,107 +1,123 @@
 import { In } from 'typeorm';
 import { subtractFromDate } from '~/common/utils/dates';
-import { PmsClientEntity } from '../clients/ClientPmsModel';
+import { ClientId } from '~/domain/clients/ClientModel';
+import { PrepaymentRemindingsModel } from '~/domain/prepayment_remindings/PrepaymentRemindingsModel';
 import { getRepository, lessThanDate, moreThanDate } from '../helpers/orm';
-import { PmsBookingEntity } from './BookingModel';
+import { BookingId, BookingModel } from './BookingModel';
 
-export const saveBookings = async (bookings: PmsBookingEntity[]): Promise<PmsBookingEntity[]> => {
-  const bookingsRepository = getRepository(PmsBookingEntity);
-  return bookingsRepository.save(bookings);
-};
-
-export const findAllBookings = async (): Promise<PmsBookingEntity[]> => {
-  const bookingsRepository = getRepository(PmsBookingEntity);
+const findAllBookings = async (): Promise<BookingModel[]> => {
+  const bookingsRepository = getRepository(BookingModel);
   return bookingsRepository.find();
 };
 
-export const findArrivalsAt = async (startDate: Date): Promise<PmsBookingEntity[]> => {
-  const bookingsRepository = getRepository(PmsBookingEntity);
+const findBookingsByIds = async (ids: string[]): Promise<BookingModel[]> => {
+  const bookingsRepository = getRepository(BookingModel);
+  return bookingsRepository.findBy({ id: In(ids) });
+};
+
+const findArrivalsAt = async (startDate: Date): Promise<BookingModel[]> => {
+  const bookingsRepository = getRepository(BookingModel);
   return bookingsRepository.find({
     where: {
       startDate,
-      status: In(['LIVING', 'BOOKING_FREE', 'BOOKING_WARRANTY']),
-      moved: false
+      cancelled: false
     },
     order: {
-      realRoomNumber: 'ASC'
+      room: { realRoomNumber: 'ASC' }
     }
   });
 };
 
-export const findBookingsAddedAfter = async (date: Date): Promise<PmsBookingEntity[]> => {
-  const bookingsRepository = getRepository(PmsBookingEntity);
+const findBookingsAddedAfter = async (date: Date): Promise<BookingModel[]> => {
+  const bookingsRepository = getRepository(BookingModel);
   return bookingsRepository.find({
     where: {
-      addedDate: moreThanDate(date),
-      moved: false
+      createdAt: moreThanDate(date)
     },
     order: {
       startDate: 'ASC',
-      realRoomNumber: 'ASC'
+      room: { realRoomNumber: 'ASC' }
     }
   });
 };
 
-export async function findById(id: number): Promise<PmsBookingEntity | undefined> {
-  const bookingsRepository = getRepository(PmsBookingEntity);
+async function findById(id: BookingId): Promise<BookingModel | null> {
+  const bookingsRepository = getRepository(BookingModel);
   return bookingsRepository.findOneBy({ id });
 }
 
-export async function findBookingsNotPayedArriveAfter(date: Date): Promise<PmsBookingEntity[]> {
-  const bookingsRepository = getRepository(PmsBookingEntity);
+async function findBookingsNotPayedArriveAfter(date: Date): Promise<BookingModel[]> {
+  const bookingsRepository = getRepository(BookingModel);
   return bookingsRepository.find({
     where: {
       startDate: moreThanDate(date),
-      status: 'BOOKING_FREE',
-      moved: false
+      cancelled: false,
+      prepaid: false
     },
     order: {
       startDate: 'ASC',
-      realRoomNumber: 'ASC'
+      room: { realRoomNumber: 'ASC' }
     }
   });
 }
 
-export async function setBookingToConfirmed(id: number): Promise<void> {
-  const bookingsRepository = getRepository(PmsBookingEntity);
-  await bookingsRepository.update({ id }, { status: 'BOOKING_WARRANTY' });
+async function setBookingToConfirmed(id: BookingId): Promise<void> {
+  const bookingsRepository = getRepository(BookingModel);
+  await bookingsRepository.update({ id }, { prepaid: true });
 }
 
-export async function setBookingToLiving(id: number): Promise<void> {
-  const bookingsRepository = getRepository(PmsBookingEntity);
-  await bookingsRepository.update({ id }, { status: 'LIVING' });
+async function setBookingToLiving(id: BookingId): Promise<void> {
+  const bookingsRepository = getRepository(BookingModel);
+  await bookingsRepository.update({ id }, { living: true });
 }
 
-export async function setBookingPrepaymentWasReminded(id: number): Promise<void> {
-  const bookingsRepository = getRepository(PmsBookingEntity);
-  await bookingsRepository.update({ id }, { remindedPrepayment: new Date() });
+async function setBookingPrepaymentWasReminded(id: BookingId): Promise<void> {
+  const bookingsRepository = getRepository(BookingModel);
+  const foundBooking = await bookingsRepository.findOneBy({ id });
+  foundBooking.prepaymentRemindings.push(new PrepaymentRemindingsModel());
+  await bookingsRepository.save(foundBooking);
 }
 
-export async function findBookingsWhoRemindedAndExpired(): Promise<PmsBookingEntity[]> {
-  const bookingsRepository = getRepository(PmsBookingEntity);
+async function findBookingsWhoRemindedAndExpired(): Promise<BookingModel[]> {
+  const bookingsRepository = getRepository(BookingModel);
+  const date24hoursAgo = subtractFromDate({ amount: 24, unit: 'hours' }).toDate();
   return bookingsRepository.find({
     where: {
-      remindedPrepayment: lessThanDate(subtractFromDate({ amount: 24, unit: 'hours' }).toDate()),
-      status: 'BOOKING_FREE',
-      moved: false
+      prepaymentRemindings: { createdAt: lessThanDate(date24hoursAgo) },
+      prepaid: false
     },
     order: {
       startDate: 'ASC',
-      realRoomNumber: 'ASC'
+      room: { realRoomNumber: 'ASC' }
     }
   });
 }
 
-export async function findBookingsByOwner(clientId: number): Promise<PmsClientEntity[]> {
-  const bookingsRepository = getRepository(PmsBookingEntity);
+async function findBookingsByOwner(clientId: ClientId): Promise<BookingModel[]> {
+  const bookingsRepository = getRepository(BookingModel);
   return bookingsRepository.find({
     where: {
-      customerId: clientId,
-      moved: false
+      client: {
+        id: clientId
+      }
     },
     order: {
       startDate: 'ASC',
-      realRoomNumber: 'ASC'
+      room: { realRoomNumber: 'ASC' }
     }
   });
 }
+
+export {
+  findAllBookings,
+  findArrivalsAt,
+  findBookingsAddedAfter,
+  findById,
+  findBookingsNotPayedArriveAfter,
+  setBookingToConfirmed,
+  setBookingToLiving,
+  setBookingPrepaymentWasReminded,
+  findBookingsWhoRemindedAndExpired,
+  findBookingsByOwner,
+  findBookingsByIds
+};

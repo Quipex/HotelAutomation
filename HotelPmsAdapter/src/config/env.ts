@@ -5,6 +5,7 @@ import { resolveBoolean } from '~/config/helpers/env/resolveBoolean';
 dotenv.config();
 
 interface Env {
+  pmsProvider: string;
   pmsCloudId: string;
   pmsCloudLogin: string;
   pmsCloudPw: string;
@@ -16,12 +17,14 @@ interface Env {
   chromePath: string;
   maxApiRetries: number;
   msToSleep_429: number;
+  nodeEnv: string;
   db: {
     type: string;
     host: string;
     username: string;
     password: string;
     database: string;
+    databaseTest: string;
     port: number;
   },
   typeorm: {
@@ -31,11 +34,14 @@ interface Env {
   }
 }
 
-const pmsProvider = getEnv('PMS_PROVIDER');
+const isTestEnv = getEnv('NODE_ENV') === 'test';
+
+const pmsProvider = isTestEnv ? getOptionalEnv('PMS_PROVIDER') : getEnv('PMS_PROVIDER');
 const isPmsCloud = pmsProvider === 'PMS_CLOUD';
 const isEasyMs = pmsProvider === 'EASY_MS';
 
 const env: Env = {
+  pmsProvider,
   pmsCloudId: isPmsCloud ? getEnv('PMS_CLOUD_ID') : getOptionalEnv('PMS_CLOUD_ID'),
   pmsCloudLogin: isPmsCloud ? getEnv('PMS_CLOUD_LOGIN') : getOptionalEnv('PMS_CLOUD_LOGIN'),
   pmsCloudPw: isPmsCloud ? getEnv('PMS_CLOUD_PW') : getOptionalEnv('PMS_CLOUD_PW'),
@@ -43,13 +49,15 @@ const env: Env = {
   easyMsPw: isEasyMs ? getEnv('EASY_MS_PW') : getOptionalEnv('EASY_MS_PW'),
   easyMsBaseUrl: isEasyMs ? getEnv('EASY_MS_BASE_URL') : getOptionalEnv('EASY_MS_BASE_URL'),
   port: Number(getOptionalEnv('APP_PORT') ?? 3000),
-  xSecHeader: getEnv('X_SEC_HEADER'),
+  xSecHeader: isTestEnv ? getOptionalEnv('X_SEC_HEADER') : getEnv('X_SEC_HEADER'),
   chromePath: getOptionalEnv('CHROME_PATH'),
   maxApiRetries: Number(getEnv('MAX_API_RETRIES')),
   msToSleep_429: Number(getEnv('TIME_TO_SLEEP')),
+  nodeEnv: getEnv('NODE_ENV'),
   db: {
     type: getEnv('DB_TYPE'),
     database: getEnv('DB_DATABASE'),
+    databaseTest: getEnv('DB_DATABASE_TEST'),
     host: getEnv('DB_HOST'),
     username: getEnv('DB_USERNAME'),
     password: getEnv('DB_PASSWORD'),

@@ -1,7 +1,6 @@
 import { Context } from 'telegraf';
+import { BriefBooking, BriefBookingActions } from '@components';
 import { BookingsService } from '~/api/services';
-import BriefBooking from '../../message_components/booking/BriefBooking';
-import briefBookingActions from '../../message_components/booking/BriefBookingActions';
 import { parseDateAndReplyToInvalid } from './bookings_added';
 
 async function parseCommandFindBookingsNotPrePayedAndReply(ctx: Context, next) {
@@ -15,7 +14,7 @@ async function parseCommandFindBookingsNotPrePayedAndReply(ctx: Context, next) {
   notPrePayedBookings.forEach(async (booking) => {
     await ctx.replyWithHTML(BriefBooking(booking), {
       reply_to_message_id: ctx.message?.message_id,
-      reply_markup: { inline_keyboard: briefBookingActions(booking) }
+      reply_markup: { inline_keyboard: BriefBookingActions(booking) }
     });
   });
 }

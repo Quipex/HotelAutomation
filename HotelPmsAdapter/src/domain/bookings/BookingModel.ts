@@ -1,115 +1,87 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+  UpdateDateColumn
+} from 'typeorm';
+import { CarPlateModel } from '~/domain/car_plates/CarPlateModel';
+import { ClientModel } from '~/domain/clients/ClientModel';
+import { PrepaymentRemindingsModel } from '~/domain/prepayment_remindings/PrepaymentRemindingsModel';
+import { RoomModel } from '~/domain/rooms/RoomModel';
 
-export interface PmsBooking {
-  id: number; // 98314
-  endDate: number; // 1625961600
-  startDate: number; // 1625270400
-  cdsCustomerBalance: number; // 9712.8
-  cdsCustomerFirstName: string; // "Yuriy"
-  cdsCustomerId: number; // 65542
-  cdsCustomerLastName: string; // "Sah"
-  cdsTotal: number; // 9712.8
-  customerFirstName: string; // "Yuriy"
-  customerId: number; // 65542
-  customerLastName: string; // "Sah"
-  groupId: number; // 65545
-  groupTotal: number; // 9712.8
-  groupTotalPaid: number; // 0
-  moved: boolean;// false
-  roomId: number; // 34
-  roomTypeId: number; // 2
-  source: string; // "BOOKING"
-  status: string; // "BOOKING_WARRANTY"
-  total: number; // 0
-  totalPaid: number; // 0
-  type: string;// "ROOM_USE"
+type BookingId = string;
+
+@Entity({ name: 'bookings' })
+class BookingModel {
+  constructor(bookingModelObject?: BookingModel) {
+    Object.assign(this, bookingModelObject);
+  }
+
+  @PrimaryColumn('varchar', { length: 36 })
+  id: BookingId;
+
+  @ManyToOne(
+    () => ClientModel,
+    (client) => client.bookings,
+    { cascade: ['insert'], eager: true }
+  )
+  @JoinColumn({ name: 'clientId' })
+  client: ClientModel;
+
+  @ManyToOne(() => RoomModel, (room) => room.bookings, { eager: true })
+  @JoinColumn({ name: 'realRoomNumber' })
+  room: RoomModel;
+
+  @OneToMany(() => PrepaymentRemindingsModel, (prepaymentRemindings) => prepaymentRemindings.booking, { eager: true })
+  prepaymentRemindings: PrepaymentRemindingsModel[];
+
+  @OneToMany(() => CarPlateModel, (carPlates) => carPlates.booking, { eager: true })
+  carPlates: CarPlateModel[];
+
+  @CreateDateColumn({ type: 'timestamptz', update: false })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz', update: false })
+  updatedAt: Date;
+
+  @Column({ type: 'timestamptz' })
+  bookedAt: Date;
+
+  @Column({ type: 'date' })
+  startDate: Date;
+
+  @Column({ type: 'date' })
+  endDateExclusive: Date;
+
+  @Column({ type: 'bigint' })
+  totalUahCoins?: string;
+
+  @Column({ type: 'int' })
+  numberOfGuests?: number;
+
+  @Column({ type: 'varchar', length: 15 })
+  groupId?: string;
+
+  @Column({ type: 'varchar', length: 15 })
+  source?: string;
+
+  @Column({ type: 'boolean' })
+  living: boolean;
+
+  @Column({ type: 'boolean' })
+  cancelled: boolean;
+
+  @Column({ type: 'boolean' })
+  prepaid: boolean;
+
+  @Column({ type: 'text' })
+  notes?: string;
 }
 
-@Entity({ name: 'pms_bookings_raw' })
-export class PmsBookingEntity {
-  @PrimaryColumn('int')
-  id!: number; // 98314
+export { BookingModel };
 
-  @Column('date')
-  endDate?: Date; // 1625961600
-
-  @Column('date')
-  startDate?: Date; // 1625270400
-
-  @Column()
-  cdsCustomerBalance?: number; // 9712.8
-
-  @Column()
-  cdsCustomerFirstName?: string; // "Yuriy"
-
-  @Column()
-  cdsCustomerId?: number; // 65542
-
-  @Column()
-  cdsCustomerLastName?: string; // "Sah"
-
-  @Column()
-  cdsTotal?: number; // 9712.8
-
-  @Column()
-  customerFirstName?: string; // "Yuriy"
-
-  @Column()
-  customerId?: number; // 65542
-
-  @Column()
-  customerLastName?: string; // "Sah"
-
-  @Column()
-  groupId?: number; // 65545
-
-  @Column()
-  groupTotal?: number; // 9712.8
-
-  @Column()
-  groupTotalPaid?: number; // 0
-
-  @Column()
-  moved?: boolean; // false
-
-  @Column()
-  roomId?: number; // 34
-
-  @Column()
-  roomTypeId?: number; // 2
-
-  @Column()
-  source?: string; // "BOOKING"
-
-  @Column()
-  status?: string; // "BOOKING_WARRANTY"
-
-  @Column()
-  total?: number; // 0
-
-  @Column()
-  totalPaid?: number; // 0
-
-  @Column()
-  type?: string;// "ROOM_USE"
-
-  @Column()
-  realRoomNumber?: number;
-
-  @Column('timestamp')
-  addedDate?: Date;
-
-  @Column()
-  realRoomType?: string;
-
-  @Column()
-  remindedPrepayment?: Date;
-}
-
-export function mapPmsBookingsToEntities(pmsBooking: PmsBooking): PmsBookingEntity {
-  return {
-    ...pmsBooking,
-    startDate: new Date(Number(pmsBooking.startDate) * 1000),
-    endDate: new Date(Number(pmsBooking.endDate) * 1000)
-  };
-}
+export type { BookingId };

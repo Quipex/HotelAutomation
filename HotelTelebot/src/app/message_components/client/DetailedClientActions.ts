@@ -1,12 +1,12 @@
+import { textClientBookings, textClientRefresh } from '@callbacks/callback_actions';
 import { InlineKeyboardButton } from 'telegraf/typings/markup';
-import PmsClientEntity from '../../../api/entities/PmsClientEntity';
-import { textClientBookings, textClientRefresh } from '../../callbacks/callback_actions';
+import { ClientDto } from '~/common/types';
 
-function detailedClientActions({ id }: PmsClientEntity) {
+function detailedClientActions({ id }: ClientDto) {
   const actions: InlineKeyboardButton[][] = [];
 
-  actions.push([{ text: 'Бронирования 🚪', callback_data: textClientBookings(id) }]);
-  actions.push([{ text: 'Обновить ♻', callback_data: textClientRefresh(id) }]);
+  actions.push([{ text: 'Бронирования 🚪', callback_data: textClientBookings(id), hide: false }]);
+  actions.push([{ text: 'Обновить ♻', callback_data: textClientRefresh(id), hide: true }]);
 
   return actions;
 }

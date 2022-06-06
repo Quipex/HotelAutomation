@@ -31,3 +31,21 @@
 ## 🔨 Build PmsAdapter
 
 `docker build -t quipex/pms-adapter -f .docker/images/PmsAdapter.Dockerfile .`
+
+## 🏃‍♂️ Run PmsAdapter
+
+```
+docker run -d --name postgres-hotel-automation --env-file .docker/.env/hotel-db.env \
+  -p 5450:5432 \
+  -v hoteldb-data:/var/lib/postgresql/data \
+  -v hoteldb-conf:/etc/postgresql \
+  -v hoteldb-logs:/var/log/postgresql \
+  postgres-hotel-automation
+```
+
+- `-p` for port config
+- `-v` for volume to persist data between container restarts
+
+## 🔨 Build Postgres DB
+
+`docker build -t postgres-hotel-automation -f .docker/images/Postgres.Dockerfile .docker/images`

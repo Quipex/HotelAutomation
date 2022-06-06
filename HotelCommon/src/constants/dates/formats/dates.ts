@@ -1,0 +1,4 @@
+const DATE_GENERAL = 'YYYY-MM-DD';
+const DATE_SHORT = 'DD.MM';
+
+export { DATE_GENERAL, DATE_SHORT };

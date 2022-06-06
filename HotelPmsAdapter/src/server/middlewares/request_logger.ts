@@ -2,15 +2,20 @@ import { Middleware } from 'koa';
 import { log } from '~/config/logger';
 
 const logRequest: Middleware = async (ctx, next): Promise<void> => {
-  await next();
-  const rt = ctx.response.get('X-Response-Time');
-  log.info('Request', {
+  log.debug('Request', {
     url: ctx.url,
     path: ctx.path,
     method: ctx.method,
     headers: { ...ctx.headers, x_security_header: 'hidden' },
-    ip: ctx.ip,
-    responseTime: rt
+    ip: ctx.ip
+  });
+  const start = Date.now();
+  await next();
+  const ms = Date.now() - start;
+  log.debug('Response', {
+    ...(ctx.response.body && { body: ctx.response.body }),
+    status: ctx.response.status,
+    responseTime: `${ms}ms`
   });
 };
 

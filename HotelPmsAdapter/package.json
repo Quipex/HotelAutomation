@@ -7,14 +7,15 @@
     "yarn": "1.22.x"
   },
   "scripts": {
-    "start": "nodemon -r ts-node -r tsconfig-paths/register --files ./src/index.ts",
-    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
-    "migration:run": "yarn run typeorm migration:run -d ./src/config/datasource.ts",
-    "migration:generate": "yarn run typeorm migration:create",
-    "lint:js": "npx eslint --ext .ts,.tsx,.js,.jsx --fix",
+    "start": "nodemon -r ts-node -r tsconfig-paths/register --files ./src/index.ts | bunyan",
+    "typeorm": "ts-node --transpile-only -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:run": "yarn run typeorm migration:run -d ./src/config/datasource.ts | bunyan",
+    "migration:revert": "yarn run typeorm migration:revert -d ./src/config/datasource.ts | bunyan",
+    "migration:generate": "yarn run typeorm migration:create | bunyan",
+    "lint:js": "npx eslint \"src/**/*.ts\" \"tests/**/*.ts\" --fix",
     "lint": "yarn run lint:js",
     "build": "tsc && resolve-tspaths -p tsconfig.json",
-    "test": "cross-env NODE_ENV=test jest --config jest.config.js --testTimeout=25000 --runInBand"
+    "test": "cross-env NODE_ENV=test jest --config jest.config.js --testTimeout=30000 --runInBand --verbose"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.8",
@@ -37,7 +38,7 @@
     "bunyan": "^1.8.15",
     "cyrillic-to-translit-js": "^3.2.1",
     "dotenv": "^16.0.1",
-    "hotel-automation-common": "file:../HotelCommon/dist",
+    "hotel-automation-common": "link:../HotelCommon/dist",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",

@@ -28,5 +28,7 @@ COPY --from=app_build_ts /HotelAdapter/dist ./src
 RUN mkdir logs
 RUN mkdir logs/app
 RUN mkdir logs/users
+RUN mkdir logs/wip
+RUN mkdir logs/db
 
 CMD ["node", "src/index.js"]

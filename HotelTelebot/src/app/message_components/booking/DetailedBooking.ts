@@ -1,14 +1,19 @@
-import moment from 'moment';
-import PmsBookingEntity from '../../../api/entities/PmsBookingEntity';
+import { DATETIME_MOMENTJS } from '~/common/constants';
+import { BookingDto } from '~/common/types';
+import { formatDate } from '~/common/utils/dates';
 import BriefBooking from './BriefBooking';
 
 function DetailedBooking(
-  entity: PmsBookingEntity
+  entity: BookingDto
 ): string {
-  return (
-    BriefBooking(entity)
-    + (entity.remindedPrepayment ? `\nНапомнил за предоплату ${moment(entity.remindedPrepayment).format('lll')}` : '')
-  );
+  const { prepaymentRemindings } = entity;
+  const remindings = prepaymentRemindings
+    .map((reminding) => formatDate(reminding.createdAt, DATETIME_MOMENTJS))
+    .join('\n');
+  const remindingText = prepaymentRemindings.length > 0
+    ? `\nНапомнил за предоплату:\n${remindings}`
+    : '';
+  return (BriefBooking(entity) + remindingText);
 }
 
 export default DetailedBooking;

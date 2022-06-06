@@ -11,7 +11,7 @@ const {
   arrive$get,
   added$get,
   byId$get,
-  notPayed$get,
+  notPaid$get,
   owner,
   sync$put,
   create$put,
@@ -23,12 +23,12 @@ const {
 
 const getPathOf = (obj) => resolveV1(obj).path;
 
-bookings.post(getPathOf(index$post), async () => {
-  return BookingPmsService.fetchPmsAndGetAllBookings();
+bookings.post(getPathOf(index$post), async (ctx) => {
+  ctx.body = await BookingPmsService.fetchPmsAndGetAllActiveBookings();
 });
 
-bookings.get(getPathOf(cached$get), async () => {
-  return BookingPmsService.getAllBookings();
+bookings.get(getPathOf(cached$get), async (ctx) => {
+  ctx.body = await BookingPmsService.getAllBookings();
 });
 
 bookings.get(getPathOf(arrive$get), async (ctx) => {
@@ -59,8 +59,8 @@ bookings.get(getPathOf(byId$get), async (ctx) => {
   }
 });
 
-bookings.get(getPathOf(notPayed$get), async (ctx) => {
-  const { arrive_after: unixDate } = ctx.query as unknown as ReturnType<typeof notPayed$get.getQueryParams>;
+bookings.get(getPathOf(notPaid$get), async (ctx) => {
+  const { arrive_after: unixDate } = ctx.query as unknown as ReturnType<typeof notPaid$get.getQueryParams>;
   if (!unixDate) {
     ctx.status = 400;
     return;
@@ -69,7 +69,7 @@ bookings.get(getPathOf(notPayed$get), async (ctx) => {
 });
 
 bookings.put(getPathOf(sync$put), async (ctx) => {
-  await BookingPmsService.fetchPmsAndGetAllBookings();
+  await BookingPmsService.fetchPmsAndGetAllActiveBookings();
   ctx.status = 200;
 });
 

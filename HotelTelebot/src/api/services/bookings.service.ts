@@ -1,34 +1,35 @@
-import PmsBookingEntity from '@entities/PmsBookingEntity';
-import { BookingCreationPayload } from '~/common/types/routes.v1.types';
 import api from '~/api/api';
 import { routesV1 } from '~/common/maps';
+import { BookingDto } from '~/common/types';
+import { BookingCreationPayload } from '~/common/types/routes.v1.types';
+import { log } from '~/config/logger';
 import { rv1 } from './helpers';
 
-async function fetchBookingById(bookingId: string): Promise<PmsBookingEntity> {
+async function fetchBookingById(bookingId: string): Promise<BookingDto> {
   const { path: fullPath, method, compactPath: { withPathVariable } } = rv1(routesV1.bookings.byId$get);
-  const path = withPathVariable(bookingId, fullPath);
-  return await api.call(path, { method }) as PmsBookingEntity;
+  const path = withPathVariable(fullPath, bookingId);
+  return await api.call(path, { method }) as BookingDto;
 }
 
-async function fetchBookingsAddedAfter(unixDate: number): Promise<PmsBookingEntity[]> {
+async function fetchBookingsAddedAfter(unixDate: number): Promise<BookingDto[]> {
   const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.added$get);
   const params = getQueryParams({ after: unixDate });
   return await api.call(path, { method, params }) as [];
 }
 
-async function fetchBookingsArriveAt(unixDate: number): Promise<PmsBookingEntity[]> {
+async function fetchBookingsArriveAt(unixDate: number): Promise<BookingDto[]> {
   const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.arrive$get);
   const params = getQueryParams({ date: unixDate });
   return await api.call(path, { method, params }) as [];
 }
 
-async function fetchBookingsExpiredAndReminded(): Promise<PmsBookingEntity[]> {
+async function fetchBookingsExpiredAndReminded(): Promise<BookingDto[]> {
   const { path, method } = rv1(routesV1.bookings.expiredRemind$get);
   return await api.call(path, { method }) as [];
 }
 
-async function fetchNotPayedBookingsArriveAfter(unixDate: number): Promise<PmsBookingEntity[]> {
-  const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.notPayed$get);
+async function fetchNotPayedBookingsArriveAfter(unixDate: number): Promise<BookingDto[]> {
+  const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.notPaid$get);
   const params = getQueryParams({ arrive_after: unixDate });
   return await api.call(path, { method, params }) as [];
 }
@@ -62,10 +63,25 @@ async function syncBookings() {
   await api.call(path, { method });
 }
 
-async function fetchClientBookings(clientId: string): Promise<PmsBookingEntity[]> {
+async function fetchClientBookings(clientId: string): Promise<BookingDto[]> {
   const { path: fullPath, method, compactPath: { withPathVariable } } = rv1(routesV1.bookings.owner.byId$get);
   const path = withPathVariable(clientId, fullPath);
   return await api.call(path, { method }) as [];
+}
+
+async function moveBookingInBatch(...any: any): Promise<any> {
+  log.error('Not implemented', { any });
+  throw new Error('Not implemented');
+}
+
+async function moveBooking(...any: any): Promise<any> {
+  log.error('Not implemented', { any });
+  throw new Error('Not implemented');
+}
+
+async function fetchBookingsArriveAtAndNotLiving(...any: any): Promise<any> {
+  log.error('Not implemented', { any });
+  throw new Error('Not implemented');
 }
 
 export default {
@@ -79,5 +95,8 @@ export default {
   createBooking,
   putRemindedPrepayment,
   syncBookings,
-  fetchClientBookings
+  fetchClientBookings,
+  moveBookingInBatch,
+  moveBooking,
+  fetchBookingsArriveAtAndNotLiving
 };

@@ -7,7 +7,7 @@ import getProjectRoot from './helpers/getProjectRoot.mjs';
 
 const countUnsynchedEnvsNumber = (envPath) => {
   let unsyncedEnvs = 0;
-  console.log(`- Checking envs at '${envPath}'`);
+  console.log(`\n- Checking envs at '${envPath}'`);
   const { exampleEnvPath, desiredEnvPath } = getExampleAndDesiredEnvPaths(envPath, getProjectRoot());
   const desiredEnvMaps = readEnv(desiredEnvPath);
   const exampleEnvMaps = readEnv(exampleEnvPath);

@@ -1,14 +1,13 @@
+import { DetailedBooking, DetailedBookingActions } from '@components';
 import { Context } from 'telegraf';
-import { ExtraSendMessage } from 'telegraf/typings/telegram-types';
+import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 import { BookingsService } from '~/api/services';
-import DetailedBooking from '../../message_components/booking/DetailedBooking';
-import detailedBookingActions from '../../message_components/booking/DetailedBookingActions';
 
-export async function fetchBookingByIdAndReply(bookingId: string, ctx: Context, extra?: ExtraSendMessage) {
+export async function fetchBookingByIdAndReply(bookingId: string, ctx: Context, extra?: ExtraReplyMessage) {
   const foundBooking = await BookingsService.fetchBookingById(bookingId);
   if (foundBooking) {
     return ctx.replyWithHTML(DetailedBooking(foundBooking), {
-      reply_markup: { inline_keyboard: detailedBookingActions(foundBooking) },
+      reply_markup: { inline_keyboard: DetailedBookingActions(foundBooking) },
       ...extra
     });
   }

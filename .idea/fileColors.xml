@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SharedFileColors">
+    <fileColor scope="server:common" color="625966" />
     <fileColor scope="migrations" color="656262" />
     <fileColor scope="common" color="42524f" />
     <fileColor scope="fe:telegram" color="Blue" />

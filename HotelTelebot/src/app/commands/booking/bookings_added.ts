@@ -1,26 +1,20 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { BriefBooking, BriefBookingActions } from '@components';
 import { Context } from 'telegraf';
 import { BookingsService } from '~/api/services';
-import { parseDateAsUnix } from '../../../utils/dates.helper';
-import BriefBooking from '../../message_components/booking/BriefBooking';
-import briefBookingActions from '../../message_components/booking/BriefBookingActions';
+import { DATETIME_DAYOFWEEK_MOMENTJS } from '~/common/constants';
+import { formatDate, parseDateFromLiterals } from '~/common/utils/dates';
 
 /**
- * As unix
+ * As unix millis
  */
 export async function parseDateAndReplyToInvalid(ctx: Context, text?: string): Promise<number | undefined> {
   const messageText = text ?? ctx.message!.text;
-  const commandTokens = messageText.split(' ');
-  let date: number | undefined;
-  if (commandTokens.length < 2) {
-    date = parseDateAsUnix('today');
-  } else {
-    date = parseDateAsUnix(commandTokens[1]);
-  }
+  const [, argument] = messageText.split(' ');
+  const date = parseDateFromLiterals(argument ?? 'today');
   if (date === undefined) {
-    await ctx.reply(`❌ Unrecognized date: ${commandTokens[1]}`);
+    await ctx.reply(`❌ Unrecognized date: ${argument}`);
   }
-  return date;
+  return date.getTime();
 }
 
 interface FindBookingsOptions {
@@ -33,15 +27,18 @@ async function parseCommandFindBookingsAddedAfterAndReply(ctx: Context, next, op
   if (!date) {
     return next();
   }
+
   const todayArrivals = await BookingsService.fetchBookingsAddedAfter(date);
-  // eslint-disable-next-line no-restricted-syntax
-  for (const booking of todayArrivals) {
-    // eslint-disable-next-line no-await-in-loop
+  if (todayArrivals.length === 0) {
+    await ctx.replyWithHTML(`No bookings that were added after ${formatDate(date, DATETIME_DAYOFWEEK_MOMENTJS)}`);
+    return next();
+  }
+  todayArrivals.forEach(async (booking) => {
     await ctx.replyWithHTML(BriefBooking(booking), {
       reply_to_message_id: (options?.messageReplyId ?? ctx.message?.message_id),
-      reply_markup: { inline_keyboard: briefBookingActions(booking) }
+      reply_markup: { inline_keyboard: BriefBookingActions(booking) }
     });
-  }
+  });
   return next();
 }
 
