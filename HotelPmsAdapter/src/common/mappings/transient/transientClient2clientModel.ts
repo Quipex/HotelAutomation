@@ -8,9 +8,9 @@ const transientClient2clientModel = (transientClient: ClientTransientModel): Cli
 
   return new ClientModel({
     ...transientClient,
-    bookings: null,
-    createdAt: null,
-    updatedAt: null,
+    bookings: undefined,
+    createdAt: undefined,
+    updatedAt: undefined,
     fullNameEn,
     fullNameRu,
     fullNameUa,

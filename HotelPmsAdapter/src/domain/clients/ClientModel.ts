@@ -16,10 +16,10 @@ class ClientModel {
   @JoinColumn({ referencedColumnName: 'clientId' })
   bookings: Promise<BookingModel[]>;
 
-  @CreateDateColumn({ type: 'timestamptz', update: false })
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz', update: false })
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
   @Column({ type: 'varchar', length: 50, nullable: false })

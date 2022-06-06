@@ -5,15 +5,13 @@ import appDataSource from '~/config/dataSource';
 import env from '~/config/env';
 import { log } from '~/config/logger';
 import appRouter from '~/domain/AppController';
-import { checkHeaderValidAndReject, handleErrors, logRequestAndResponseTime, trackResponseTime } from './middlewares';
+import { checkHeaderValidAndReject, logRequestAndResponseTime } from './middlewares';
 
 const app = new Application();
 
 app.use(bodyParser());
 app.use(checkHeaderValidAndReject);
-app.use(trackResponseTime);
 app.use(logRequestAndResponseTime);
-app.on('error', handleErrors);
 app.use(appRouter.routes());
 app.on('close', async () => {
   try {

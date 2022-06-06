@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { addToDate, subtractFromDate } from '~/common/utils/dates';
 
 /**
  * @return date from given string
@@ -11,10 +11,10 @@ function parseDateFromLiterals(dateLiterals: string): Date | null {
     return now;
   }
   if (dateTextLower === 'yesterday' || dateTextLower === 'вчера') {
-    return moment(now).subtract(1, 'day').toDate();
+    return subtractFromDate({ date: now, amount: 1, unit: 'day' }).toDate();
   }
   if (dateTextLower === 'tomorrow' || dateTextLower === 'завтра') {
-    return moment(now).add(1, 'day').toDate();
+    return addToDate({ date: now, amount: 1, unit: 'day' }).toDate();
   }
   // 02.03 or 17/07 or 4.3 etc. <br />
   // Simplified date format, where first number is date, second is month

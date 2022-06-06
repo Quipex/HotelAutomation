@@ -9,14 +9,12 @@ const fetchBookingsByDates: CloudProvider['fetchBookingsByDates'] = async (start
   const startTime = dateToUnixMilliseconds(startDate);
   const endTime = dateToUnixMilliseconds(endDate);
   const easymsOrders = (await api.get('api/orders', {
-    requestConfig: {
-      params: {
-        startTime,
-        endTime,
-        organizationId: env.easyMsOrgId
-      }
+    params: {
+      startTime,
+      endTime,
+      organizationId: env.easyMsOrgId
     }
-  })) as OrderEasyms[];
+  })).data as OrderEasyms[];
   return easymsOrders.flatMap(mapEasymsBooking2BookingModel);
 };
 

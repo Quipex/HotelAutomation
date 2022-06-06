@@ -13,6 +13,7 @@ interface Env {
   easyMsPw: string;
   easyMsBaseUrl: string;
   easyMsOrgId: string;
+  easyMsRateId: string;
   port: number;
   xSecHeader: string;
   chromePath: string;
@@ -50,6 +51,7 @@ const env: Env = {
   easyMsPw: isEasyMs ? getEnv('EASY_MS_PW') : getOptionalEnv('EASY_MS_PW'),
   easyMsBaseUrl: isEasyMs ? getEnv('EASY_MS_BASE_URL') : getOptionalEnv('EASY_MS_BASE_URL'),
   easyMsOrgId: isEasyMs ? getEnv('EASY_MS_ORG_ID') : getOptionalEnv('EASY_MS_ORG_ID'),
+  easyMsRateId: isEasyMs ? getEnv('EASY_MS_RATE_ID') : getOptionalEnv('EASY_MS_RATE_ID'),
   port: Number(getOptionalEnv('APP_PORT') ?? 3000),
   xSecHeader: isTestEnv ? getOptionalEnv('X_SEC_HEADER') : getEnv('X_SEC_HEADER'),
   chromePath: getOptionalEnv('CHROME_PATH'),

@@ -24,10 +24,10 @@ const generateStringChunk = (lengthOfGenerated, generationFn) => {
   return stringChunk;
 };
 
-const generateEasyMsId = () => {
+const generateEasymsId = () => {
   const suffix = generateStringChunk(GENERATED_CHARS, getRandChar);
   const prefix = generateStringChunk(GENERATED_NUMS, () => getRandomInt(0, 10));
   return suffix + env.easyMsOrgId + prefix;
 };
 
-export { generateEasyMsId };
+export { generateEasymsId };

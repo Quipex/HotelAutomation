@@ -16,7 +16,7 @@ function BriefClientMessage(
     + `📞 ${phone}\n${
       childrenMessage ? `${childrenMessage}\n----\n` : '\n'
     }<i>Обновлено ${formatDate(createdAt, DATETIME_DAYOFWEEK_MOMENTJS)}\n</i>`
-    + `<i>/cl_id ${id}</i>`
+    + `<code>/cl_id ${id}</code>`
   );
 }
 

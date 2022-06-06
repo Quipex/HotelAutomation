@@ -4,18 +4,11 @@ import { BookingDto, CreateBookingPayload } from '~/common/types';
 import { BookingTransientModel } from '~/common/types/domain/transient_models';
 import { unixSecondsToDate } from '~/common/utils/dates';
 import { BookingId, BookingModel } from '~/domain/bookings/BookingModel';
-import { ClientModel } from '~/domain/clients/ClientModel';
 import { getRepository } from '~/domain/helpers/orm';
 import { RoomModel } from '~/domain/rooms/RoomModel';
 import { getCloudProvider } from '~/integrations/getCloudProvider';
 import * as BookingRepository from './BookingRepository';
 import { extractClientModelsFromTransientBookings } from './helpers/service';
-
-function linkBookingsToClients(clientModels: ClientModel[], bookingsToSave: BookingModel[]) {
-  clientModels.forEach((cl) => {
-    cl.bookings = Promise.resolve(bookingsToSave.filter((b) => b.client.id === cl.id));
-  });
-}
 
 async function saveTransientBookingsAndIncludedClients(
   transientBookings: BookingTransientModel[]
@@ -23,7 +16,6 @@ async function saveTransientBookingsAndIncludedClients(
   const savedRooms = await getRepository(RoomModel).find();
   const clientModels = extractClientModelsFromTransientBookings(transientBookings);
   const bookingsToSave = transientBookings2bookingModels({ transientBookings, clientModels, savedRooms });
-  linkBookingsToClients(clientModels, bookingsToSave);
   const savedBookings = await getRepository(BookingModel).save(bookingsToSave);
   return (await BookingRepository.findBookingsByIds(savedBookings.map((b) => b.id))).map(mapBookingModel2dto);
 }
@@ -94,7 +86,10 @@ async function getBookingsByOwner(clientId: string): Promise<BookingDto[]> {
     .map(mapBookingModel2dto);
 }
 
-async function createBooking(payload: CreateBookingPayload): Promise<BookingId> {
+/**
+ * @throws {BookingCreationConflictError} on conflicting bookings
+ */
+async function createBookingAndSyncBookings(payload: CreateBookingPayload): Promise<BookingId> {
   const resp = await getCloudProvider().createBooking(payload);
   // todo: replace with the response from api call persisted to db
   await fetchPmsAndGetAllActiveBookings();
@@ -113,7 +108,7 @@ export default {
   remindedOfPrepayment,
   expiredRemindedPrepayment,
   getBookingsByOwner,
-  createBooking
+  createBookingAndSyncBookings
 };
 
 export type {
