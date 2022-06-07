@@ -1,4 +1,4 @@
-# Hotel automation project
+# Hotel automation project (WIP)
 
 [👉 Link to the board 👈](https://github.com/Quipex/HotelAutomation/projects/1)
 
