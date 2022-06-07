@@ -1,5 +1,7 @@
 # Hotel automation project
 
+[Link to the board](https://github.com/Quipex/HotelAutomation/projects/1)
+
 ## Local setup
 
 Run `yarn run setupdev` at the root of the project. This will set up the dev environment and instruct you what to do
