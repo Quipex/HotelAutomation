@@ -1,6 +1,6 @@
 # Hotel automation project
 
-[Link to the board 👈](https://github.com/Quipex/HotelAutomation/projects/1)
+[👉 Link to the board 👈](https://github.com/Quipex/HotelAutomation/projects/1)
 
 ## Local setup
 
