@@ -15,9 +15,4 @@ async function fetchClientsByName(clientName: string): Promise<ClientDto[]> {
   return await api.call(path, { method, data }) as ClientDto[];
 }
 
-async function syncClients() {
-  const { path, method } = rv1(routesV1.clients.sync$put);
-  await api.put(path, { method });
-}
-
-export default { fetchClientById, fetchClientsByName, syncClients };
+export default { fetchClientById, fetchClientsByName };

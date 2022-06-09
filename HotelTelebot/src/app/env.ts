@@ -16,6 +16,7 @@ export function getOptionalEnv(key: string): string | undefined {
 }
 
 interface Env {
+  nodeEnv: string;
   pmsAdapterUrl: string;
   xSecHeader: string;
   botToken: string;
@@ -23,6 +24,7 @@ interface Env {
 }
 
 const env: Env = {
+  nodeEnv: getEnv('NODE_ENV'),
   pmsAdapterUrl: getEnv('PMS_ADAPTER_URL'),
   xSecHeader: getEnv('X_SEC_HEADER'),
   botToken: getEnv('BOT_TOKEN'),

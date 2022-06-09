@@ -5,12 +5,7 @@ import ClientsPmsService from './ClientService';
 
 const clients = new Router();
 
-const { byId$get, search$post, sync$put } = routesV1.clients;
-
-clients.put(getPathOf(sync$put), async (ctx) => {
-  await ClientsPmsService.getClients();
-  ctx.status = 200;
-});
+const { byId$get, search$post } = routesV1.clients;
 
 clients.post(getPathOf(search$post), async (ctx) => {
   const { name: requestName } = ctx.request.body as ReturnType<typeof search$post.getData>;

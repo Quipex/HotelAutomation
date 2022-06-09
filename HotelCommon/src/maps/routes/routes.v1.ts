@@ -111,12 +111,6 @@ const routesV1 = {
   },
   clients: {
     /**
-     * Fetch all the clients and save into DB
-     */
-    sync$put: {
-      relativePath: 'sync'
-    },
-    /**
      * Search clients
      */
     search$post: {

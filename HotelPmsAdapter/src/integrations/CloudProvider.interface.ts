@@ -1,5 +1,5 @@
 import { CreateBookingPayload } from '~/common/types';
-import { BookingTransientModel, ClientTransientModel } from '~/common/types/domain/transient_models';
+import { BookingTransientModel } from '~/common/types/domain/transient_models';
 
 type CloudProvider = {
   /**
@@ -7,7 +7,6 @@ type CloudProvider = {
    */
   createBooking: (payload: CreateBookingPayload) => Promise<{ id: string }>;
   fetchBookingsByDates: (startDate: Date, endDate: Date) => Promise<BookingTransientModel[]>;
-  fetchClientsByName: (name: string) => Promise<ClientTransientModel[]>;
   markBookingAsCheckedIn: (bookingId: string) => Promise<boolean>;
   markBookingAsPrepaid: (bookingId: string) => Promise<boolean>;
 };

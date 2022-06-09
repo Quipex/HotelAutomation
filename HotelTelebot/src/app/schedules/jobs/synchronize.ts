@@ -1,10 +1,9 @@
-import { BookingsService, ClientsService } from '~/api/services';
+import { BookingsService } from '~/api/services';
 import { createSchedule } from '../schedule.helper';
 
 // every 10 minutes
-createSchedule('0 0/10 * * * *', synchronizeBookingsAndClients);
+createSchedule('0 0/10 * * * *', synchronizeBookings);
 
-async function synchronizeBookingsAndClients() {
+async function synchronizeBookings() {
   await BookingsService.syncBookings();
-  await ClientsService.syncClients();
 }
