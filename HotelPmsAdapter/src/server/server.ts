@@ -24,17 +24,17 @@ app.on('close', async () => {
 
 appDataSource.initialize().then(async (connection) => {
   const connectionOpts = connection.options;
-  log.info('A connection to database is created', {
+  log.info('✅ A connection to database is created', {
     vendor: connectionOpts.type,
     database: connectionOpts.database,
     migrations: connectionOpts.migrations
   });
 
   app.listen(env.port, () => {
-    log.info(`⚡️[server]: Server is running on port ${env.port}. Environment: ${env.nodeEnv}`);
+    log.info(`⚡️ Server is running on port ${env.port}. Environment: ${env.nodeEnv}`);
   });
 }).catch((err) => {
-  log.error('Error while creating db connection', err);
+  log.error('☠ Error while creating db connection ☠', err);
   process.exit(ErrorCode.DATABASE);
 });
 

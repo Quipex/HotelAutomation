@@ -13,6 +13,7 @@ import parseCommandFindClientAndReply from '@commands/client/find_client';
 import synchronizeBookingsAndClientsAndReply from '@commands/synchronize_bookings_and_clients';
 import { Telegraf } from 'telegraf';
 import { authorizeRequest, handleErrors, validateMessage } from '~/app/middlewares';
+import { ErrorCode } from '~/common/constants';
 import { log } from '~/config/logger';
 import handleCallbackQueries from './callbacks';
 import env from './env';
@@ -40,11 +41,11 @@ bot.command('mv_batch', parseCommandMoveBookingInBatchAndReply);
 
 bot.launch()
   .then(() => {
-    log.info('⚡ Launched bot');
+    log.info(`⚡️ Launched the bot. Environment: ${env.nodeEnv}`);
   })
   .catch((err: Error) => {
-    log.error('Error at launch', err);
-    process.exit(1);
+    log.error('☠ Error at launch ☠', err);
+    process.exit(ErrorCode.DATABASE);
   });
 
 export default bot;
