@@ -17,7 +17,7 @@ After initial setup, run `yarn run start:server` to start the server and `yarn r
 
 > 💡 All the .env paths are specified at [scripts/constants/envsToSetup.mjs](scripts/constants/envsToSetup.mjs)
 
-- `yarn run setupdev` - triggers all the scripts to set up a project: `setupenv`, `install:all`, `husky install`
+- `yarn run setupdev` - triggers all the scripts to set up a project: `setupenv`, `createdirs`, `install:all`, `husky install`
 - `yarn run checkenv` - compares .env.example files and folders with their .env respective clones. Outputs if there are
   any differences in the set of keys. Useful to test whether the developer has added a new key to .env or .env.example
   that is omitted at its respectful copy.
