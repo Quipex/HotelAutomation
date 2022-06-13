@@ -1515,10 +1515,10 @@ yaml@^2.1.1:
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.1.1.tgz#1e06fb4ca46e60d9da07e4f786ea370ed3c3cfec"
   integrity sha512-o96x3OPo8GjWeSLF+wOAbrPfhFOGY0W00GNaxCDv+9hkcDJEnev1yh8S7pgHF0ik6zc8sQLuL8hjHjJULZp8bw==
 
-zx@^6.2.3:
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/zx/-/zx-6.2.3.tgz#3f8fdc392f4fa05eb94c5d6ea0a93a2520396154"
-  integrity sha512-KROw4oYCPBXDQn5N1XAaf9UmM5g6UBTjSOGv1JDvU+T0bxcKDlRR4KzLykyjnfRqy4VPX4wRYBO3A7TenDczsA==
+zx@^6.2.4:
+  version "6.2.4"
+  resolved "https://registry.yarnpkg.com/zx/-/zx-6.2.4.tgz#5e2fab4c87eff67e300c7139db8a0cd3708346ab"
+  integrity sha512-wBDObcY5tKDOIOuGrg3XwrhCa6V6eeZLQDVbbpgN9pdhiyOJA/So9R9i5vKN7cGGWkcKKHy29i8kJtx02j+kSg==
   dependencies:
     "@types/fs-extra" "^9.0.13"
     "@types/minimist" "^1.2.2"
