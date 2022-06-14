@@ -1,4 +1,4 @@
-import { BriefBooking, BriefBookingActions } from '@components';
+import { ColorfulBooking, BriefBookingActions } from '@components';
 import { Context } from 'telegraf';
 import { BookingsService } from '~/api/services';
 import bot from '~/app/bot';
@@ -17,7 +17,7 @@ async function parseCommandFindBookingsArrivedOnAndReply(ctx: Context) {
     await ctx.replyWithHTML(`No bookings that arrive after ${formatDate(date, DATETIME_DAYOFWEEK_MOMENTJS)}`);
   }
   todayArrivals.forEach(async (booking) => {
-    await ctx.replyWithHTML(BriefBooking(booking), {
+    await ctx.replyWithHTML(ColorfulBooking(booking), {
       reply_to_message_id: ctx.message?.message_id,
       reply_markup: { inline_keyboard: BriefBookingActions(booking) }
     });
@@ -36,7 +36,7 @@ async function parseCommandFindBookingsArrivedOnNotLivingAndSend(
 
   const arrivals = await BookingsService.fetchBookingsArriveAtAndNotLiving(date);
   arrivals.forEach(async (booking) => {
-    await bot.telegram.sendMessage(chatId, BriefBooking(booking), {
+    await bot.telegram.sendMessage(chatId, ColorfulBooking(booking), {
       reply_to_message_id: replyMessageId,
       reply_markup: { inline_keyboard: BriefBookingActions(booking) },
       parse_mode: 'HTML'

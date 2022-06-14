@@ -6,7 +6,9 @@ const dirsToCreate = [
   'HotelPmsAdapter/logs/users',
   'HotelPmsAdapter/logs/wip',
   'HotelTelebot/logs/app',
-  'HotelTelebot/logs/users'
+  'HotelTelebot/logs/users',
+  'HotelTelebot/logs/background',
+  'HotelTelebot/logs/tests'
 ];
 
 const root = getProjectRoot();

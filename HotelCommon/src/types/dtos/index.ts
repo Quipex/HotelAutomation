@@ -5,3 +5,4 @@ export * from './BookingDto';
 export * from './CarPlateDto';
 export * from './PrepaymentRemindingsDto';
 export * from './BookingNotificationDto';
+export * from './BookingNotificationChangelogLineDto';

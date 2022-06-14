@@ -1,16 +1,21 @@
-type FromStatusFn = (args: { living: boolean, prepaid: boolean, cancelled: boolean }) => string;
+import { FormatOptions } from '~/common/types';
 
-const getStatusText: FromStatusFn = ({ living, prepaid, cancelled }) => {
+type FromStatusFn = (args: {
+  living: boolean, prepaid: boolean, cancelled: boolean
+}, options?: FormatOptions) => string;
+
+const getStatusText: FromStatusFn = ({ living, prepaid, cancelled }, options) => {
+  const { emojified } = options ?? {};
   if (cancelled) {
-    return '❌ Отмена';
+    return `${emojified ? '❌ ' : ''}Отмена${emojified ? ' ❌' : ''}`;
   }
   if (living) {
-    return '🟩 Проживает';
+    return `${emojified ? '🟩 ' : ''}Проживает${emojified ? ' 🟩' : ''}`;
   }
   if (prepaid) {
-    return '🟨 Предоплата';
+    return `${emojified ? '🟨 ' : ''}Предоплата${emojified ? ' 🟨' : ''}`;
   }
-  return '🟥 Без предоплаты';
+  return `${emojified ? '🟥 ' : ''}Без предоплаты${emojified ? ' 🟥' : ''}`;
 };
 
 export { getStatusText };
