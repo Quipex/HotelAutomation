@@ -1,10 +1,10 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import env from '~/app/env';
-import { RESPONSE_TIME_HEADER, X_SEC_HEADER } from '~/common/constants';
+import env from '~/config/env';
+import { REQUEST_ID_HEADER, RESPONSE_TIME_HEADER, X_SEC_HEADER } from '~/common/constants';
 import { log } from '~/config/logger';
 
 async function callApi(path: string, config: AxiosRequestConfig): Promise<unknown> {
-  log.debug('Making request to backend', { path, config });
+  log.debug('[-->] Request', { path, config });
   const timeBeforeRequest = Date.now();
   const response = await axios(path, {
     ...config,
@@ -16,7 +16,10 @@ async function callApi(path: string, config: AxiosRequestConfig): Promise<unknow
   });
   const realMs = Date.now() - timeBeforeRequest;
   const backendResponseTime = response.headers[RESPONSE_TIME_HEADER];
-  log.debug(`Got response ${response.status} (${realMs}ms, server: ${backendResponseTime})`, { data: response.data });
+  log.debug(`[<--] Response '${response.status}' `
+    + `(${realMs}ms, server: ${backendResponseTime}, id: ${response.headers[REQUEST_ID_HEADER]})`, {
+    data: response.data
+  });
   if (response.status >= 300) {
     throw new AxiosError(response.statusText, response.status.toString(), response.config, response.request, response);
   }

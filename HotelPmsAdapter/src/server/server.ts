@@ -24,7 +24,7 @@ app.on('close', async () => {
 
 appDataSource.initialize().then(async (connection) => {
   const connectionOpts = connection.options;
-  log.info('✅ A connection to database is created', {
+  log.info('✅  A connection to database is created', {
     vendor: connectionOpts.type,
     database: connectionOpts.database,
     migrations: connectionOpts.migrations

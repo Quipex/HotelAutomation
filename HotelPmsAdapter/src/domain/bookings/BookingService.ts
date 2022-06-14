@@ -16,8 +16,10 @@ async function saveTransientBookingsAndIncludedClients(
   const savedRooms = await getRepository(RoomModel).find();
   const clientModels = extractClientModelsFromTransientBookings(transientBookings);
   const bookingsToSave = transientBookings2bookingModels({ transientBookings, clientModels, savedRooms });
-  const savedBookings = await getRepository(BookingModel).save(bookingsToSave);
-  return (await BookingRepository.findBookingsByIds(savedBookings.map((b) => b.id))).map(mapBookingModel2dto);
+  const dirtySavedBookings = await getRepository(BookingModel).save(bookingsToSave);
+  const savedBookingIds = dirtySavedBookings.map((b) => b.id);
+  const savedBookingModels = await BookingRepository.findBookingsByIds(savedBookingIds);
+  return savedBookingModels.map(mapBookingModel2dto);
 }
 
 async function fetchPmsAndGetAllActiveBookings(): Promise<BookingDto[]> {

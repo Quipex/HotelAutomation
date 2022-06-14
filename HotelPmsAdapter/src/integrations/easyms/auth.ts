@@ -1,6 +1,7 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { isTimestampInSecondsExpired } from '~/common/utils/dates';
 import { decodeBase64String } from '~/common/utils/encoding';
+import { sanitizeAxiosError } from '~/common/utils/web';
 import env from '~/config/env';
 import { log } from '~/config/logger';
 
@@ -64,7 +65,7 @@ async function authAndGetContext(): Promise<SecurityContext> {
       expiresAt: payload.exp
     };
   } catch (e: unknown) {
-    log.error('Error while trying to auth:', e);
+    log.error('Error while trying to auth:', (e as AxiosError).isAxiosError ? sanitizeAxiosError(e) : e);
     return EMPTY_CONTEXT;
   }
 }

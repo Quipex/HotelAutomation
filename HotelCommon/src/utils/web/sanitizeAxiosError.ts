@@ -1,7 +1,7 @@
 import { X_SEC_HEADER } from '~/constants';
 
 const sanitizeHeaders = (headers) => {
-  if (!Object.prototype.hasOwnProperty.call(headers, X_SEC_HEADER)) {
+  if (!headers || !Object.prototype.hasOwnProperty.call(headers, X_SEC_HEADER)) {
     return headers;
   }
   return {

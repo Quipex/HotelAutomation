@@ -1,10 +1,14 @@
-import { Context } from 'telegraf';
+import { CallbackHandler } from '@callbacks/CallbackHandler';
+import { extractMessageId } from '@callbacks/handlers';
 import { BookingsService } from '~/api/services';
 import { refreshBooking } from './refreshBooking';
 
-export async function confirmBookingAndReply(ctx: Context, bookingId: string, originalMessageId: number) {
+const confirmBookingAndReply: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
+  const [, bookingId, mIdWithPrefix] = cbPayloadArray;
   await BookingsService.confirmBooking(bookingId);
   await ctx.answerCbQuery('✅ Подтверждено');
-  await ctx.deleteMessage(ctx.update.callback_query.message?.message_id);
-  await refreshBooking(ctx, bookingId, originalMessageId);
-}
+  await ctx.deleteMessage(messageId);
+  await refreshBooking({ ctx, cbPayloadArray, messageId: extractMessageId(mIdWithPrefix) });
+};
+
+export { confirmBookingAndReply };

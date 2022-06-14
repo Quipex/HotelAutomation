@@ -1,8 +1,8 @@
 import { JSONFile, Low } from 'lowdb';
-import { log } from '~/config/logger';
+import { log } from './logger';
 
 type LocalDbData = {
-  lastUpdateNotification: string
+  lastNotificationId: number;
 };
 
 // Use JSON file for storage
@@ -11,10 +11,10 @@ const localDb = new Low(adapter);
 
 localDb.read()
   .then(() => {
-    log.info('Read the contents of local db');
+    log.info('✅  Read the contents of local db');
   })
   .catch((e) => {
-    log.error('Failed to read the contents of local db', e);
+    log.error('☠  Failed to read the contents of local db', e);
     process.exit(1);
   });
 

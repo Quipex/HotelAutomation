@@ -1,4 +1,4 @@
 import './app/bot';
-import './app/db';
-import './app/env';
+import './config/db';
+import './config/env';
 import './app/schedules';

@@ -1,75 +1,104 @@
-export const cancel = 'deny';
+const cancel = 'deny';
 
-export function textCancel() {
+function cbPayloadCancel() {
   return cancel;
 }
 
-export const bookingPrePaidAsk = 'bPp';
+const bookingPrePaidAsk = 'bPp';
 
-export function textBookingPrepaidAsk(bookingId: string) {
+function cbPayloadBookingPrepaidAsk(bookingId: string) {
   return `${bookingPrePaidAsk}|${bookingId}`;
 }
 
-export const bookingPrePaidConfirm = 'bPpY';
+const bookingPrePaidConfirm = 'bPpY';
 
-export const bookingMoveList = 'bMvL';
+const bookingMoveList = 'bMvL';
 
-export function textBookingMoveList(bookingId: string) {
+function cbPayloadBookingMoveList(bookingId: string) {
   return `${bookingMoveList}|${bookingId}`;
 }
 
-export const bookingMoveAsk = 'bMv';
+const bookingMoveAsk = 'bMv';
 
-export function textBookingMoveAsk(bookingId: string, roomNumber: string) {
+function cbPayloadBookingMoveAsk(bookingId: string, roomNumber: string) {
   return `${bookingMoveAsk}|${bookingId}|${roomNumber}`;
 }
 
-export const bookingMoveConfirm = 'bMvY';
+const bookingMoveConfirm = 'bMvY';
 
-export function textBookingMoveConfirm(bookingId: string, roomNumber: string) {
+function cbPayloadBookingMoveConfirm(bookingId: string, roomNumber: string) {
   return `${bookingMoveConfirm}|${bookingId}|${roomNumber}`;
 }
 
-export const bookingDetails = 'bD';
+const bookingDetails = 'bD';
 
-export function textBookingDetails(bookingId: string) {
+function cbPayloadBookingDetails(bookingId: string) {
   return `${bookingDetails}|${bookingId}`;
 }
 
-export const clientDetails = 'cD';
+const clientDetails = 'cD';
 
-export function textClientDetails(clientId: string) {
+function cbPayloadClientDetails(clientId: string) {
   return `${clientDetails}|${clientId}`;
 }
 
-export const clientBookings = 'cB';
+const clientBookings = 'cB';
 
-export function textClientBookings(clientId: string) {
+function cbPayloadClientBookings(clientId: string) {
   return `${clientBookings}|${clientId}`;
 }
 
-export const clientRefresh = 'cRf';
+const clientRefresh = 'cRf';
 
-export function textClientRefresh(clientId: string) {
+function cbPayloadClientRefresh(clientId: string) {
   return `${clientRefresh}|${clientId}`;
 }
 
-export const bookingLivingAsk = 'bLv';
+const bookingLivingAsk = 'bLv';
 
-export function textBookingLivingAsk(bookingId: string) {
+function cbPayloadBookingLivingAsk(bookingId: string) {
   return `${bookingLivingAsk}|${bookingId}`;
 }
 
-export const bookingLivingConfirm = 'bLvY';
+const bookingLivingConfirm = 'bLvY';
 
-export const bookingRemindedPrepayment = 'bRp';
+const bookingRemindedPrepayment = 'bRp';
 
-export function textBookingRemindedPrepayment(bookingId: string) {
+function cbPayloadBookingRemindedPrepayment(bookingId: string) {
   return `${bookingRemindedPrepayment}|${bookingId}`;
 }
 
-export const bookingRefresh = 'bRf';
+const bookingRefresh = 'bRf';
 
-export function textBookingRefresh(bookingId: string) {
+function cbPayloadBookingRefresh(bookingId: string) {
   return `${bookingRefresh}|${bookingId}`;
 }
+
+export {
+  cancel,
+  cbPayloadCancel,
+  bookingPrePaidAsk,
+  cbPayloadBookingPrepaidAsk,
+  bookingPrePaidConfirm,
+  bookingMoveList,
+  cbPayloadBookingMoveList,
+  bookingMoveAsk,
+  cbPayloadBookingMoveAsk,
+  bookingMoveConfirm,
+  cbPayloadBookingMoveConfirm,
+  bookingDetails,
+  cbPayloadBookingDetails,
+  clientDetails,
+  cbPayloadClientDetails,
+  clientBookings,
+  cbPayloadClientBookings,
+  clientRefresh,
+  cbPayloadClientRefresh,
+  bookingLivingAsk,
+  cbPayloadBookingLivingAsk,
+  bookingLivingConfirm,
+  bookingRemindedPrepayment,
+  cbPayloadBookingRemindedPrepayment,
+  bookingRefresh,
+  cbPayloadBookingRefresh
+};

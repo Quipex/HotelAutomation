@@ -22,16 +22,16 @@ interface FindBookingsOptions {
   messageReplyId?: number;
 }
 
-async function parseCommandFindBookingsAddedAfterAndReply(ctx: Context, next, options?: FindBookingsOptions) {
+async function parseCommandFindBookingsAddedAfterAndReply(ctx: Context, _next, options?: FindBookingsOptions) {
   const date = await parseDateAndReplyToInvalid(ctx, options?.commandText);
   if (!date) {
-    return next();
+    return;
   }
 
   const todayArrivals = await BookingsService.fetchBookingsAddedAfter(date);
   if (todayArrivals.length === 0) {
     await ctx.replyWithHTML(`No bookings that were added after ${formatDate(date, DATETIME_DAYOFWEEK_MOMENTJS)}`);
-    return next();
+    return;
   }
   todayArrivals.forEach(async (booking) => {
     await ctx.replyWithHTML(BriefBooking(booking), {
@@ -39,7 +39,6 @@ async function parseCommandFindBookingsAddedAfterAndReply(ctx: Context, next, op
       reply_markup: { inline_keyboard: BriefBookingActions(booking) }
     });
   });
-  return next();
 }
 
 export default parseCommandFindBookingsAddedAfterAndReply;

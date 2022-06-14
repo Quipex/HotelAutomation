@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
-import { getEnvArray } from '~/common/utils/env';
+import { getEnvArray } from '../common/utils/env';
 
 dotenv.config();
 
-export function getEnv(key: string): string {
+function getEnv(key: string): string {
   const val = getOptionalEnv(key);
   if (!val) {
     throw new Error(`Env variable ${key} is not defined`);
@@ -11,7 +11,7 @@ export function getEnv(key: string): string {
   return val;
 }
 
-export function getOptionalEnv(key: string): string | undefined {
+function getOptionalEnv(key: string): string | undefined {
   return process.env[key];
 }
 
@@ -21,6 +21,7 @@ interface Env {
   xSecHeader: string;
   botToken: string;
   telegramIds: string[];
+  notificationChannelId: string;
 }
 
 const env: Env = {
@@ -28,7 +29,8 @@ const env: Env = {
   pmsAdapterUrl: getEnv('PMS_ADAPTER_URL'),
   xSecHeader: getEnv('X_SEC_HEADER'),
   botToken: getEnv('BOT_TOKEN'),
-  telegramIds: getEnvArray('TELEGRAM_IDS')
+  telegramIds: getEnvArray('TELEGRAM_IDS'),
+  notificationChannelId: getEnv('NOTIFICATION_CHANNEL_ID')
 };
 
 export default env;

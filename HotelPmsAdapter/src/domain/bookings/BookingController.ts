@@ -1,10 +1,10 @@
 import Router from 'koa-router';
 import { BookingCreationConflictError } from '~/common/errors';
 import { routesV1 } from '~/common/maps';
-import { resolveV1 } from '~/common/utils/routes';
+import { getPathOf } from '~/domain/helpers/routes';
 import BookingPmsService from './BookingService';
 
-const bookings = new Router();
+const BookingController = new Router();
 
 const {
   index$post,
@@ -22,17 +22,15 @@ const {
   confirm$put
 } = routesV1.bookings;
 
-const getPathOf = (obj) => resolveV1(obj).path;
-
-bookings.post(getPathOf(index$post), async (ctx) => {
+BookingController.post(getPathOf(index$post), async (ctx) => {
   ctx.body = await BookingPmsService.fetchPmsAndGetAllActiveBookings();
 });
 
-bookings.get(getPathOf(cached$get), async (ctx) => {
+BookingController.get(getPathOf(cached$get), async (ctx) => {
   ctx.body = await BookingPmsService.getAllBookings();
 });
 
-bookings.get(getPathOf(arrive$get), async (ctx) => {
+BookingController.get(getPathOf(arrive$get), async (ctx) => {
   const { date: unixDate } = ctx.query as unknown as ReturnType<typeof arrive$get.getQueryParams>;
   if (!unixDate) {
     ctx.status = 400;
@@ -41,7 +39,7 @@ bookings.get(getPathOf(arrive$get), async (ctx) => {
   ctx.body = await BookingPmsService.getArrivalsBy(+unixDate);
 });
 
-bookings.get(getPathOf(added$get), async (ctx) => {
+BookingController.get(getPathOf(added$get), async (ctx) => {
   const { after: unixDate } = ctx.query as unknown as ReturnType<typeof added$get.getQueryParams>;
   if (!unixDate) {
     ctx.status = 400;
@@ -50,7 +48,7 @@ bookings.get(getPathOf(added$get), async (ctx) => {
   ctx.body = await BookingPmsService.getBookingsAddedAfter(+unixDate);
 });
 
-bookings.get(getPathOf(byId$get), async (ctx) => {
+BookingController.get(getPathOf(byId$get), async (ctx) => {
   const { id } = ctx.params;
   const resp = await BookingPmsService.getBookingById(id);
   if (resp) {
@@ -60,7 +58,7 @@ bookings.get(getPathOf(byId$get), async (ctx) => {
   }
 });
 
-bookings.get(getPathOf(notPaid$get), async (ctx) => {
+BookingController.get(getPathOf(notPaid$get), async (ctx) => {
   const { arrive_after: unixDate } = ctx.query as unknown as ReturnType<typeof notPaid$get.getQueryParams>;
   if (!unixDate) {
     ctx.status = 400;
@@ -69,12 +67,12 @@ bookings.get(getPathOf(notPaid$get), async (ctx) => {
   ctx.body = await BookingPmsService.getBookingsNotPayedArriveAfter(+unixDate);
 });
 
-bookings.put(getPathOf(sync$put), async (ctx) => {
+BookingController.put(getPathOf(sync$put), async (ctx) => {
   await BookingPmsService.fetchPmsAndGetAllActiveBookings();
   ctx.status = 200;
 });
 
-bookings.put(getPathOf(confirm$put), async (ctx) => {
+BookingController.put(getPathOf(confirm$put), async (ctx) => {
   const { bookingId } = ctx.request.body as ReturnType<typeof confirm$put.getData>;
   if (!bookingId) {
     ctx.status = 400;
@@ -84,7 +82,7 @@ bookings.put(getPathOf(confirm$put), async (ctx) => {
   ctx.status = 200;
 });
 
-bookings.put(getPathOf(confirmLiving$put), async (ctx) => {
+BookingController.put(getPathOf(confirmLiving$put), async (ctx) => {
   const { bookingId } = ctx.request.body as ReturnType<typeof confirmLiving$put.getData>;
   if (!bookingId) {
     ctx.status = 400;
@@ -94,7 +92,7 @@ bookings.put(getPathOf(confirmLiving$put), async (ctx) => {
   ctx.status = 200;
 });
 
-bookings.put(getPathOf(remindedPrepayment$put), async (ctx) => {
+BookingController.put(getPathOf(remindedPrepayment$put), async (ctx) => {
   const { bookingId } = ctx.request.body as ReturnType<typeof remindedPrepayment$put.getData>;
   if (!bookingId) {
     ctx.status = 400;
@@ -104,11 +102,11 @@ bookings.put(getPathOf(remindedPrepayment$put), async (ctx) => {
   ctx.status = 200;
 });
 
-bookings.get(getPathOf(expiredRemind$get), async (ctx) => {
+BookingController.get(getPathOf(expiredRemind$get), async (ctx) => {
   ctx.body = await BookingPmsService.expiredRemindedPrepayment();
 });
 
-bookings.put(getPathOf(create$put), async (ctx) => {
+BookingController.put(getPathOf(create$put), async (ctx) => {
   const {
     roomNumber, from, to, guestName
   } = ctx.request.body as ReturnType<typeof create$put.getData>;
@@ -130,9 +128,9 @@ bookings.put(getPathOf(create$put), async (ctx) => {
   }
 });
 
-bookings.get(getPathOf(owner.byId$get), async (ctx) => {
+BookingController.get(getPathOf(owner.byId$get), async (ctx) => {
   const { id } = ctx.params;
   ctx.body = await BookingPmsService.getBookingsByOwner(id);
 });
 
-export default bookings;
+export default BookingController;

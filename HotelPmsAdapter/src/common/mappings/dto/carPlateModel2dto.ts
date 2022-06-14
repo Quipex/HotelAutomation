@@ -1,4 +1,4 @@
-import { mapBookingModel2dto } from '~/common/mappings/dto/bookingModel2dto';
+import { mapBookingModel2dto } from '~/common/mappings/dto';
 import { CarPlateDto } from '~/common/types';
 import { dateToIsoString } from '~/common/utils/dates';
 import { CarPlateModel } from '~/domain/car_plates/CarPlateModel';
