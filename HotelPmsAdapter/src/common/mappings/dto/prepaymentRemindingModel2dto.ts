@@ -1,4 +1,4 @@
-import { mapBookingModel2dto } from '~/common/mappings/dto/bookingModel2dto';
+import { mapBookingModel2dto } from '~/common/mappings/dto';
 import { dateToIsoString } from '~/common/utils/dates';
 import { PrepaymentRemindingsDto } from '~/common/types';
 import { PrepaymentRemindingsModel } from '~/domain/prepayment_remindings/PrepaymentRemindingsModel';

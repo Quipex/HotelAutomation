@@ -444,7 +444,7 @@ export class tablesReorganizing1653653473387 implements MigrationInterface {
       CREATE TABLE bookings__history
       (
         id      serial,
-        time    timestamp DEFAULT now(),
+        time    timestamp with time zone DEFAULT now(),
         new_val jsonb,
         old_val jsonb
       );

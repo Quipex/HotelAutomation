@@ -6,10 +6,9 @@ import { DATETIME_DAYOFWEEK_MOMENTJS } from '~/common/constants';
 import { formatDate, parseDateFromLiterals } from '~/common/utils/dates';
 import { parseDateAndReplyToInvalid } from './bookings_added';
 
-async function parseCommandFindBookingsArrivedOnAndReply(ctx: Context, next) {
+async function parseCommandFindBookingsArrivedOnAndReply(ctx: Context) {
   const date = await parseDateAndReplyToInvalid(ctx);
   if (!date) {
-    await next();
     return;
   }
 

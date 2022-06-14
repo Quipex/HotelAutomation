@@ -7,7 +7,7 @@
     "yarn": "1.22.x"
   },
   "scripts": {
-    "start": "nodemon -r ts-node -r tsconfig-paths/register --files ./src/index.ts | bunyan",
+    "start": "nodemon -r ts-node -r tsconfig-paths/register --files ./src/index.ts --ignore data | bunyan",
     "lint:js": "npx eslint \"src/**/*.ts\" --fix",
     "lint": "yarn run lint:js",
     "build": "tsc",

@@ -1,6 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { TypeormLogger } from '~/config/TypeormLogger';
 import env from '~/config/env';
+import { TypeormLogger } from '~/config/TypeormLogger';
 
 const defaultConfig: DataSourceOptions = {
   type: env.db.type as any,
@@ -11,6 +11,7 @@ const defaultConfig: DataSourceOptions = {
   database: env.db.database,
   migrations: ['**/migrations/**/*.{ts,js}'],
   entities: ['**/domain/**/*Model.{ts,js}'],
+  subscribers: ['**/domain/**/*Subscriber.{ts,js}'],
   migrationsRun: env.typeorm.migrationsRun,
   logging: env.typeorm.logging,
   synchronize: env.typeorm.synchronize,

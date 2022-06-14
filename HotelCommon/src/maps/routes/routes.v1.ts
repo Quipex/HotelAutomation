@@ -93,10 +93,10 @@ const routesV1 = {
       relativePath: 'create',
       getData: (data: BookingCreationPayload) => data
     },
-    /**
-     * Get bookings by owner (customer/guest) id
-     */
     owner: {
+      /**
+       * Get bookings by owner (customer/guest) id
+       */
       byId$get: {
         relativePath: ':id',
         withPathVariable: createPathReplacer(':id')
@@ -123,6 +123,15 @@ const routesV1 = {
     byId$get: {
       relativePath: ':id',
       withPathVariable: createPathReplacer(':id')
+    }
+  },
+  notifications: {
+    /**
+     * Get all notifications
+     */
+    index$get: {
+      relativePath: '/',
+      getQueryParams: (params: { id_after: number }) => params
     }
   }
 };

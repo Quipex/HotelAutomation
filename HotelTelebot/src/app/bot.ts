@@ -12,32 +12,31 @@ import parseCommandFindClientByIdAndReply from '@commands/client/client_by_id';
 import parseCommandFindClientAndReply from '@commands/client/find_client';
 import synchronizeBookingsAndClientsAndReply from '@commands/synchronize_bookings_and_clients';
 import { Telegraf } from 'telegraf';
-import { authorizeRequest, handleErrors, validateMessage } from '~/app/middlewares';
-import { ErrorCode } from '~/common/constants';
+import { handleCallbackQuery } from '~/app/callbacks';
+import { authorizeRequest, handleErrors as h, logUsers, validateMessage } from '~/app/middlewares';
 import { log } from '~/config/logger';
-import handleCallbackQueries from './callbacks';
-import env from './env';
+import env from '../config/env';
 
 const bot = new Telegraf(env.botToken);
 
-bot.catch(handleErrors);
 bot.use(authorizeRequest);
+bot.use(logUsers);
 bot.on('text', validateMessage);
-bot.on('callback_query', handleCallbackQueries);
+bot.on('callback_query', h(handleCallbackQuery));
 
 bot.start((ctx) => ctx.reply('Hello!'));
 
-bot.command(['c', 'cl', 'client'], parseCommandFindClientAndReply);
-bot.command('arrive', parseCommandFindBookingsArrivedOnAndReply);
-bot.command('added', parseCommandFindBookingsAddedAfterAndReply);
-bot.command('id', parseCommandFindBookingsByIdAndReply);
-bot.command('cl_id', parseCommandFindClientByIdAndReply);
-bot.command('sync', synchronizeBookingsAndClientsAndReply);
-bot.command('create', parseCommandCreateBookingAndReply);
-bot.command(['not_payed', 'prepay', 'prepayment', 'pp', 'npp'], parseCommandFindBookingsNotPrePayedAndReply);
-bot.command(['pp_expired', 'expired'], findBookingsRemindedAndExpiredPrepaymentAndReply);
-bot.command('mv', parseCommandMoveBookingAndReply);
-bot.command('mv_batch', parseCommandMoveBookingInBatchAndReply);
+bot.command(['c', 'cl', 'client'], h(parseCommandFindClientAndReply));
+bot.command('arrive', h(parseCommandFindBookingsArrivedOnAndReply));
+bot.command('added', h(parseCommandFindBookingsAddedAfterAndReply));
+bot.command('id', h(parseCommandFindBookingsByIdAndReply));
+bot.command('cl_id', h(parseCommandFindClientByIdAndReply));
+bot.command('sync', h(synchronizeBookingsAndClientsAndReply));
+bot.command('create', h(parseCommandCreateBookingAndReply));
+bot.command(['not_payed', 'prepay', 'prepayment', 'pp', 'npp'], h(parseCommandFindBookingsNotPrePayedAndReply));
+bot.command(['pp_expired', 'expired'], h(findBookingsRemindedAndExpiredPrepaymentAndReply));
+bot.command('mv', h(parseCommandMoveBookingAndReply));
+bot.command('mv_batch', h(parseCommandMoveBookingInBatchAndReply));
 
 bot.launch()
   .then(() => {
@@ -45,7 +44,7 @@ bot.launch()
   })
   .catch((err: Error) => {
     log.error('☠ Error at launch ☠', err);
-    process.exit(ErrorCode.DATABASE);
+    process.exit(1);
   });
 
 export default bot;

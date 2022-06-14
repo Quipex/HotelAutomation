@@ -1,7 +1,10 @@
-import { Context } from 'telegraf';
+import { CallbackHandler } from '@callbacks/CallbackHandler';
 import { BookingsService } from '@services';
 
-export async function setRemindedPrepaymentAndReply(ctx: Context, bookingId: string) {
+const setRemindedPrepaymentAndReply: CallbackHandler = async ({ ctx, cbPayloadArray }) => {
+  const [, bookingId] = cbPayloadArray;
   await BookingsService.putRemindedPrepayment(bookingId);
   await ctx.answerCbQuery('✅ Записано время');
-}
+};
+
+export { setRemindedPrepaymentAndReply };

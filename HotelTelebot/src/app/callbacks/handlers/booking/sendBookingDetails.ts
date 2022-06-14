@@ -1,7 +1,10 @@
-import { Context } from 'telegraf';
+import { CallbackHandler } from '@callbacks/CallbackHandler';
 import { fetchBookingByIdAndReply } from '@commands/booking/bookings_by_id';
 
-export async function sendBookingDetails(ctx: Context, id: string, message_id?: number) {
-  await fetchBookingByIdAndReply(id, ctx, { reply_to_message_id: message_id });
+const sendBookingDetails: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
+  const [, id] = cbPayloadArray;
+  await fetchBookingByIdAndReply(id, ctx, { reply_to_message_id: messageId });
   await ctx.answerCbQuery();
-}
+};
+
+export { sendBookingDetails };

@@ -9,9 +9,9 @@
   "scripts": {
     "start": "nodemon -r ts-node -r tsconfig-paths/register --files ./src/index.ts | bunyan",
     "typeorm": "ts-node --transpile-only -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:run": "yarn run typeorm migration:run -d ./src/config/datasource.ts | bunyan",
-    "migration:revert": "yarn run typeorm migration:revert -d ./src/config/datasource.ts | bunyan",
-    "migration:generate": "yarn run typeorm migration:create | bunyan",
+    "migration:run": "yarn run typeorm migration:run -d ./src/config/datasource.ts",
+    "migration:revert": "yarn run typeorm migration:revert -d ./src/config/datasource.ts",
+    "migration:generate": "yarn run typeorm migration:create",
     "lint:js": "npx eslint \"src/**/*.ts\" \"tests/**/*.ts\" --fix",
     "lint": "yarn run lint:js",
     "build": "tsc && resolve-tspaths -p tsconfig.json",
