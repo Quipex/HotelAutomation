@@ -34,7 +34,7 @@
     "glob": "^8.0.3",
     "hotel-automation-common": "link:../HotelCommon/dist",
     "lowdb": "github:dankreiger/lowdb#chore/esm-cjs-hybrid-WITH-LIB",
-    "node-cron": "^3.0.0",
+    "node-cron": "^3.0.1",
     "path": "^0.12.7",
     "telegraf": "git+https://github.com/LetItCode/telegraf.git"
   }
