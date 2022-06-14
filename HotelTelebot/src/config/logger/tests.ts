@@ -18,4 +18,4 @@ const testsLog = bunyan.createLogger({
   ]
 });
 
-export { testsLog }
+export { testsLog };

@@ -17,4 +17,4 @@ const usersLog = bunyan.createLogger({
   ]
 });
 
-export { usersLog }
+export { usersLog };
