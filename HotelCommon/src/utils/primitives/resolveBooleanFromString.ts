@@ -1,4 +1,4 @@
-const resolveBoolean = (text: string) => {
+const resolveBooleanFromString = (text: string) => {
   const lowercase = text.toLowerCase();
   if (lowercase === 'true') {
     return true;
@@ -9,4 +9,4 @@ const resolveBoolean = (text: string) => {
   throw new Error(`Unrecognized boolean value: '${text}'`);
 };
 
-export { resolveBoolean };
+export { resolveBooleanFromString };

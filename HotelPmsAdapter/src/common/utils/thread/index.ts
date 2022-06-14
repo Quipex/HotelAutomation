@@ -1,1 +1,1 @@
-export * from './sleep';
+export * from 'hotel-automation-common/utils/thread';

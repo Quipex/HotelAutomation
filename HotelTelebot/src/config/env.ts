@@ -22,6 +22,7 @@ interface Env {
   botToken: string;
   telegramIds: string[];
   notificationChannelId: string;
+  waitNotificationMs: number;
 }
 
 const env: Env = {
@@ -30,7 +31,8 @@ const env: Env = {
   xSecHeader: getEnv('X_SEC_HEADER'),
   botToken: getEnv('BOT_TOKEN'),
   telegramIds: getEnvArray('TELEGRAM_IDS'),
-  notificationChannelId: getEnv('NOTIFICATION_CHANNEL_ID')
+  notificationChannelId: getEnv('NOTIFICATION_CHANNEL_ID'),
+  waitNotificationMs: +getEnv('MS_TO_WAIT_AFTER_NOTIFICATION_SENDING')
 };
 
 export default env;

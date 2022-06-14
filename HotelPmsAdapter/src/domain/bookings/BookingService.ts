@@ -1,5 +1,5 @@
 import { mapBookingModel2dto } from '~/common/mappings/dto';
-import { transientBookings2bookingModels } from '~/common/mappings/transient';
+import { transientBookings2bookingModels, transientClient2clientModel } from '~/common/mappings/transient';
 import { BookingDto, CreateBookingPayload } from '~/common/types';
 import { BookingTransientModel } from '~/common/types/domain/transient_models';
 import { unixSecondsToDate } from '~/common/utils/dates';
@@ -8,13 +8,12 @@ import { getRepository } from '~/domain/helpers/orm';
 import { RoomModel } from '~/domain/rooms/RoomModel';
 import { getCloudProvider } from '~/integrations/getCloudProvider';
 import * as BookingRepository from './BookingRepository';
-import { extractClientModelsFromTransientBookings } from './helpers/service';
 
 async function saveTransientBookingsAndIncludedClients(
   transientBookings: BookingTransientModel[]
 ): Promise<BookingDto[]> {
   const savedRooms = await getRepository(RoomModel).find();
-  const clientModels = extractClientModelsFromTransientBookings(transientBookings);
+  const clientModels = transientBookings.map(({ client }) => transientClient2clientModel(client));
   const bookingsToSave = transientBookings2bookingModels({ transientBookings, clientModels, savedRooms });
   const dirtySavedBookings = await getRepository(BookingModel).save(bookingsToSave);
   const savedBookingIds = dirtySavedBookings.map((b) => b.id);

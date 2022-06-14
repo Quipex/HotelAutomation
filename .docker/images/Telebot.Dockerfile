@@ -13,5 +13,10 @@ COPY ./HotelAdapter/package.json ./HotelAdapter/package-lock.json ./
 RUN yarn install --production
 COPY ./HotelAdapter ./
 RUN yarn run build
+RUN mkdir logs
+RUN mkdir logs/app
+RUN mkdir logs/background
+RUN mkdir logs/tests
+RUN mkdir logs/users
 
 CMD ["node", "src/index.js"]

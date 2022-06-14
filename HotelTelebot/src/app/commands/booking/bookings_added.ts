@@ -1,4 +1,4 @@
-import { BriefBooking, BriefBookingActions } from '@components';
+import { ColorfulBooking, BriefBookingActions } from '@components';
 import { Context } from 'telegraf';
 import { BookingsService } from '~/api/services';
 import { DATETIME_DAYOFWEEK_MOMENTJS } from '~/common/constants';
@@ -34,7 +34,7 @@ async function parseCommandFindBookingsAddedAfterAndReply(ctx: Context, _next, o
     return;
   }
   todayArrivals.forEach(async (booking) => {
-    await ctx.replyWithHTML(BriefBooking(booking), {
+    await ctx.replyWithHTML(ColorfulBooking(booking), {
       reply_to_message_id: (options?.messageReplyId ?? ctx.message?.message_id),
       reply_markup: { inline_keyboard: BriefBookingActions(booking) }
     });

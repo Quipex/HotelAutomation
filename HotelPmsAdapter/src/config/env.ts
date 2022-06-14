@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { getEnv, getOptionalEnv } from '~/config/helpers/env';
-import { resolveBoolean } from '~/config/helpers/env/resolveBoolean';
+import { resolveBooleanFromString } from '~/common/utils/primitives';
 
 dotenv.config();
 
@@ -68,9 +68,9 @@ const env: Env = {
     port: Number(getEnv('DB_PORT'))
   },
   typeorm: {
-    logging: resolveBoolean(getEnv('TYPEORM_LOGGING')),
-    migrationsRun: resolveBoolean(getEnv('TYPEORM_MIGRATIONS_RUN')),
-    synchronize: resolveBoolean(getEnv('TYPEORM_SYNCHRONIZE'))
+    logging: resolveBooleanFromString(getEnv('TYPEORM_LOGGING')),
+    migrationsRun: resolveBooleanFromString(getEnv('TYPEORM_MIGRATIONS_RUN')),
+    synchronize: resolveBooleanFromString(getEnv('TYPEORM_SYNCHRONIZE'))
   }
 };
 
