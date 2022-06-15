@@ -1,6 +1,6 @@
-import bunyan from 'bunyan';
+import { createLogger } from 'bunyan';
 
-const usersLog = bunyan.createLogger({
+const usersLog = createLogger({
   name: 'Users_Activity',
   streams: [
     {
@@ -13,6 +13,10 @@ const usersLog = bunyan.createLogger({
     {
       level: 'info',
       stream: process.stdout
+    },
+    {
+      level: 'warn',
+      stream: process.stderr
     }
   ]
 });

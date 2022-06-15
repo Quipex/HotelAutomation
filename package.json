@@ -30,6 +30,7 @@
     "test": "yarn run test:all"
   },
   "devDependencies": {
+    "@types/bunyan": "^1.8.8",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.27.1",
     "cross-env": "^7.0.3",

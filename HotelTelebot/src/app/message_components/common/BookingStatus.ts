@@ -4,7 +4,7 @@ type FromStatusFn = (args: {
   living: boolean, prepaid: boolean, cancelled: boolean
 }, options?: FormatOptions) => string;
 
-const getStatusText: FromStatusFn = ({ living, prepaid, cancelled }, options) => {
+const BookingStatus: FromStatusFn = ({ living, prepaid, cancelled }, options) => {
   const { emojified } = options ?? {};
   if (cancelled) {
     return `${emojified ? '❌ ' : ''}Отмена${emojified ? ' ❌' : ''}`;
@@ -18,4 +18,4 @@ const getStatusText: FromStatusFn = ({ living, prepaid, cancelled }, options) =>
   return `${emojified ? '🟥 ' : ''}Без предоплаты${emojified ? ' 🟥' : ''}`;
 };
 
-export { getStatusText };
+export default BookingStatus;

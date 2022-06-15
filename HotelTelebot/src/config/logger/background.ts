@@ -1,6 +1,6 @@
-import bunyan from 'bunyan';
+import { createLogger } from 'bunyan';
 
-const backgroundLog = bunyan.createLogger({
+const backgroundLog = createLogger({
   name: 'Background',
   src: true,
   streams: [
@@ -14,6 +14,10 @@ const backgroundLog = bunyan.createLogger({
     {
       level: (process.env.NODE_ENV === 'dev') ? 'debug' : 'info',
       stream: process.stdout
+    },
+    {
+      level: 'warn',
+      stream: process.stderr
     },
     {
       level: 'info',

@@ -8,15 +8,20 @@ import { backgroundLog } from '~/config/logger';
 
 const time = () => formatDate(new Date(), DATETIME_DAYOFWEEK_MOMENTJS);
 
-export function createSchedule(cronExpression: string, func: () => void, options?: ScheduleOptions) {
-  schedule(cronExpression, () => {
+export function createSchedule(cronExpression: string, func: () => Promise<void>, options?: ScheduleOptions) {
+  schedule(cronExpression, async () => {
     backgroundLog.debug(`Running schedule '${func.name}' at ${time()}`);
     try {
-      func();
+      await func();
     } catch (e) {
-      const msg = `☠ Got an error while running schedule '${func.name}' at ${time()}`;
-      backgroundLog.error(msg, e.isAxiosError ? sanitizeAxiosError(e) : e);
-      bot.telegram.sendMessage(env.notificationChannelId, msg).catch((reason) => {
+      backgroundLog.error(
+        `Got an error while running schedule '${func.name}`,
+        e.isAxiosError ? sanitizeAxiosError(e) : e
+      );
+      const msg = `☠  Got an error while running schedule '${func.name}'\n`
+        + `At ${time()}\n\n`
+        + `Error: ${e.message}`;
+      bot.telegram.sendMessage(env.notificationChannelId, msg, { disable_notification: true }).catch((reason) => {
         backgroundLog.error('Failed to send the error', { reason });
       });
     } finally {

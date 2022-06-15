@@ -1,7 +1,7 @@
 import { DATE_SHORT, DATETIME_DAYOFWEEK_MOMENTJS } from '~/common/constants';
 import { BookingDto, FormatOptions } from '~/common/types';
-import { sourceToText } from '~/common/utils/constants_mapper';
 import { formatDate } from '~/common/utils/dates';
+import { BookingSource } from '..';
 
 type BookingProperty = keyof BookingDto;
 type PropToFormatter = Partial<Record<BookingProperty, Function>>;
@@ -15,7 +15,7 @@ const propToFormatter: PropToFormatter = {
   createdAt: toLocalizedDatetime,
   bookedAt: toLocalizedDatetime,
   totalUahCoins: (value) => (Number(value) / 100).toFixed(2),
-  source: (val, options) => sourceToText(val, options),
+  source: (val, options) => BookingSource(val, options),
   startDate: toShortDate,
   endDateExclusive: toShortDate
 };
