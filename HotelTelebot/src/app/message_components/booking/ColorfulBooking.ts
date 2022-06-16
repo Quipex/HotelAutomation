@@ -31,12 +31,12 @@ function ColorfulBooking(
   const departText = format('endDateExclusive', endDateExclusive);
   const daysText = daysBetween(startDate, endDateExclusive);
   return (
-    `🧑️ ${fullNameOrig}\n`
-    + `📅 С ${arriveText} по ${departText}. ${daysText} дней.\n`
-    + `🚪 Комната <b>№${realRoomNumber}</b>\n`
+    `🧑️ :  ${fullNameOrig}\n`
+    + `📅 :  С ${arriveText} по ${departText}. ${daysText} дней.\n`
+    + `🚪 :  Комната <b>№${realRoomNumber}</b>\n`
     + `Источник: <b>${format('source', source)}</b>\n`
     + `Статус: <b>${statusText}</b>\n`
-    + `💳 Сумма: <b>${format('totalUahCoins', totalUahCoins)}</b>\n\n`
+    + `💳 :  Сумма: <b>${format('totalUahCoins', totalUahCoins)}</b>\n\n`
     + `<i>Обновлено ${format('updatedAt', updatedAt)}\n</i>`
     + `<code>/id ${id}</code>`
   );

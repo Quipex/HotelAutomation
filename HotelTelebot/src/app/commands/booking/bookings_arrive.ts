@@ -1,9 +1,9 @@
-import { ColorfulBooking, BriefBookingActions } from '@components';
+/* eslint-disable no-restricted-syntax,no-await-in-loop */
+import { BriefBookingActions, ColorfulBooking } from '@components';
 import { Context } from 'telegraf';
 import { BookingsService } from '~/api/services';
-import bot from '~/app/bot';
 import { DATETIME_DAYOFWEEK_MOMENTJS } from '~/common/constants';
-import { formatDate, parseDateFromLiterals } from '~/common/utils/dates';
+import { formatDate } from '~/common/utils/dates';
 import { parseDateAndReplyToInvalid } from './bookings_added';
 
 async function parseCommandFindBookingsArrivedOnAndReply(ctx: Context) {
@@ -24,27 +24,6 @@ async function parseCommandFindBookingsArrivedOnAndReply(ctx: Context) {
   });
 }
 
-async function parseCommandFindBookingsArrivedOnNotLivingAndSend(
-  chatId: string,
-  textDate: string,
-  replyMessageId?: number
-) {
-  const date = parseDateFromLiterals(textDate);
-  if (!date) {
-    return;
-  }
-
-  const arrivals = await BookingsService.fetchBookingsArriveAtAndNotLiving(date);
-  arrivals.forEach(async (booking) => {
-    await bot.telegram.sendMessage(chatId, ColorfulBooking(booking), {
-      reply_to_message_id: replyMessageId,
-      reply_markup: { inline_keyboard: BriefBookingActions(booking) },
-      parse_mode: 'HTML'
-    });
-  });
-}
-
 export {
-  parseCommandFindBookingsArrivedOnNotLivingAndSend,
   parseCommandFindBookingsArrivedOnAndReply
 };

@@ -8,6 +8,9 @@
       <sourceFolder url="file://$MODULE_DIR$/HotelCommon/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/HotelCommon/dist" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/HotelPmsAdapter/dist" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/HotelCommon/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/HotelPmsAdapter/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/HotelTelebot/tests" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
