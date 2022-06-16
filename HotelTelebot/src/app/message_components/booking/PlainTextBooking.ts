@@ -1,6 +1,6 @@
 import { formatBookingPropertyValue as format } from '~/app/message_components/common/helpers';
 import { BookingDto } from '~/common/types';
-import { getStatusText } from '~/common/utils/constants_mapper';
+import { BookingStatus } from '../common';
 import { daysBetween } from '~/common/utils/dates';
 
 function PlainTextBooking(
@@ -18,7 +18,7 @@ function PlainTextBooking(
     totalUahCoins
   }: BookingDto
 ): string {
-  const statusText = getStatusText({
+  const statusText = BookingStatus({
     living,
     cancelled,
     prepaid

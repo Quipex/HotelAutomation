@@ -1,7 +1,7 @@
 import { formatBookingPropertyValue } from '~/app/message_components/common/helpers';
 import { BookingDto } from '~/common/types';
-import { getStatusText } from '~/common/utils/constants_mapper';
 import { daysBetween } from '~/common/utils/dates';
+import { BookingStatus } from '../common';
 
 const format: typeof formatBookingPropertyValue = (prop, val) => {
   return formatBookingPropertyValue(prop, val, { emojified: true });
@@ -22,7 +22,7 @@ function ColorfulBooking(
     totalUahCoins
   }: BookingDto
 ): string {
-  const statusText = getStatusText({
+  const statusText = BookingStatus({
     living,
     cancelled,
     prepaid

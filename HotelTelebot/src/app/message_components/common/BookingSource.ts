@@ -1,6 +1,6 @@
 import { FormatOptions } from '~/common/types';
 
-const sourceToText = (source: string, options?: FormatOptions): string => {
+const BookingSource = (source: string, options?: FormatOptions): string => {
   const { emojified } = options ?? {};
   switch (source.toUpperCase()) {
     case 'EASYMS':
@@ -13,4 +13,4 @@ const sourceToText = (source: string, options?: FormatOptions): string => {
   }
 };
 
-export { sourceToText };
+export default BookingSource;

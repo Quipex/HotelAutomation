@@ -77,6 +77,7 @@ BookingController.put(getPathOf(confirm$put), async (ctx) => {
   if (!bookingId) {
     ctx.status = 400;
     ctx.body = { message: 'missing booking id' };
+    return;
   }
   await BookingPmsService.confirmPrepayment(bookingId);
   ctx.status = 200;
@@ -87,6 +88,7 @@ BookingController.put(getPathOf(confirmLiving$put), async (ctx) => {
   if (!bookingId) {
     ctx.status = 400;
     ctx.body = { message: 'missing booking id' };
+    return;
   }
   await BookingPmsService.confirmLiving(bookingId);
   ctx.status = 200;
@@ -97,6 +99,7 @@ BookingController.put(getPathOf(remindedPrepayment$put), async (ctx) => {
   if (!bookingId) {
     ctx.status = 400;
     ctx.body = { message: 'missing booking id' };
+    return;
   }
   await BookingPmsService.remindedOfPrepayment(bookingId);
   ctx.status = 200;

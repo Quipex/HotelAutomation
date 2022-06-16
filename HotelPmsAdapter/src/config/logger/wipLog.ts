@@ -2,7 +2,7 @@ import bunyan from 'bunyan';
 
 const wipLog = bunyan.createLogger({
   name: 'Needs_Attention',
-  src: true,
+  src: process.env.NODE_ENV !== 'prod',
   streams: [
     {
       level: 'info',

@@ -1,12 +1,12 @@
 import { AxiosError } from 'axios';
 import { Context, Middleware, ParameterizedContext } from 'koa';
-import { REQUEST_ID_HEADER, RESPONSE_TIME_HEADER, X_SEC_HEADER } from '~/common/constants';
-import { uuidv4 } from '~/common/utils/uuid';
+import { RESPONSE_TIME_HEADER, X_SEC_HEADER } from '~/common/constants';
+
 import { sanitizeAxiosError } from '~/common/utils/web';
 import { log } from '~/config/logger';
 
-function logIncomingRequest(requestId, ctx: ParameterizedContext) {
-  log.debug(`[${requestId}] Incoming Request`, {
+function logIncomingRequest(ctx: ParameterizedContext) {
+  log.debug('Incoming Request', {
     url: ctx.url,
     path: ctx.path,
     method: ctx.method,
@@ -15,8 +15,8 @@ function logIncomingRequest(requestId, ctx: ParameterizedContext) {
   });
 }
 
-function logOutcomingResponse(requestId, ctx: ParameterizedContext, ms: number) {
-  log.debug(`[${requestId}] Outcoming Response`, {
+function logOutcomingResponse(ctx: ParameterizedContext, ms: number) {
+  log.debug('Outcoming Response', {
     ...(ctx.response.body && { body: ctx.response.body }),
     status: ctx.response.status,
     responseTime: `${ms}ms`
@@ -24,12 +24,11 @@ function logOutcomingResponse(requestId, ctx: ParameterizedContext, ms: number) 
 }
 
 const logRequestErrors = async (error: unknown, ctx: Context): Promise<void> => {
-  const requestId = ctx.response.headers[REQUEST_ID_HEADER];
-  const prefix = requestId ?? 'No request id';
   if ((error as AxiosError).isAxiosError) {
-    log.error(`[${prefix}] Axios Error`, { error: sanitizeAxiosError(error), response: ctx.response });
+    log.error('Axios Error', { error: sanitizeAxiosError(error), response: ctx.response });
+    return;
   }
-  log.error(`[${prefix}] General Error`, { error, response: ctx.response });
+  log.error('General Error', { error, response: ctx.response });
 };
 
 const getPassedMillis = (start: number) => {
@@ -37,9 +36,7 @@ const getPassedMillis = (start: number) => {
 };
 
 const logRequest: Middleware = async (ctx, next): Promise<void> => {
-  const requestId = uuidv4();
-  ctx.set(REQUEST_ID_HEADER, requestId);
-  logIncomingRequest(requestId, ctx);
+  logIncomingRequest(ctx);
   const start = Date.now();
   try {
     await next();
@@ -51,7 +48,7 @@ const logRequest: Middleware = async (ctx, next): Promise<void> => {
   }
   const ms = getPassedMillis(start);
   ctx.set(RESPONSE_TIME_HEADER, `${ms}ms`);
-  logOutcomingResponse(requestId, ctx, ms);
+  logOutcomingResponse(ctx, ms);
 };
 
 export default logRequest;

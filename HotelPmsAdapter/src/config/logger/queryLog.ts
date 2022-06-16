@@ -2,7 +2,7 @@ import bunyan from 'bunyan';
 
 const queryLog = bunyan.createLogger({
   name: 'Orm_Queries',
-  src: true,
+  src: process.env.NODE_ENV !== 'prod',
   streams: [
     {
       level: 'info',

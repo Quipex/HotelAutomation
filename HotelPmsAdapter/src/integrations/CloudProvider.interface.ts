@@ -7,8 +7,8 @@ type CloudProvider = {
    */
   createBooking: (payload: CreateBookingPayload) => Promise<{ id: string }>;
   fetchBookingsByDates: (startDate: Date, endDate: Date) => Promise<BookingTransientModel[]>;
-  markBookingAsCheckedIn: (bookingId: string) => Promise<boolean>;
-  markBookingAsPrepaid: (bookingId: string) => Promise<boolean>;
+  markBookingAsCheckedIn: (bookingId: string) => Promise<void>;
+  markBookingAsPrepaid: (bookingId: string) => Promise<void>;
 };
 
 export type {

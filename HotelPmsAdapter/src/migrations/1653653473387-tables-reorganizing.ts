@@ -81,11 +81,9 @@ export class tablesReorganizing1653653473387 implements MigrationInterface {
         "numberOfGuests"               int,
         "groupId"                      varchar(15),
         source                         varchar(15),
-        "remindedPrepaymentTimestamps" timestamptz[] not null default Array []::timestamptz[],
         living                         boolean       not null default false,
         cancelled                      boolean       not null default false,
         prepaid                        boolean       not null default false,
-        "carPlates"                    varchar(15)[] not null default Array []::varchar[],
         notes                          text
       );
 

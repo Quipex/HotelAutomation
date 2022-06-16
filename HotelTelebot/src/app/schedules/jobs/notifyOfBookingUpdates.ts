@@ -20,7 +20,7 @@ const sendNotificationMessage = (notificationText: string) => {
   );
 };
 
-const updateReminder = async () => {
+const checkBookingUpdatesAndNotify = async () => {
   await localDb.read();
   const notifications = await BookingNotificationsService.getNotifications({
     idAfter: localDb.data.lastNotificationId
@@ -50,4 +50,5 @@ const updateReminder = async () => {
   await saveLastNotificationId(lastNotificationId);
 };
 
-createSchedule('0 */1 * * * *', updateReminder);
+// every minute
+createSchedule('0 */1 * * * *', checkBookingUpdatesAndNotify);
