@@ -9,7 +9,7 @@ export class bookingNotifications1654883129308 implements MigrationInterface {
         id          serial
           constraint booking_notifications_pk
             primary key,
-        "bookingId" varchar(36),
+        "bookingId" varchar(36) not null,
         "createdAt" timestamptz default now(),
         read        bool        default false
       );
@@ -21,7 +21,7 @@ export class bookingNotifications1654883129308 implements MigrationInterface {
         id               serial
           constraint booking_notifications_changelog_lines_pk
             primary key,
-        "notificationId" int,
+        "notificationId" int not null,
         property         text not null,
         "oldVal"         text,
         "newVal"         text

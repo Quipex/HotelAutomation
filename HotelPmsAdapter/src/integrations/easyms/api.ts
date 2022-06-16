@@ -24,12 +24,12 @@ const handleAxiosError = async (err: AxiosError, path: string, {
   if (err.response) {
     const { status, data, headers } = err.response;
     if (status === 429) {
-      log.warn(`Making requests too fast. Sleeping for ${TIME_TO_SLEEP}ms`);
+      log.warn(`[from:easyms] Making requests too fast. Sleeping for ${TIME_TO_SLEEP}ms`);
       await sleep(TIME_TO_SLEEP);
     } else if (status >= 500) {
-      log.warn(`The remote server failed, got response ${status}`, { status, data, headers });
+      log.warn(`[from:easyms] The remote server failed, got response ${status}`, { status, data, headers });
     } else if (status === 401) {
-      log.warn('Got 401, need to log in again');
+      log.warn('[from:easyms] Got 401, need to log in again');
       forceLogin = true;
     } else {
       return Promise.reject(err);
@@ -39,7 +39,7 @@ const handleAxiosError = async (err: AxiosError, path: string, {
   if (nextRetryAttempt > MAX_RETRIES) {
     return Promise.reject(new Error('Max retries exceeded'));
   }
-  log.info(`Retrying ${nextRetryAttempt} time...`);
+  log.info(`[to:easyms] Retrying ${nextRetryAttempt} time...`);
   return callPmsApi(path, { requestConfig, currentTry: nextRetryAttempt, forceLogin });
 };
 
@@ -49,16 +49,19 @@ const callPmsApi = async (path: string, {
   const token = await authenticateAndGetToken(forceLogin);
   const headers = applyAuthToHeaders(token, requestConfig.headers);
   try {
-    return await axios(path, {
+    log.debug('[to:easyms]', { path, requestConfig });
+    const axiosResponse = await axios(path, {
       ...requestConfig,
       headers,
       baseURL: env.easyMsBaseUrl
     });
+    log.debug('[from:easyms]', { data: axiosResponse.data, status: axiosResponse.status });
+    return axiosResponse;
   } catch (e: unknown) {
     if ((e as AxiosError).isAxiosError) {
       return handleAxiosError(e as AxiosError, path, { currentTry, requestConfig, forceLogin });
     }
-    log.error('Unexpected error at api call', e);
+    log.error('[from:easyms] Unexpected error', e);
     throw e;
   }
 };

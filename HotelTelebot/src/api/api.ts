@@ -1,10 +1,12 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import env from '~/config/env';
+import { uuidv4 } from '~/common/utils/uuid';
 import { REQUEST_ID_HEADER, RESPONSE_TIME_HEADER, X_SEC_HEADER } from '~/common/constants';
 import { log } from '~/config/logger';
 
 async function callApi(path: string, config: AxiosRequestConfig): Promise<unknown> {
-  log.debug('[-->] Request', { path, config });
+  const uuid = uuidv4();
+  log.debug(`[-->] Request (${uuid})`, { path, config });
   const timeBeforeRequest = Date.now();
   const response = await axios(path, {
     ...config,
@@ -16,7 +18,7 @@ async function callApi(path: string, config: AxiosRequestConfig): Promise<unknow
   });
   const realMs = Date.now() - timeBeforeRequest;
   const backendResponseTime = response.headers[RESPONSE_TIME_HEADER];
-  log.debug(`[<--] Response '${response.status}' `
+  log.debug(`[<--] Response (${uuid}) '${response.status}' `
     + `(${realMs}ms, server: ${backendResponseTime}, id: ${response.headers[REQUEST_ID_HEADER]})`, {
     data: response.data
   });

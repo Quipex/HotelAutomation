@@ -15,10 +15,10 @@ const PmsCloudProvider: CloudProvider = {
   fetchBookingsByDates(startDate: Date, endDate: Date): Promise<BookingTransientModel[]> {
     return pmsCloudFetchBookingsByDates(startDate, endDate);
   },
-  markBookingAsCheckedIn(bookingId: string): Promise<boolean> {
+  markBookingAsCheckedIn(bookingId: string): Promise<void> {
     return pmsCloudMarkBookingAsCheckedIn(bookingId);
   },
-  markBookingAsPrepaid(bookingId: string): Promise<boolean> {
+  markBookingAsPrepaid(bookingId: string): Promise<void> {
     return pmsCloudMarkBookingAsPrepaid(bookingId);
   }
 };

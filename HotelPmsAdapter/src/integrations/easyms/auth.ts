@@ -54,7 +54,7 @@ async function authAndGetContext(): Promise<SecurityContext> {
       }
     });
     if (typeof jwt !== 'string') {
-      log.error('Token is not a string', jwt);
+      log.error('[auth:easyms] Token is not a string', jwt);
       return EMPTY_CONTEXT;
     }
     const [, payloadInBase64] = jwt.split('.');
@@ -65,7 +65,7 @@ async function authAndGetContext(): Promise<SecurityContext> {
       expiresAt: payload.exp
     };
   } catch (e: unknown) {
-    log.error('Error while trying to auth:', (e as AxiosError).isAxiosError ? sanitizeAxiosError(e) : e);
+    log.error('[auth:easyms] Error while trying to auth:', (e as AxiosError).isAxiosError ? sanitizeAxiosError(e) : e);
     return EMPTY_CONTEXT;
   }
 }

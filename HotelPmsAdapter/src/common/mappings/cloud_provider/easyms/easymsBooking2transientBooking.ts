@@ -33,7 +33,7 @@ const mapEasymsBooking2BookingModel = (easymsBooking: OrderEasyms): BookingTrans
       source,
       cancelled,
       living,
-      prepaid: false,
+      prepaid: undefined,
       totalUahCoins: (roomBooking.invoice * 100).toString(),
       startDate: new Date(roomBooking.arrival),
       endDateExclusive: new Date(roomBooking.departure),

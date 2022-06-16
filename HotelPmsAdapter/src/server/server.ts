@@ -1,6 +1,7 @@
+import { koaMiddleware as rTracer } from 'cls-rtracer';
 import Application from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { ErrorCode } from '~/common/constants';
+import { ErrorCode, REQUEST_ID_HEADER } from '~/common/constants';
 import appDataSource from '~/config/dataSource';
 import env from '~/config/env';
 import { log } from '~/config/logger';
@@ -9,6 +10,7 @@ import { checkHeaderValidAndReject, logRequestAndResponseTime } from './middlewa
 
 const app = new Application();
 
+app.use(rTracer({ headerName: REQUEST_ID_HEADER, useHeader: true, echoHeader: true }));
 app.use(bodyParser());
 app.use(checkHeaderValidAndReject);
 app.use(logRequestAndResponseTime);

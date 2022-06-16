@@ -11,7 +11,7 @@ import { BookingModel } from '../../BookingModel';
 
 const createNotificationOnBookingUpdate = async (event: UpdateEvent<BookingModel>) => {
   const { entity: updatingEntity, updatedColumns, databaseEntity } = event;
-  if (STATUSES_MANUAL_CREATION.includes(updatingEntity.source)) {
+  if (STATUSES_MANUAL_CREATION.includes(updatingEntity.source) || !databaseEntity || !updatingEntity) {
     return;
   }
   log.info('Updating existing booking, creating notification');

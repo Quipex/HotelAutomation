@@ -1,8 +1,10 @@
 import bunyan from 'bunyan';
+import { enhanceLoggerWithRequestId } from '~/common/utils/logging';
 
-const log = bunyan.createLogger({
+const log = enhanceLoggerWithRequestId(bunyan.createLogger({
   name: 'General',
-  src: true,
+  src: process.env.NODE_ENV !== 'prod',
+  srcDepth: 4,
   streams: [
     {
       level: 'debug',
@@ -30,6 +32,6 @@ const log = bunyan.createLogger({
       count: 30
     }
   ]
-});
+}));
 
 export { log };

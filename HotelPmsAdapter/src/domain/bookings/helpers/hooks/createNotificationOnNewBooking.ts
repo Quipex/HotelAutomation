@@ -11,7 +11,6 @@ const createNotificationOnNewBooking = async (event: InsertEvent<BookingModel>) 
   // such id doesn't exist (it wasn't previously committed by the higher-level transaction)
   if (event.queryRunner.isTransactionActive) {
     await event.queryRunner.commitTransaction();
-    await event.queryRunner.startTransaction();
   }
 
   const { entity } = event;

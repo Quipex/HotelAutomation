@@ -1,6 +1,7 @@
 import bunyan from 'bunyan';
+import { enhanceLoggerWithRequestId } from '~/common/utils/logging';
 
-const usersLog = bunyan.createLogger({
+const usersLog = enhanceLoggerWithRequestId(bunyan.createLogger({
   name: 'Users_Activity',
   streams: [
     {
@@ -15,6 +16,6 @@ const usersLog = bunyan.createLogger({
       stream: process.stdout
     }
   ]
-});
+}));
 
 export { usersLog };
