@@ -14,7 +14,8 @@ const createNotificationOnBookingUpdate = async (event: UpdateEvent<BookingModel
   if (STATUSES_MANUAL_CREATION.includes(updatingEntity.source) || !databaseEntity || !updatingEntity) {
     return;
   }
-  log.info('Updating existing booking, creating notification');
+
+  log.info(`Updating existing booking '${databaseEntity.id}', creating notification`);
   const updatedBookingNotification = new BookingNotificationModel();
   updatedBookingNotification.booking = databaseEntity;
   updatedBookingNotification.id = undefined;

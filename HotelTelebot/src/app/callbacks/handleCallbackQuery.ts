@@ -1,5 +1,7 @@
 import { Context, Middleware } from 'telegraf';
 import {
+  bookingCancelAsk,
+  bookingCancelConfirm,
   bookingDetails,
   bookingLivingAsk,
   bookingLivingConfirm,
@@ -17,6 +19,7 @@ import { getCallbackHandler, registerActionHandler } from './CallbackHandler';
 import {
   cancelAction,
   confirmBookingAndReply,
+  confirmCancelAndReply,
   confirmLivingAndReply,
   createConfirmationHandler,
   findClientBookings,
@@ -43,13 +46,13 @@ registerActionHandler(cancel, cancelAction);
 registerActionHandler(bookingDetails, sendBookingDetails);
 registerActionHandler(bookingPrePaidAsk, createConfirmationHandler({
   actionOnConfirm: bookingPrePaidConfirm,
-  messageOnConfirm: 'Предоплата'
+  messageOnConfirm: 'Предоплата 💳'
 }));
 registerActionHandler(bookingPrePaidConfirm, confirmBookingAndReply);
 registerActionHandler(bookingRemindedPrepayment, setRemindedPrepaymentAndReply);
 registerActionHandler(bookingLivingAsk, createConfirmationHandler({
   actionOnConfirm: bookingLivingConfirm,
-  messageOnConfirm: 'Проживание'
+  messageOnConfirm: 'Проживание 🛌'
 }));
 registerActionHandler(bookingLivingConfirm, confirmLivingAndReply);
 registerActionHandler(bookingRefresh, refreshBooking);
@@ -57,5 +60,10 @@ registerActionHandler(clientDetails, sendClientDetails);
 registerActionHandler(clientRefresh, refreshClient);
 registerActionHandler(clientBookings, findClientBookings);
 registerActionHandler(bookingMoveList, replyWithMoveBookingUsage);
+registerActionHandler(bookingCancelAsk, createConfirmationHandler({
+  actionOnConfirm: bookingCancelConfirm,
+  messageOnConfirm: 'Отмена бронирования ❌'
+}));
+registerActionHandler(bookingCancelConfirm, confirmCancelAndReply);
 
 export { handleCallbackQuery };

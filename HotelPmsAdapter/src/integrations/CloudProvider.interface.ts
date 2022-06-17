@@ -9,6 +9,7 @@ type CloudProvider = {
   fetchBookingsByDates: (startDate: Date, endDate: Date) => Promise<BookingTransientModel[]>;
   markBookingAsCheckedIn: (bookingId: string) => Promise<void>;
   markBookingAsPrepaid: (bookingId: string) => Promise<void>;
+  cancelBooking: (bookingId: string) => Promise<void>;
 };
 
 export type {

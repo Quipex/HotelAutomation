@@ -4,7 +4,7 @@ import {
 } from '@commands/booking/booking_move';
 import parseCommandFindBookingsAddedAfterAndReply from '@commands/booking/bookings_added';
 import { parseCommandFindBookingsArrivedOnAndReply } from '@commands/booking/bookings_arrive';
-import parseCommandFindBookingsByIdAndReply from '@commands/booking/bookings_by_id';
+import { parseCommandFindBookingsByIdAndReply } from '@commands/booking/bookings_by_id';
 import parseCommandFindBookingsNotPrePayedAndReply from '@commands/booking/bookings_not_prepayed';
 import findBookingsRemindedAndExpiredPrepaymentAndReply from '@commands/booking/bookings_not_prepayed_reminded_expired';
 import parseCommandCreateBookingAndReply from '@commands/booking/create_booking';
@@ -14,8 +14,21 @@ import synchronizeBookingsAndClientsAndReply from '@commands/synchronize_booking
 import { Telegraf } from 'telegraf';
 import { handleCallbackQuery } from '~/app/callbacks';
 import { authorizeRequest, handleErrors as h, logUsers, validateMessage } from '~/app/middlewares';
+import {
+  COMMAND_BOOKING_BY_ID,
+  COMMAND_BOOKINGS_ADDED_AFTER,
+  COMMAND_BOOKINGS_ARRIVE_ON,
+  COMMAND_CLIENT_BY_ID,
+  COMMAND_CREATE,
+  COMMAND_FIND_CLIENT,
+  COMMAND_MOVE,
+  COMMAND_MOVE_IN_BATCH,
+  COMMAND_NOT_PREPAID,
+  COMMAND_PREPAID_EXPIRED,
+  COMMAND_SYNC
+} from '~/common/constants';
+import env from '~/config/env';
 import { log } from '~/config/logger';
-import env from '../config/env';
 
 const bot = new Telegraf(env.botToken);
 
@@ -26,17 +39,17 @@ bot.on('callback_query', h(handleCallbackQuery));
 
 bot.start((ctx) => ctx.reply('Hello!'));
 
-bot.command(['c', 'cl', 'client'], h(parseCommandFindClientAndReply));
-bot.command('arrive', h(parseCommandFindBookingsArrivedOnAndReply));
-bot.command('added', h(parseCommandFindBookingsAddedAfterAndReply));
-bot.command('id', h(parseCommandFindBookingsByIdAndReply));
-bot.command('cl_id', h(parseCommandFindClientByIdAndReply));
-bot.command('sync', h(synchronizeBookingsAndClientsAndReply));
-bot.command('create', h(parseCommandCreateBookingAndReply));
-bot.command(['not_payed', 'prepay', 'prepayment', 'pp', 'npp'], h(parseCommandFindBookingsNotPrePayedAndReply));
-bot.command(['pp_expired', 'expired'], h(findBookingsRemindedAndExpiredPrepaymentAndReply));
-bot.command('mv', h(parseCommandMoveBookingAndReply));
-bot.command('mv_batch', h(parseCommandMoveBookingInBatchAndReply));
+bot.command(COMMAND_FIND_CLIENT, h(parseCommandFindClientAndReply));
+bot.command(COMMAND_BOOKINGS_ARRIVE_ON, h(parseCommandFindBookingsArrivedOnAndReply));
+bot.command(COMMAND_BOOKINGS_ADDED_AFTER, h(parseCommandFindBookingsAddedAfterAndReply));
+bot.command(COMMAND_BOOKING_BY_ID, h(parseCommandFindBookingsByIdAndReply));
+bot.command(COMMAND_CLIENT_BY_ID, h(parseCommandFindClientByIdAndReply));
+bot.command(COMMAND_SYNC, h(synchronizeBookingsAndClientsAndReply));
+bot.command(COMMAND_CREATE, h(parseCommandCreateBookingAndReply));
+bot.command(COMMAND_NOT_PREPAID, h(parseCommandFindBookingsNotPrePayedAndReply));
+bot.command(COMMAND_PREPAID_EXPIRED, h(findBookingsRemindedAndExpiredPrepaymentAndReply));
+bot.command(COMMAND_MOVE, h(parseCommandMoveBookingAndReply));
+bot.command(COMMAND_MOVE_IN_BATCH, h(parseCommandMoveBookingInBatchAndReply));
 
 bot.launch()
   .then(() => {

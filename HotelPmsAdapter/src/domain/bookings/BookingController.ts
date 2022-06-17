@@ -19,7 +19,8 @@ const {
   remindedPrepayment$put,
   expiredRemind$get,
   confirmLiving$put,
-  confirm$put
+  confirmPrepayment$put,
+  cancel$put
 } = routesV1.bookings;
 
 BookingController.post(
@@ -94,9 +95,9 @@ BookingController.put(
 );
 
 BookingController.put(
-  getPathOf(confirm$put),
+  getPathOf(confirmPrepayment$put),
   async (ctx) => {
-    const { bookingId } = ctx.request.body as ReturnType<typeof confirm$put.getData>;
+    const { bookingId } = ctx.request.body as ReturnType<typeof confirmPrepayment$put.getData>;
     if (!bookingId) {
       ctx.status = 400;
       ctx.body = { message: 'missing booking id' };
@@ -156,6 +157,7 @@ BookingController.put(
         guestName
       });
       ctx.body = { newId };
+      ctx.status = 200;
     } catch (e: unknown) {
       if (e instanceof BookingCreationConflictError) {
         ctx.status = 409;
@@ -164,6 +166,20 @@ BookingController.put(
       }
       throw e;
     }
+  }
+);
+
+BookingController.put(
+  getPathOf(cancel$put),
+  async (ctx) => {
+    const { bookingId } = ctx.request.body as ReturnType<typeof cancel$put.getData>;
+    if (!bookingId) {
+      ctx.status = 400;
+      ctx.body = { message: 'missing booking id' };
+      return;
+    }
+    await BookingPmsService.cancelBooking(bookingId);
+    ctx.status = 200;
   }
 );
 

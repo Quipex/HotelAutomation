@@ -1,7 +1,6 @@
 function Confirmation(message: string): string {
   return (
-    '<b>Подтверждение</b>:\n'
-    + '\n'
+    '<b>Подтвердите действие</b>:\n'
     + `${message}`
   );
 }

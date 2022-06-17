@@ -1,4 +1,5 @@
 import {
+  cbPayloadBookingCancelAsk,
   cbPayloadBookingLivingAsk,
   cbPayloadBookingMoveList,
   cbPayloadBookingPrepaidAsk,
@@ -7,30 +8,35 @@ import {
   cbPayloadClientDetails
 } from '@callbacks/callback_actions';
 import { InlineKeyboardButton } from 'telegraf/typings/markup';
+import { STATUSES_MANUAL_CREATION } from '~/common/constants';
 import { BookingDto } from '~/common/types';
 
 function detailedBookingActions(
-  { id, cancelled, living, prepaid, client: { id: clientId }, startDate }: BookingDto
+  { id: bookingId, cancelled, living, prepaid, client: { id: clientId }, startDate, source }: BookingDto
 ) {
   const inlineKeyboard: InlineKeyboardButton[][] = [];
 
-  inlineKeyboard.push([{ text: 'Переместить... 🚪', callback_data: cbPayloadBookingMoveList(id), hide: false }]);
-  inlineKeyboard.push([{ text: 'Обновить ♻', callback_data: cbPayloadBookingRefresh(id), hide: true }]);
+  inlineKeyboard.push([{ text: 'Переместить... 🚪', callback_data: cbPayloadBookingMoveList(bookingId), hide: false }]);
+  inlineKeyboard.push([{ text: 'Обновить ♻', callback_data: cbPayloadBookingRefresh(bookingId), hide: true }]);
   inlineKeyboard.push([{ text: 'Клиент 🧑️', callback_data: cbPayloadClientDetails(clientId), hide: false }]);
 
   if (cancelled) {
     return inlineKeyboard;
   }
 
+  if (STATUSES_MANUAL_CREATION.includes(source)) {
+    inlineKeyboard.push([{ text: 'Отменить ❌', callback_data: cbPayloadBookingCancelAsk(bookingId), hide: false }]);
+  }
+
   if (!prepaid && !living) {
     inlineKeyboard.push([{
       text: 'Подтвердить предоплату ✅',
-      callback_data: cbPayloadBookingPrepaidAsk(id),
+      callback_data: cbPayloadBookingPrepaidAsk(bookingId),
       hide: true
     }]);
     inlineKeyboard.push([{
       text: 'Напомнили за предоплату 💬',
-      callback_data: cbPayloadBookingRemindedPrepayment(id),
+      callback_data: cbPayloadBookingRemindedPrepayment(bookingId),
       hide: false
     }]);
   }
@@ -40,7 +46,7 @@ function detailedBookingActions(
   if (shouldBeLiving && !living) {
     inlineKeyboard.push([{
       text: 'Подтвердить проживание 🏠',
-      callback_data: cbPayloadBookingLivingAsk(id),
+      callback_data: cbPayloadBookingLivingAsk(bookingId),
       hide: true
     }]);
   }

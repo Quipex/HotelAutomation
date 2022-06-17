@@ -9,6 +9,9 @@ import {
 } from './features';
 
 const PmsCloudProvider: CloudProvider = {
+  cancelBooking(): Promise<void> {
+    throw new Error('Not implemented');
+  },
   createBooking(payload: CreateBookingPayload): Promise<{ id: string; }> {
     return pmsCloudCreateBooking(payload);
   },

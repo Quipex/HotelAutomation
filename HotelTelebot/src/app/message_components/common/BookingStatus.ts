@@ -10,12 +10,12 @@ const BookingStatus: FromStatusFn = ({ living, prepaid, cancelled }, options) =>
     return `${emojified ? '❌ ' : ''}Отмена${emojified ? ' ❌' : ''}`;
   }
   if (living) {
-    return `${emojified ? '🟩 ' : ''}Проживает${emojified ? ' 🟩' : ''}`;
+    return `${emojified ? '✅ ' : ''}Проживает`;
   }
   if (prepaid) {
-    return `${emojified ? '🟨 ' : ''}Предоплата${emojified ? ' 🟨' : ''}`;
+    return `${emojified ? '☑ ' : ''}Предоплата`;
   }
-  return `${emojified ? '🟥 ' : ''}Без предоплаты${emojified ? ' 🟥' : ''}`;
+  return `${emojified ? '❗ ' : ''}Без предоплаты`;
 };
 
 export default BookingStatus;

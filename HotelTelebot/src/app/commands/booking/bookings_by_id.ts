@@ -3,24 +3,24 @@ import { Context } from 'telegraf';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 import { BookingsService } from '~/api/services';
 
-export async function fetchBookingByIdAndReply(bookingId: string, ctx: Context, extra?: ExtraReplyMessage) {
+const fetchBookingByIdAndReply = async (bookingId: string, ctx: Context, extra?: ExtraReplyMessage) => {
   const foundBooking = await BookingsService.fetchBookingById(bookingId);
-  if (foundBooking) {
-    return ctx.replyWithHTML(DetailedBooking(foundBooking), {
-      reply_markup: { inline_keyboard: DetailedBookingActions(foundBooking) },
-      ...extra
-    });
+  if (!foundBooking) {
+    return ctx.reply(`🔍 Not found booking with id '${bookingId}'`);
   }
-  return ctx.reply('🔍 Not found');
-}
+  return ctx.replyWithHTML(DetailedBooking(foundBooking), {
+    reply_markup: { inline_keyboard: DetailedBookingActions(foundBooking) },
+    ...extra
+  });
+};
 
-async function parseCommandFindBookingsByIdAndReply(ctx: Context) {
+const parseCommandFindBookingsByIdAndReply = async (ctx: Context) => {
   const messageWords = ctx.message?.text?.split(' ');
   if (!messageWords || messageWords.length < 2) {
-    return ctx.reply('❌ id missing ❌');
+    return ctx.reply('Id missing ❌');
   }
   const [, bookingId] = messageWords;
   return fetchBookingByIdAndReply(bookingId, ctx);
-}
+};
 
-export default parseCommandFindBookingsByIdAndReply;
+export { fetchBookingByIdAndReply, parseCommandFindBookingsByIdAndReply };
