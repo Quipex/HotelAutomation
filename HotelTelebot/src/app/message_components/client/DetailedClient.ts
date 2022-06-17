@@ -8,7 +8,7 @@ function DetailedClientMessage(
   return (
     BriefClientMessage(
       client,
-      (email ? `Имейл: ${email}\n` : '')
+      (email ? `📧 :  <code>${email}</code>\n` : '')
       + (country ? `Страна: ${country}\n` : '')
       + (city ? `Город: ${city}\n` : '')
       + (address ? `Адрес: ${address}\n` : '')

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { DATETIME_DAYOFWEEK_MOMENTJS } from '~/common/constants';
 import { ClientDto } from '~/common/types';
 import { formatDate } from '~/common/utils/dates';
@@ -5,17 +6,17 @@ import { formatDate } from '~/common/utils/dates';
 function BriefClientMessage(
   {
     id,
-    fullNameRu,
+    fullNameOrig,
     phone,
     createdAt
   }: ClientDto,
   childrenMessage?: string
 ): string {
   return (
-    `🧑️ ${fullNameRu}\n`
-    + `📞 ${phone}\n${
-      childrenMessage ? `${childrenMessage}\n----\n` : '\n'
-    }<i>Обновлено ${formatDate(createdAt, DATETIME_DAYOFWEEK_MOMENTJS)}\n</i>`
+    `🧑️ :  ${fullNameOrig}\n`
+    + (phone ? `📞 :  <code>${phone}</code>\n` : '')
+    + (childrenMessage ? `${childrenMessage}\n` : '\n')
+    + `<i>Обновлено ${formatDate(createdAt, DATETIME_DAYOFWEEK_MOMENTJS)}\n</i>`
     + `<code>/cl_id ${id}</code>`
   );
 }
