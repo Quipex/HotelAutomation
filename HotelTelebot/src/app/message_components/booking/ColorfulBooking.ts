@@ -1,4 +1,4 @@
-import { formatBookingPropertyValue } from '~/app/message_components/common/helpers';
+import { formatBookingPropertyValue, getRelativeStatusMessage } from '~/app/message_components/common/helpers';
 import { BookingDto } from '~/common/types';
 import { daysBetween } from '~/common/utils/dates';
 import { BookingStatus } from '../common';
@@ -8,7 +8,9 @@ const format: typeof formatBookingPropertyValue = (prop, val) => {
 };
 
 function ColorfulBooking(
-  {
+  booking: BookingDto
+): string {
+  const {
     startDate,
     endDateExclusive,
     room: { realRoomNumber },
@@ -20,8 +22,7 @@ function ColorfulBooking(
     updatedAt,
     id,
     totalUahCoins
-  }: BookingDto
-): string {
+  } = booking;
   const statusText = BookingStatus({
     living,
     cancelled,
@@ -37,6 +38,7 @@ function ColorfulBooking(
     + `Источник: <b>${format('source', source)}</b>\n`
     + `Статус: <b>${statusText}</b>\n`
     + `💳 :  Сумма: <b>${format('totalUahCoins', totalUahCoins)}</b>\n\n`
+    + `<i>${getRelativeStatusMessage(booking)}</i>\n\n`
     + `<i>Обновлено ${format('updatedAt', updatedAt)}\n</i>`
     + `<code>/id ${id}</code>`
   );
