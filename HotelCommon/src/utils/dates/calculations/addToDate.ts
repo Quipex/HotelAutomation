@@ -8,7 +8,7 @@ type Args = {
 };
 
 const addToDate = ({ date, amount, unit }: Args) => {
-  return dayjs(date).subtract(amount, unit);
+  return dayjs(date).add(amount, unit);
 };
 
 export { addToDate };

@@ -1,10 +1,13 @@
-import { formatBookingPropertyValue as format } from '~/app/message_components/common/helpers';
+import {
+  formatBookingPropertyValue as format,
+  getRelativeStatusMessage
+} from '~/app/message_components/common/helpers';
 import { BookingDto } from '~/common/types';
-import { BookingStatus } from '../common';
 import { daysBetween } from '~/common/utils/dates';
+import { BookingStatus } from '../common';
 
-function PlainTextBooking(
-  {
+function PlainTextBooking(booking: BookingDto): string {
+  const {
     startDate,
     endDateExclusive,
     room: { realRoomNumber },
@@ -16,8 +19,7 @@ function PlainTextBooking(
     updatedAt,
     id,
     totalUahCoins
-  }: BookingDto
-): string {
+  } = booking;
   const statusText = BookingStatus({
     living,
     cancelled,
@@ -33,6 +35,7 @@ function PlainTextBooking(
     + `Источник: <b>${format('source', source)}</b>\n`
     + `Статус: <b>${statusText}</b>\n`
     + `Сумма: <b>${format('totalUahCoins', totalUahCoins)}</b>\n\n`
+    + `<i>${getRelativeStatusMessage(booking)}</i>\n\n`
     + `<i>Обновлено ${format('updatedAt', updatedAt)}\n</i>`
     + `<code>/id ${id}</code>`
   );
