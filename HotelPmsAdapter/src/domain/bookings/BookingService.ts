@@ -9,9 +9,9 @@ import { RoomModel } from '~/domain/rooms/RoomModel';
 import { getCloudProvider } from '~/integrations/getCloudProvider';
 import * as BookingRepository from './BookingRepository';
 
-async function saveTransientBookingsAndIncludedClients(
+const saveTransientBookingsAndIncludedClients = async (
   transientBookings: BookingTransientModel[]
-): Promise<BookingDto[]> {
+): Promise<BookingDto[]> => {
   const savedRooms = await getRepository(RoomModel).find();
   const clientModels = transientBookings.map(({ client }) => transientClient2clientModel(client));
   const bookingsToSave = transientBookings2bookingModels({ transientBookings, clientModels, savedRooms });
@@ -19,9 +19,9 @@ async function saveTransientBookingsAndIncludedClients(
   const savedBookingIds = dirtySavedBookings.map((b) => b.id);
   const savedBookingModels = await BookingRepository.findBookingsByIds(savedBookingIds);
   return savedBookingModels.map(mapBookingModel2dto);
-}
+};
 
-async function fetchPmsAndGetAllActiveBookings(): Promise<BookingDto[]> {
+const fetchPmsAndGetAllActiveBookings = async (): Promise<BookingDto[]> => {
   const todayYear = new Date().getFullYear();
   const startDate = new Date(todayYear, 5, 1);
   const endDate = new Date(todayYear, 8, 30);
@@ -31,39 +31,39 @@ async function fetchPmsAndGetAllActiveBookings(): Promise<BookingDto[]> {
   const savedBookings = await saveTransientBookingsAndIncludedClients(transientBookings);
 
   return savedBookings.filter((b) => !b.cancelled);
-}
+};
 
-async function getAllBookings(): Promise<BookingDto[]> {
+const getAllBookings = async (): Promise<BookingDto[]> => {
   return (await BookingRepository.findAllBookings())
     .map(mapBookingModel2dto);
-}
+};
 
-async function getArrivalsBy(unixDate: number): Promise<BookingDto[]> {
+const getArrivalsBy = async (unixDate: number): Promise<BookingDto[]> => {
   return (await BookingRepository.findArrivalsAt(unixSecondsToDate(unixDate)))
     .map(mapBookingModel2dto);
-}
+};
 
-async function getBookingsAddedAfter(unixSeconds: number): Promise<BookingDto[]> {
+const getBookingsAddedAfter = async (unixSeconds: number): Promise<BookingDto[]> => {
   return (await BookingRepository.findBookingsAddedAfter(unixSecondsToDate(unixSeconds)))
     .map(mapBookingModel2dto);
-}
+};
 
-async function getBookingById(id: string): Promise<BookingDto | null> {
+const getBookingById = async (id: string): Promise<BookingDto | null> => {
   const bookingModel = await BookingRepository.findById(id);
   return bookingModel ? mapBookingModel2dto(bookingModel) : null;
-}
+};
 
-async function getBookingsNotPayedArriveAfter(unixDate: number): Promise<BookingDto[]> {
+const getBookingsNotPayedArriveAfter = async (unixDate: number): Promise<BookingDto[]> => {
   return (await BookingRepository.findBookingsNotPayedArriveAfter(unixSecondsToDate(unixDate)))
     .map(mapBookingModel2dto);
-}
+};
 
-async function confirmPrepayment(bookingId: string): Promise<void> {
+const confirmPrepayment = async (bookingId: string): Promise<void> => {
   await getCloudProvider().markBookingAsPrepaid(bookingId);
   await BookingRepository.setBookingToConfirmed(bookingId);
-}
+};
 
-async function confirmLiving(bookingId: string): Promise<void> {
+const confirmLiving = async (bookingId: string): Promise<void> => {
   const booking = await BookingRepository.findById(bookingId);
   if (!booking.prepaid) {
     await confirmPrepayment(bookingId);
@@ -71,31 +71,36 @@ async function confirmLiving(bookingId: string): Promise<void> {
 
   await getCloudProvider().markBookingAsCheckedIn(bookingId);
   await BookingRepository.setBookingToLiving(bookingId);
-}
+};
 
-async function remindedOfPrepayment(bookingId: string): Promise<void> {
+const remindedOfPrepayment = async (bookingId: string): Promise<void> => {
   await BookingRepository.setBookingPrepaymentWasReminded(bookingId);
-}
+};
 
-async function expiredRemindedPrepayment(): Promise<BookingDto[]> {
+const expiredRemindedPrepayment = async (): Promise<BookingDto[]> => {
   return (await BookingRepository.findBookingsWhoRemindedAndExpired())
     .map(mapBookingModel2dto);
-}
+};
 
-async function getBookingsByOwner(clientId: string): Promise<BookingDto[]> {
+const getBookingsByOwner = async (clientId: string): Promise<BookingDto[]> => {
   return (await BookingRepository.findBookingsByOwner(clientId))
     .map(mapBookingModel2dto);
-}
+};
 
 /**
  * @throws {BookingCreationConflictError} on conflicting bookings
  */
-async function createBookingAndSyncBookings(payload: CreateBookingPayload): Promise<BookingId> {
+const createBookingAndSyncBookings = async (payload: CreateBookingPayload): Promise<BookingId> => {
   const resp = await getCloudProvider().createBooking(payload);
   // todo: replace with the response from api call persisted to db
   await fetchPmsAndGetAllActiveBookings();
   return resp.id;
-}
+};
+
+const cancelBooking = async (bookingId: string) => {
+  await getCloudProvider().cancelBooking(bookingId);
+  await BookingRepository.cancelBooking(bookingId);
+};
 
 export default {
   fetchPmsAndGetAllActiveBookings,
@@ -109,7 +114,8 @@ export default {
   remindedOfPrepayment,
   expiredRemindedPrepayment,
   getBookingsByOwner,
-  createBookingAndSyncBookings
+  createBookingAndSyncBookings,
+  cancelBooking
 };
 
 export type {

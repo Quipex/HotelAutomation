@@ -14,7 +14,7 @@ const log = enhanceLoggerWithRequestId(bunyan.createLogger({
       count: 2
     },
     {
-      level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+      level: process.env.NODE_ENV !== 'prod' ? 'debug' : 'info',
       stream: process.stdout
     },
     {

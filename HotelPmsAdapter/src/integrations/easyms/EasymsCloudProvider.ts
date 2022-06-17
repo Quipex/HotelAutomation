@@ -4,10 +4,14 @@ import { CloudProvider } from '../CloudProvider.interface';
 import {
   createBooking as easymsCreateBooking,
   fetchBookingsByDates as easymsFetchBookingsByDates,
-  markBookingAsLiving as easymsMarkBookingAsLiving
+  markBookingAsLiving as easymsMarkBookingAsLiving,
+  cancelBooking as easymsCancelBooking
 } from './features';
 
 const EasymsCloudProvider: CloudProvider = {
+  cancelBooking(bookingId: string): Promise<void> {
+    return easymsCancelBooking(bookingId);
+  },
   createBooking(payload: CreateBookingPayload): Promise<{ id: string }> {
     return easymsCreateBooking(payload);
   },

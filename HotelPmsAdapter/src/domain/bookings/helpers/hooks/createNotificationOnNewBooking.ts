@@ -6,18 +6,20 @@ import { getRepository } from '~/domain/helpers/orm';
 import { BookingModel } from '../../BookingModel';
 
 const createNotificationOnNewBooking = async (event: InsertEvent<BookingModel>) => {
-  // This is a workaround for typeorm auto-transaction management. It creates a nested transaction after inserting
-  // booking and therefore when we're trying to create a notification with corresponding `booking_id` it says that
-  // such id doesn't exist (it wasn't previously committed by the higher-level transaction)
-  if (event.queryRunner.isTransactionActive) {
-    await event.queryRunner.commitTransaction();
-  }
-
   const { entity } = event;
   if (STATUSES_MANUAL_CREATION.includes(entity.source)) {
     return;
   }
-  log.info('Got new booking, creating notification');
+
+  // This is a workaround for typeorm auto-transaction management. It creates a nested transaction after inserting
+  // booking and therefore when we're trying to create a notification with corresponding `booking_id` it says that
+  // such id doesn't exist (it wasn't previously committed by the higher-level transaction)
+  if (event.queryRunner.isTransactionActive) {
+    await event.queryRunner.query('COMMIT');
+    await event.queryRunner.query('START TRANSACTION');
+  }
+
+  log.info(`Got new booking '${entity.id}', creating notification`);
   const newBookingNotification = new BookingNotificationModel();
   newBookingNotification.id = undefined;
   newBookingNotification.booking = entity;

@@ -74,6 +74,14 @@ function cbPayloadBookingRefresh(bookingId: string) {
   return `${bookingRefresh}|${bookingId}`;
 }
 
+const bookingCancelAsk = 'bC';
+
+function cbPayloadBookingCancelAsk(bookingId: string) {
+  return `${bookingCancelAsk}|${bookingId}`;
+}
+
+const bookingCancelConfirm = 'bCY';
+
 export {
   cancel,
   cbPayloadCancel,
@@ -100,5 +108,8 @@ export {
   bookingRemindedPrepayment,
   cbPayloadBookingRemindedPrepayment,
   bookingRefresh,
-  cbPayloadBookingRefresh
+  cbPayloadBookingRefresh,
+  bookingCancelAsk,
+  cbPayloadBookingCancelAsk,
+  bookingCancelConfirm
 };

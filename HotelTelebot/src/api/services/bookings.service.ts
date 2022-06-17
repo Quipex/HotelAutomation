@@ -5,84 +5,90 @@ import { BookingCreationPayload } from '~/common/types/routes.v1.types';
 import { log } from '~/config/logger';
 import { rv1 } from './helpers';
 
-async function fetchBookingById(bookingId: string) {
+const fetchBookingById = async (bookingId: string) => {
   const { path: fullPath, method, compactPath: { withPathVariable } } = rv1(routesV1.bookings.byId$get);
   const path = withPathVariable(fullPath, bookingId);
   return await api.call(path, { method }) as BookingDto;
-}
+};
 
-async function fetchBookingsAddedAfter(unixDate: number) {
+const fetchBookingsAddedAfter = async (unixDate: number) => {
   const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.added$get);
   const params = getQueryParams({ after: unixDate });
   return await api.call(path, { method, params }) as BookingDto[];
-}
+};
 
-async function fetchBookingsArriveAt(unixDate: number) {
+const fetchBookingsArriveAt = async (unixDate: number) => {
   const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.arrive$get);
   const params = getQueryParams({ date: unixDate });
   return await api.call(path, { method, params }) as BookingDto[];
-}
+};
 
-async function fetchBookingsExpiredAndReminded() {
+const fetchBookingsExpiredAndReminded = async () => {
   const { path, method } = rv1(routesV1.bookings.expiredRemind$get);
   return await api.call(path, { method }) as BookingDto[];
-}
+};
 
-async function fetchNotPayedBookingsArriveAfter(unixDate: number) {
+const fetchNotPayedBookingsArriveAfter = async (unixDate: number) => {
   const { path, method, compactPath: { getQueryParams } } = rv1(routesV1.bookings.notPaid$get);
   const params = getQueryParams({ arrive_after: unixDate });
   return await api.call(path, { method, params }) as BookingDto[];
-}
+};
 
-async function confirmBooking(bookingId: string) {
-  const { path, method, compactPath: { getData } } = rv1(routesV1.bookings.confirm$put);
+const confirmPrepayment = async (bookingId: string) => {
+  const { path, method, compactPath: { getData } } = rv1(routesV1.bookings.confirmPrepayment$put);
   const data = getData({ bookingId });
   await api.call(path, { data, method });
-}
+};
 
-async function confirmLiving(bookingId: string) {
+const confirmLiving = async (bookingId: string) => {
   const { path, method, compactPath: { getData } } = rv1(routesV1.bookings.confirmLiving$put);
   const data = getData({ bookingId });
   return api.call(path, { data, method });
-}
+};
 
-async function createBooking(createPayload: BookingCreationPayload) {
+const createBooking = async (createPayload: BookingCreationPayload) => {
   const { path, method, compactPath: { getData } } = rv1(routesV1.bookings.create$put);
   const data = getData(createPayload);
   return api.call(path, { data, method });
-}
+};
 
-async function putRemindedPrepayment(bookingId: string) {
+const putRemindedPrepayment = async (bookingId: string) => {
   const { path, method, compactPath: { getData } } = rv1(routesV1.bookings.remindedPrepayment$put);
   const data = getData({ bookingId });
   await api.call(path, { data, method });
-}
+};
 
-async function syncBookings() {
+const syncBookings = async () => {
   const { path, method } = rv1(routesV1.bookings.sync$put);
   await api.call(path, { method });
-}
+};
 
-async function fetchClientBookings(clientId: string) {
+const fetchClientBookings = async (clientId: string) => {
   const { path: fullPath, method, compactPath: { withPathVariable } } = rv1(routesV1.bookings.owner.byId$get);
   const path = withPathVariable(fullPath, clientId);
   return await api.call(path, { method }) as BookingDto[];
-}
+};
 
-async function moveBookingInBatch(...any: any): Promise<any> {
+const moveBookingInBatch = async (...any: any): Promise<any> => {
   log.error('Not implemented', { any });
   throw new Error('Not implemented');
-}
+};
 
-async function moveBooking(...any: any): Promise<any> {
+const moveBooking = async (...any: any): Promise<any> => {
   log.error('Not implemented', { any });
   throw new Error('Not implemented');
-}
+};
 
-async function fetchBookingsArriveAtAndNotLiving(...any: any): Promise<any> {
+const fetchBookingsArriveAtAndNotLiving = async (...any: any): Promise<any> => {
   log.error('Not implemented', { any });
   throw new Error('Not implemented');
-}
+};
+
+const cancelBooking = async (bookingId: string) => {
+  const { path, method, compactPath: { getData } } = rv1(routesV1.bookings.cancel$put);
+  const payload = getData({ bookingId });
+  await api.call(path, { method, data: payload });
+};
 
 export default {
   fetchBookingById,
@@ -90,7 +96,7 @@ export default {
   fetchBookingsArriveAt,
   fetchBookingsExpiredAndReminded,
   fetchNotPayedBookingsArriveAfter,
-  confirmBooking,
+  confirmPrepayment,
   confirmLiving,
   createBooking,
   putRemindedPrepayment,
@@ -98,5 +104,6 @@ export default {
   fetchClientBookings,
   moveBookingInBatch,
   moveBooking,
-  fetchBookingsArriveAtAndNotLiving
+  fetchBookingsArriveAtAndNotLiving,
+  cancelBooking
 };

@@ -8,7 +8,7 @@ const createBooking: CloudProvider['createBooking'] = async (payload) => {
   try {
     const orderPayload = await createEasymsOrderPayload(payload);
     await api.post('api/orders/create', { data: orderPayload });
-    // manually we create only one room so it's safe to access room by the first index
+    // manually we create only one room, so it's safe to access room by the first index
     return { id: orderPayload.rooms[0].roomReservationId };
   } catch (e: unknown) {
     const { isAxiosError, response: { status } } = e as AxiosError;

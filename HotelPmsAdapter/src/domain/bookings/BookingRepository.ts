@@ -108,6 +108,11 @@ async function findBookingsByOwner(clientId: ClientId): Promise<BookingModel[]> 
   });
 }
 
+async function cancelBooking(bookingId: string) {
+  const bookingsRepository = getRepository(BookingModel);
+  bookingsRepository.update({ id: bookingId }, { cancelled: true });
+}
+
 export {
   findAllBookings,
   findArrivalsAt,
@@ -119,5 +124,6 @@ export {
   setBookingPrepaymentWasReminded,
   findBookingsWhoRemindedAndExpired,
   findBookingsByOwner,
-  findBookingsByIds
+  findBookingsByIds,
+  cancelBooking
 };

@@ -62,8 +62,8 @@ const routesV1 = {
     /**
      * Mark booking as confirmed (person made prepayment)
      */
-    confirm$put: {
-      relativePath: 'confirm',
+    confirmPrepayment$put: {
+      relativePath: 'confirm_prepayment',
       getData: (data: { bookingId: string }) => data
     },
     /**
@@ -92,6 +92,13 @@ const routesV1 = {
     create$put: {
       relativePath: 'create',
       getData: (data: BookingCreationPayload) => data
+    },
+    /**
+     * Cancel booking
+     */
+    cancel$put: {
+      relativePath: 'cancel',
+      getData: (data: { bookingId: string }) => data
     },
     owner: {
       /**

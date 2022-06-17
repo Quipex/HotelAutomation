@@ -1,5 +1,5 @@
 /* eslint-disable prefer-template */
-import { ColorfulBooking } from '@components';
+import { PlainTextBooking } from '@components';
 import { BookingNotificationDto } from '~/common/types';
 import { CertainBookingHashtag, FormattedDatetimeLine } from '../common';
 
@@ -9,7 +9,7 @@ const NewBookingNotification = (notification: BookingNotificationDto): string =>
   const title = isCancelled ? '💀 <b>Новое бронирование (отменённое)</b>' : '✳ <b>Новое бронирование</b>';
   return `${title}\n`
     + `${FormattedDatetimeLine(createdAt)}\n\n`
-    + `${ColorfulBooking(booking)}\n`
+    + `${PlainTextBooking(booking)}\n`
     + CertainBookingHashtag(bookingId);
 };
 
