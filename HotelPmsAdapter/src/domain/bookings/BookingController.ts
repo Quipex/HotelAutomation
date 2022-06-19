@@ -40,24 +40,24 @@ BookingController.get(
 BookingController.get(
   getPathOf(arrive$get),
   async (ctx) => {
-    const { date: unixDate } = ctx.query as unknown as ReturnType<typeof arrive$get.getQueryParams>;
-    if (!unixDate) {
+    const { on: utcDate } = ctx.query as unknown as ReturnType<typeof arrive$get.getQueryParams>;
+    if (!utcDate) {
       ctx.status = 400;
       return;
     }
-    ctx.body = await BookingPmsService.getArrivalsBy(+unixDate);
+    ctx.body = await BookingPmsService.getArrivalsBy(utcDate);
   }
 );
 
 BookingController.get(
   getPathOf(added$get),
   async (ctx) => {
-    const { after: unixDate } = ctx.query as unknown as ReturnType<typeof added$get.getQueryParams>;
-    if (!unixDate) {
+    const { after: utcDate } = ctx.query as unknown as ReturnType<typeof added$get.getQueryParams>;
+    if (!utcDate) {
       ctx.status = 400;
       return;
     }
-    ctx.body = await BookingPmsService.getBookingsAddedAfter(+unixDate);
+    ctx.body = await BookingPmsService.getBookingsAddedAfter(utcDate);
   }
 );
 
@@ -77,12 +77,12 @@ BookingController.get(
 BookingController.get(
   getPathOf(notPaid$get),
   async (ctx) => {
-    const { arrive_after: unixDate } = ctx.query as unknown as ReturnType<typeof notPaid$get.getQueryParams>;
-    if (!unixDate) {
+    const { arrive_after: utcDate } = ctx.query as unknown as ReturnType<typeof notPaid$get.getQueryParams>;
+    if (!utcDate) {
       ctx.status = 400;
       return;
     }
-    ctx.body = await BookingPmsService.getBookingsNotPayedArriveAfter(+unixDate);
+    ctx.body = await BookingPmsService.getBookingsNotPayedArriveAfter(utcDate);
   }
 );
 

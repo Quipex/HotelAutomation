@@ -2,14 +2,14 @@ import { Context } from 'telegraf';
 import { BookingsService } from '~/api/services';
 import { parseDateFromLiterals } from '~/common/utils/dates';
 
-async function replyWithUsageManual(ctx: Context) {
+const replyWithUsageManual = async (ctx: Context) => {
   return ctx.replyWithHTML(
     'usage:\n'
     + '<code>/create fromDateInclusive toDateExclusive roomNumber guestName</code>'
   );
-}
+};
 
-async function parseCommandCreateBookingAndReply(ctx: Context) {
+const parseCommandCreateBookingAndReply = async (ctx: Context) => {
   const messageText = ctx.message!.text;
   const commandTokens = messageText.split(' ');
   const [, rawFromDate, rawToDate, roomNumber] = commandTokens;
@@ -22,14 +22,11 @@ async function parseCommandCreateBookingAndReply(ctx: Context) {
   }
 
   const { newId } = await BookingsService.createBooking({
-    from: fromDate,
-    to: toDate,
-    roomNumber,
-    guestName
+    from: fromDate, to: toDate, roomNumber, guestName
   }) as any;
   await ctx.replyWithHTML(`Created ✅ <code>/id ${newId}</code>`, {
     reply_to_message_id: ctx.message?.message_id
   });
-}
+};
 
-export default parseCommandCreateBookingAndReply;
+export { parseCommandCreateBookingAndReply };

@@ -1,12 +1,12 @@
 /* eslint-disable no-restricted-syntax,no-await-in-loop */
-import { BriefClient, BriefClientActions } from '@components';
 import { Context } from 'telegraf';
 import { ClientsService } from '~/api/services';
 import { COMMAND_CLIENT_BY_ID } from '~/common/constants';
+import { BriefClient, BriefClientActions } from '~@components';
 
 const LIMIT_CLIENT_CARDS = 3;
 
-async function parseCommandFindClientAndReply(ctx: Context) {
+const parseCommandFindClientAndReply = async (ctx: Context) => {
   const messageText = ctx.message?.text;
   if (!messageText || messageText.split(' ').length < 2) {
     await ctx.reply('Specify the search string');
@@ -44,6 +44,6 @@ async function parseCommandFindClientAndReply(ctx: Context) {
     msg += `${i + 1}. ${fullNameOrig}\n<code>/${COMMAND_CLIENT_BY_ID} ${clientId}</code>\n\n`;
   }
   await ctx.replyWithHTML(msg, { reply_to_message_id: resultsStatement.message_id });
-}
+};
 
-export default parseCommandFindClientAndReply;
+export { parseCommandFindClientAndReply };

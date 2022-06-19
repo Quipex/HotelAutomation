@@ -6,3 +6,4 @@ export * from './CarPlateDto';
 export * from './PrepaymentRemindingsDto';
 export * from './BookingNotificationDto';
 export * from './BookingNotificationChangelogLineDto';
+export * from './HotelDailyDashboardDto';

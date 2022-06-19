@@ -1,0 +1,37 @@
+import { composeCallbackData } from './helpers';
+
+const prefix = (text) => `d${text}`;
+
+const dashboardRefresh = prefix('Rf');
+
+const cbPayloadRefreshDashboard = (date: string) => {
+  return composeCallbackData(dashboardRefresh, date);
+};
+
+const dashboardDayBefore = prefix('DB');
+const cbPayloadDayBefore = (date: string) => {
+  return composeCallbackData(dashboardDayBefore, date);
+};
+
+const dashboardDayAfter = prefix('DA');
+const cbPayloadDayAfter = (date: string) => {
+  return composeCallbackData(dashboardDayAfter, date);
+};
+
+const dashboardUnreadNotifications = prefix('UN');
+
+const dashboardNotPrepaid = prefix('NPp');
+
+const dashboardNotMarkedLiving = prefix('NML');
+
+export {
+  dashboardRefresh,
+  dashboardDayAfter,
+  dashboardDayBefore,
+  dashboardNotPrepaid,
+  dashboardUnreadNotifications,
+  dashboardNotMarkedLiving,
+  cbPayloadDayAfter,
+  cbPayloadDayBefore,
+  cbPayloadRefreshDashboard
+};

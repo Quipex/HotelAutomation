@@ -10,11 +10,11 @@
     "outDir": "dist",
     "paths": {
       "~/*": ["src/*"],
-      "@components": ["src/app/message_components/index"],
-      "@services": ["src/api/services/index"],
-      "@commands/*": ["src/app/commands/*"],
-      "@callbacks/*": ["src/app/callbacks/*"],
-      "@tests/*": ["tests/*"]
+      "~@components": ["src/app/message_components/index"],
+      "~@services": ["src/api/services/index"],
+      "~@commands/*": ["src/app/commands/*"],
+      "~@callbacks/*": ["src/app/callbacks/*"],
+      "~@tests/*": ["tests/*"]
     },
     "suppressImplicitAnyIndexErrors": true,
 		"esModuleInterop": true,

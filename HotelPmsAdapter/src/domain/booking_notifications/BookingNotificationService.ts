@@ -7,4 +7,22 @@ const getNotificationsWithIdMoreThan = async (idAfter: number): Promise<BookingN
   return notifications.map(mapBookingNotification2dto);
 };
 
-export default { getNotificationsWithIdMoreThan };
+const getNumberOfUnreadNotifications = async (): Promise<number> => {
+  return BookingNotificationRepository.countUnreadNotifications();
+};
+
+const getUnreadNotifications = async (): Promise<BookingNotificationDto[]> => {
+  const notifications = await BookingNotificationRepository.findUnreadNotifications();
+  return notifications.map(mapBookingNotification2dto);
+};
+
+const markNotificationAsRead = async (notificationId: number): Promise<void> => {
+  await BookingNotificationRepository.markAsRead(notificationId);
+};
+
+export default {
+  getNotificationsWithIdMoreThan,
+  getNumberOfUnreadNotifications,
+  getUnreadNotifications,
+  markNotificationAsRead
+};

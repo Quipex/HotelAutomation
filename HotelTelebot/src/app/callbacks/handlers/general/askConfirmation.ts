@@ -1,5 +1,5 @@
-import { CallbackHandler } from '@callbacks/CallbackHandler';
-import { Confirmation } from '@components';
+import { CallbackHandler } from '~@callbacks/CallbackHandler';
+import { Confirmation } from '~@components';
 import { cbPayloadCancel } from '../../callback_actions';
 
 const messageIdPrefix = 'mId';

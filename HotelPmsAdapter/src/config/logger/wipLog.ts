@@ -1,8 +1,10 @@
 import bunyan from 'bunyan';
+import { enhanceLoggerWithRequestId } from '~/common/utils/logging';
 
-const wipLog = bunyan.createLogger({
+const wipLog = enhanceLoggerWithRequestId(bunyan.createLogger({
   name: 'Needs_Attention',
   src: process.env.NODE_ENV !== 'prod',
+  srcDepth: 4,
   streams: [
     {
       level: 'info',
@@ -16,6 +18,6 @@ const wipLog = bunyan.createLogger({
       stream: process.stdout
     }
   ]
-});
+}));
 
 export { wipLog };

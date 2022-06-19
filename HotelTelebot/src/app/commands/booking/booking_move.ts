@@ -1,14 +1,15 @@
 import { Context } from 'telegraf';
 import { BookingsService } from '~/api/services';
+// noinspection ES6PreferShortImport
 import { parseDateAndReplyToInvalid } from './bookings_added';
 
-async function replyWithMoveBookingUsageManual(ctx: Context) {
+const replyWithMoveBookingUsageManual = async (ctx: Context) => {
   return ctx.replyWithHTML(
     'usage:\n<code>/mv bookingId roomNumber [date]</code>'
   );
-}
+};
 
-async function parseCommandMoveBookingAndReply(ctx: Context, next: () => Promise<void>) {
+const parseCommandMoveBookingAndReply = async (ctx: Context, next: () => Promise<void>) => {
   const messageText = ctx.message!.text;
   try {
     const commandTokens = messageText.split(' ');
@@ -27,17 +28,17 @@ async function parseCommandMoveBookingAndReply(ctx: Context, next: () => Promise
   } catch (e) {
     await replyWithMoveBookingUsageManual(ctx);
   }
-}
+};
 
-async function replyWithMoveBookingInBatchUsageManual(ctx: Context) {
+const replyWithMoveBookingInBatchUsageManual = async (ctx: Context) => {
   return ctx.replyWithHTML(
     'usage:\n<code>/mv_batch bookingId room(days) [room(days)...]</code>'
   );
-}
+};
 
 const roomToDaysRegex = /^(\d+)\((\d+)\)$/;
 
-async function parseCommandMoveBookingInBatchAndReply(ctx: Context): Promise<void> {
+const parseCommandMoveBookingInBatchAndReply = async (ctx: Context): Promise<void> => {
   try {
     const messageText = ctx.message!.text;
     const commandTokens = messageText.split(' ');
@@ -65,7 +66,7 @@ async function parseCommandMoveBookingInBatchAndReply(ctx: Context): Promise<voi
   } catch (e) {
     await replyWithMoveBookingInBatchUsageManual(ctx);
   }
-}
+};
 
 export {
   parseCommandMoveBookingAndReply,

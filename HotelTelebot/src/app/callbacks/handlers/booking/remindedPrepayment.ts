@@ -1,5 +1,5 @@
-import { CallbackHandler } from '@callbacks/CallbackHandler';
-import { BookingsService } from '@services';
+import { CallbackHandler } from '~@callbacks/CallbackHandler';
+import { BookingsService } from '~@services';
 
 const setRemindedPrepaymentAndReply: CallbackHandler = async ({ ctx, cbPayloadArray }) => {
   const [, bookingId] = cbPayloadArray;

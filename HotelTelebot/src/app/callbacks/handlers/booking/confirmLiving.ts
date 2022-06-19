@@ -1,5 +1,5 @@
-import { extractMessageId } from '@callbacks/handlers';
 import { BookingsService } from '~/api/services';
+import { extractMessageId } from '~@callbacks/handlers';
 import { CallbackHandler } from '../../CallbackHandler';
 import { refreshBooking } from './refreshBooking';
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax,no-await-in-loop */
-import { CallbackHandler } from '@callbacks/CallbackHandler';
-import { BriefBookingActions, ColorfulBooking } from '@components';
-import { BookingsService } from '@services';
+import { CallbackHandler } from '~@callbacks/CallbackHandler';
+import { BriefBookingActions, ColorfulBooking } from '~@components';
+import { BookingsService } from '~@services';
 
 const findClientBookings: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
   const [, clientId] = cbPayloadArray;

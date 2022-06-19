@@ -1,8 +1,8 @@
-import { SynchronizationStatus } from '@components';
 import { Context } from 'telegraf';
 import { BookingsService } from '~/api/services';
+import { SynchronizationStatus } from '~@components';
 
-async function synchronizeBookingsAndClientsAndReply(ctx: Context) {
+const synchronizeBookingsAndClientsAndReply = async (ctx: Context) => {
   const { message_id: messageId } = await ctx.reply(SynchronizationStatus('бронирования', 1, 2));
   await ctx.replyWithChatAction('typing');
   await BookingsService.syncBookings();
@@ -13,6 +13,6 @@ async function synchronizeBookingsAndClientsAndReply(ctx: Context) {
     SynchronizationStatus('всё синхронизировано', 2, 2, true)
   );
   return ctx.reply('✅ Done');
-}
+};
 
-export default synchronizeBookingsAndClientsAndReply;
+export { synchronizeBookingsAndClientsAndReply };

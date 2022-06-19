@@ -1,8 +1,8 @@
-import { ColorfulBooking, BriefBookingActions } from '@components';
 import { Context } from 'telegraf';
 import { BookingsService } from '~/api/services';
+import { BriefBookingActions, ColorfulBooking } from '~@components';
 
-async function findBookingsRemindedAndExpiredPrepayment(ctx: Context) {
+const findBookingsRemindedAndExpiredPrepayment = async (ctx: Context) => {
   const expiredBookings = await BookingsService.fetchBookingsExpiredAndReminded();
   expiredBookings.forEach(async (booking) => {
     await ctx.replyWithHTML(ColorfulBooking(booking), {
@@ -10,6 +10,6 @@ async function findBookingsRemindedAndExpiredPrepayment(ctx: Context) {
       reply_markup: { inline_keyboard: BriefBookingActions(booking) }
     });
   });
-}
+};
 
-export default findBookingsRemindedAndExpiredPrepayment;
+export { findBookingsRemindedAndExpiredPrepayment };

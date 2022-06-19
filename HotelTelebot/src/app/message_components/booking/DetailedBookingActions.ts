@@ -1,3 +1,6 @@
+import { InlineKeyboardButton } from 'telegraf/typings/markup';
+import { SOURCES_MANUAL_CREATION } from '~/common/constants';
+import { BookingDto } from '~/common/types';
 import {
   cbPayloadBookingCancelAsk,
   cbPayloadBookingLivingAsk,
@@ -6,10 +9,7 @@ import {
   cbPayloadBookingRefresh,
   cbPayloadBookingRemindedPrepayment,
   cbPayloadClientDetails
-} from '@callbacks/callback_actions';
-import { InlineKeyboardButton } from 'telegraf/typings/markup';
-import { STATUSES_MANUAL_CREATION } from '~/common/constants';
-import { BookingDto } from '~/common/types';
+} from '~@callbacks/callback_actions';
 
 function detailedBookingActions(
   { id: bookingId, cancelled, living, prepaid, client: { id: clientId }, startDate, source }: BookingDto
@@ -24,7 +24,7 @@ function detailedBookingActions(
     return inlineKeyboard;
   }
 
-  if (STATUSES_MANUAL_CREATION.includes(source)) {
+  if (SOURCES_MANUAL_CREATION.includes(source)) {
     inlineKeyboard.push([{ text: 'Отменить ❌', callback_data: cbPayloadBookingCancelAsk(bookingId), hide: false }]);
   }
 

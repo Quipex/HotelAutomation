@@ -1,3 +1,3 @@
-const STATUSES_MANUAL_CREATION = ['easyms', 'FRONT_DESK', null] as const;
+const SOURCES_MANUAL_CREATION = ['easyms', 'FRONT_DESK', null];
 
-export { STATUSES_MANUAL_CREATION };
+export { SOURCES_MANUAL_CREATION };

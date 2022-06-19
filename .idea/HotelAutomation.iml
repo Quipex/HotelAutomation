@@ -11,6 +11,8 @@
       <sourceFolder url="file://$MODULE_DIR$/HotelCommon/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/HotelPmsAdapter/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/HotelTelebot/tests" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/HotelPmsAdapter/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/HotelTelebot/logs" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
