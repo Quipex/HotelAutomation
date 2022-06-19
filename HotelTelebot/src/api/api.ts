@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import env from '~/config/env';
-import { uuidv4 } from '~/common/utils/uuid';
 import { REQUEST_ID_HEADER, RESPONSE_TIME_HEADER, X_SEC_HEADER } from '~/common/constants';
+import { uuidv4 } from '~/common/utils/uuid';
+import env from '~/config/env';
 import { log } from '~/config/logger';
 
 async function callApi(path: string, config: AxiosRequestConfig): Promise<unknown> {

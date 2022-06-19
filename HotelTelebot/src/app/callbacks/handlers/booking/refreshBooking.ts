@@ -1,5 +1,5 @@
-import { CallbackHandler } from '@callbacks/CallbackHandler';
-import { fetchBookingByIdAndReply } from '@commands/booking/bookings_by_id';
+import { CallbackHandler } from '~@callbacks/CallbackHandler';
+import { fetchBookingByIdAndReply } from '~@commands/booking/bookings_by_id';
 
 const refreshBooking: CallbackHandler = async ({ ctx, messageId, cbPayloadArray }) => {
   const [, bookingId] = cbPayloadArray;

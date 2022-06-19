@@ -1,5 +1,5 @@
 import { InsertEvent } from 'typeorm';
-import { STATUSES_MANUAL_CREATION } from '~/common/constants';
+import { SOURCES_MANUAL_CREATION } from '~/common/constants';
 import { log } from '~/config/logger';
 import { BookingNotificationModel } from '~/domain/booking_notifications/BookingNotificationModel';
 import { getRepository } from '~/domain/helpers/orm';
@@ -7,7 +7,7 @@ import { BookingModel } from '../../BookingModel';
 
 const createNotificationOnNewBooking = async (event: InsertEvent<BookingModel>) => {
   const { entity } = event;
-  if (STATUSES_MANUAL_CREATION.includes(entity.source)) {
+  if (SOURCES_MANUAL_CREATION.includes(entity.source)) {
     return;
   }
 

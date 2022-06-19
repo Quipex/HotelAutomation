@@ -1,4 +1,4 @@
-import { CallbackHandler } from '@callbacks/CallbackHandler';
+import { CallbackHandler } from '~@callbacks/CallbackHandler';
 
 const replyWithMoveBookingUsage: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
   const [, bookingId] = cbPayloadArray;

@@ -20,9 +20,13 @@ const propToFormatter: PropToFormatter = {
   endDateExclusive: toShortDate
 };
 
-const formatBookingPropertyValue = (property: BookingProperty | string, value, options?: FormatOptions): string => {
+const formatOptionalBookingPropertyValue = (property: string, value, options?: FormatOptions): string => {
   const formatFunction = propToFormatter[property] ?? identity;
   return formatFunction(value, options);
 };
 
-export { formatBookingPropertyValue };
+const formatBookingPropertyValue = (property: BookingProperty, value, options?: FormatOptions): string => {
+  return formatOptionalBookingPropertyValue(property, value, options);
+};
+
+export { formatBookingPropertyValue, formatOptionalBookingPropertyValue };

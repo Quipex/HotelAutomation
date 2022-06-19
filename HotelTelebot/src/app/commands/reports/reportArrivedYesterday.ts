@@ -1,12 +1,12 @@
 /* eslint-disable no-restricted-syntax,no-await-in-loop */
-import { BriefBookingActions, ColorfulBooking } from '@components';
-import { BookingsService } from '@services';
 import bot from '~/app/bot';
 import { parseDateFromLiterals } from '~/common/utils/dates';
+import { BriefBookingActions, ColorfulBooking } from '~@components';
+import { BookingsService } from '~@services';
 
 const TEXT = 'Должны были заехать вчера и не отмечены как проживающие ⏰';
 
-async function reportArrivedYesterday(chatId: string) {
+const reportArrivedYesterday = async (chatId: string) => {
   const date = parseDateFromLiterals('yesterday');
   const arrivals = await BookingsService.fetchBookingsArriveAtAndNotLiving(date);
   if (!arrivals.length) {
@@ -20,6 +20,6 @@ async function reportArrivedYesterday(chatId: string) {
       parse_mode: 'HTML'
     });
   }
-}
+};
 
-export default reportArrivedYesterday;
+export { reportArrivedYesterday };

@@ -1,5 +1,5 @@
+import { reportArrivedYesterday } from '~/app/commands';
 import env from '~/config/env';
-import reportArrivedYesterday from '~/app/commands/reports/reportArrivedYesterday';
 import { createSchedule } from '../schedule.helper';
 
 const remindBookingGuestsArrivedYesterday = async () => {

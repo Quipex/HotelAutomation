@@ -10,4 +10,24 @@ const findNotificationsIdMoreThan = async (idMoreThan: number) => {
   });
 };
 
-export default { findNotificationsIdMoreThan };
+const countUnreadNotifications = async () => {
+  const repo = getRepository(BookingNotificationModel);
+  return repo.count({ where: { read: false } });
+};
+
+const findUnreadNotifications = async () => {
+  const repo = getRepository(BookingNotificationModel);
+  return repo.find({ where: { read: false } });
+};
+
+const markAsRead = async (notificationId: number) => {
+  const repo = getRepository(BookingNotificationModel);
+  await repo.update({ id: notificationId }, { read: true });
+};
+
+export default {
+  findNotificationsIdMoreThan,
+  countUnreadNotifications,
+  findUnreadNotifications,
+  markAsRead
+};

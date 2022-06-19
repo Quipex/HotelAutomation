@@ -1,6 +1,6 @@
 /* eslint-disable prefer-template */
-import { PlainTextBooking } from '@components';
 import { BookingNotificationDto } from '~/common/types';
+import { PlainTextBooking } from '~@components';
 import { CertainBookingHashtag, FormattedDatetimeLine } from '../common';
 
 const NewBookingNotification = (notification: BookingNotificationDto): string => {

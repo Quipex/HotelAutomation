@@ -1,6 +1,6 @@
-import { CallbackHandler } from '@callbacks/CallbackHandler';
-import { extractMessageId } from '@callbacks/handlers';
 import { BookingsService } from '~/api/services';
+import { CallbackHandler } from '~@callbacks/CallbackHandler';
+import { extractMessageId } from '~@callbacks/handlers';
 import { refreshBooking } from './refreshBooking';
 
 const confirmBookingAndReply: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {

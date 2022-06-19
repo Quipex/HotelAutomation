@@ -1,5 +1,5 @@
 import { UpdateEvent } from 'typeorm';
-import { STATUSES_MANUAL_CREATION } from '~/common/constants';
+import { SOURCES_MANUAL_CREATION } from '~/common/constants';
 import { formatDate } from '~/common/utils/dates';
 import { log } from '~/config/logger';
 import { BookingNotificationModel } from '~/domain/booking_notifications/BookingNotificationModel';
@@ -11,7 +11,7 @@ import { BookingModel } from '../../BookingModel';
 
 const createNotificationOnBookingUpdate = async (event: UpdateEvent<BookingModel>) => {
   const { entity: updatingEntity, updatedColumns, databaseEntity } = event;
-  if (STATUSES_MANUAL_CREATION.includes(updatingEntity.source) || !databaseEntity || !updatingEntity) {
+  if (SOURCES_MANUAL_CREATION.includes(updatingEntity.source) || !databaseEntity || !updatingEntity) {
     return;
   }
 

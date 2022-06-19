@@ -1,10 +1,10 @@
 /* eslint-disable no-await-in-loop */
-import { Notification } from '@components';
 import { BookingNotificationsService } from '~/api/services';
 import bot from '~/app/bot';
 import { sleep } from '~/common/utils/thread';
 import localDb from '~/config/db';
 import env from '~/config/env';
+import { Notification } from '~@components';
 import { createSchedule } from '../schedule.helper';
 
 const saveLastNotificationId = async (id: number) => {

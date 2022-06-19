@@ -1,7 +1,7 @@
-import { DetailedBooking, DetailedBookingActions } from '@components';
 import { Context } from 'telegraf';
 import { ExtraReplyMessage } from 'telegraf/typings/telegram-types';
 import { BookingsService } from '~/api/services';
+import { DetailedBooking, DetailedBookingActions } from '~@components';
 
 const fetchBookingByIdAndReply = async (bookingId: string, ctx: Context, extra?: ExtraReplyMessage) => {
   const foundBooking = await BookingsService.fetchBookingById(bookingId);

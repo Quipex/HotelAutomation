@@ -1,115 +1,84 @@
-const cancel = 'deny';
+const prefix = (text) => `b${text}`;
 
-function cbPayloadCancel() {
-  return cancel;
-}
-
-const bookingPrePaidAsk = 'bPp';
+const bookingPrePaidAsk = prefix('Pp');
+const bookingPrePaidConfirm = prefix('PpY');
 
 function cbPayloadBookingPrepaidAsk(bookingId: string) {
   return `${bookingPrePaidAsk}|${bookingId}`;
 }
 
-const bookingPrePaidConfirm = 'bPpY';
-
-const bookingMoveList = 'bMvL';
+const bookingMoveList = prefix('MvL');
 
 function cbPayloadBookingMoveList(bookingId: string) {
   return `${bookingMoveList}|${bookingId}`;
 }
 
-const bookingMoveAsk = 'bMv';
+const bookingMoveAsk = prefix('Mv');
 
 function cbPayloadBookingMoveAsk(bookingId: string, roomNumber: string) {
   return `${bookingMoveAsk}|${bookingId}|${roomNumber}`;
 }
 
-const bookingMoveConfirm = 'bMvY';
+const bookingMoveConfirm = prefix('MvY');
 
 function cbPayloadBookingMoveConfirm(bookingId: string, roomNumber: string) {
   return `${bookingMoveConfirm}|${bookingId}|${roomNumber}`;
 }
 
-const bookingDetails = 'bD';
+const bookingDetails = prefix('D');
 
 function cbPayloadBookingDetails(bookingId: string) {
   return `${bookingDetails}|${bookingId}`;
 }
 
-const clientDetails = 'cD';
-
-function cbPayloadClientDetails(clientId: string) {
-  return `${clientDetails}|${clientId}`;
-}
-
-const clientBookings = 'cB';
-
-function cbPayloadClientBookings(clientId: string) {
-  return `${clientBookings}|${clientId}`;
-}
-
-const clientRefresh = 'cRf';
-
-function cbPayloadClientRefresh(clientId: string) {
-  return `${clientRefresh}|${clientId}`;
-}
-
-const bookingLivingAsk = 'bLv';
+const bookingLivingAsk = prefix('Lv');
 
 function cbPayloadBookingLivingAsk(bookingId: string) {
   return `${bookingLivingAsk}|${bookingId}`;
 }
 
-const bookingLivingConfirm = 'bLvY';
+const bookingLivingConfirm = prefix('LvY');
 
-const bookingRemindedPrepayment = 'bRp';
+const bookingRemindedPrepayment = prefix('Rp');
 
 function cbPayloadBookingRemindedPrepayment(bookingId: string) {
   return `${bookingRemindedPrepayment}|${bookingId}`;
 }
 
-const bookingRefresh = 'bRf';
+const bookingRefresh = prefix('Rf');
 
 function cbPayloadBookingRefresh(bookingId: string) {
   return `${bookingRefresh}|${bookingId}`;
 }
 
-const bookingCancelAsk = 'bC';
+const bookingCancelAsk = prefix('C');
 
 function cbPayloadBookingCancelAsk(bookingId: string) {
   return `${bookingCancelAsk}|${bookingId}`;
 }
 
-const bookingCancelConfirm = 'bCY';
+const bookingCancelConfirm = prefix('CY');
 
 export {
-  cancel,
-  cbPayloadCancel,
-  bookingPrePaidAsk,
-  cbPayloadBookingPrepaidAsk,
-  bookingPrePaidConfirm,
+  bookingDetails,
+  cbPayloadBookingDetails,
   bookingMoveList,
   cbPayloadBookingMoveList,
   bookingMoveAsk,
-  cbPayloadBookingMoveAsk,
   bookingMoveConfirm,
   cbPayloadBookingMoveConfirm,
-  bookingDetails,
-  cbPayloadBookingDetails,
-  clientDetails,
-  cbPayloadClientDetails,
-  clientBookings,
-  cbPayloadClientBookings,
-  clientRefresh,
-  cbPayloadClientRefresh,
+  bookingPrePaidAsk,
+  bookingPrePaidConfirm,
+  cbPayloadBookingMoveAsk,
+  cbPayloadBookingPrepaidAsk,
   bookingLivingAsk,
-  cbPayloadBookingLivingAsk,
+  bookingCancelAsk,
+  cbPayloadBookingCancelAsk,
+  bookingCancelConfirm,
   bookingLivingConfirm,
   bookingRemindedPrepayment,
   cbPayloadBookingRemindedPrepayment,
   bookingRefresh,
   cbPayloadBookingRefresh,
-  bookingCancelAsk,
-  cbPayloadBookingCancelAsk,
-  bookingCancelConfirm
+  cbPayloadBookingLivingAsk
 };

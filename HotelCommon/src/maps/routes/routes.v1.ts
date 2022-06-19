@@ -12,6 +12,15 @@ const routesV1 = {
       relativePath: '/'
     }
   },
+  dashboard: {
+    /**
+     * Get daily status
+     */
+    index$get: {
+      relativePath: '/',
+      getQueryParams: (params: { date: string }) => params
+    }
+  },
   bookings: {
     /**
      * Fetch pms and get all bookings
@@ -26,18 +35,27 @@ const routesV1 = {
       relativePath: 'cached'
     },
     /**
-     * Get bookings that arrive by specified unix date
+     * Get bookings that arrive at particular date
      */
     arrive$get: {
       relativePath: 'arrive',
-      getQueryParams: (params: { date: number }) => params
+      /**
+       * @param params config
+       * @param params.on date formatted as YYYY-MM-DD
+       */
+      getQueryParams: (params: { on: string }) => params
     },
     /**
-     * Get bookings that were added after unix date
+     * Get bookings that were added after date
+     * @param [after: string] date formatted as YYYY-MM-DD
      */
     added$get: {
       relativePath: 'added',
-      getQueryParams: (params: { after: number }) => params
+      /**
+       * @param params config
+       * @param params.after date formatted as YYYY-MM-DD
+       */
+      getQueryParams: (params: { after: string }) => params
     },
     /**
      * Get booking by id
@@ -51,7 +69,11 @@ const routesV1 = {
      */
     notPaid$get: {
       relativePath: 'not_paid',
-      getQueryParams: (params: { arrive_after: number }) => params
+      /**
+       * @param params config
+       * @param params.arrive_after date formatted as YYYY-MM-DD
+       */
+      getQueryParams: (params: { arrive_after: string }) => params
     },
     /**
      * Fetch pms
