@@ -3,7 +3,7 @@ import { BookingNotificationsService } from '~/api/services';
 import { sleep } from '~/common/utils/thread';
 import appConfig from '~/config/appConfig';
 import localDb from '~/config/localDb';
-import { Notification } from '~@components';
+import { Notification, NotificationActions } from '~@components';
 import { saveLastNotificationId } from './saveLastNotificationId';
 import { sendNotificationMessage } from './sendNotificationMessage';
 
@@ -20,7 +20,8 @@ const checkBookingUpdatesAndNotify = async () => {
   const lastIndex = notifications.length - 1;
   for (let i = 0; i < notifications.length; i += 1) {
     try {
-      await sendNotificationMessage(Notification(notifications[i]));
+      const notification = notifications[i];
+      await sendNotificationMessage(Notification(notification), NotificationActions(notification));
       if (i !== lastIndex) {
         await sleep(appConfig.data.waitNotificationMs);
       }

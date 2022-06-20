@@ -7,7 +7,7 @@ import {
   cbPayloadRefreshDashboard,
   dashboardNotPrepaid,
   dashboardUnreadNotifications
-} from '~@callbacks/callback_actions';
+} from '~@callbacks/domain/dashboard/actions';
 
 const DashboardActions = (date: Date): InlineKeyboardButton[][] => {
   const dateText = formatDate(date);
@@ -31,7 +31,11 @@ const DashboardActions = (date: Date): InlineKeyboardButton[][] => {
     hide: false,
     callback_data: dashboardUnreadNotifications
   }]);
-  inlineKeyboard.push([{ text: '💰🚫 Без предоплаты (сегодня)', hide: false, callback_data: dashboardNotPrepaid }]);
+  inlineKeyboard.push([{
+    text: '💰🚫 Без предоплаты (сегодня)',
+    hide: false,
+    callback_data: dashboardNotPrepaid
+  }]);
   inlineKeyboard.push([{
     text: '🛌🚫 Не отмечены проживающими',
     hide: false,
