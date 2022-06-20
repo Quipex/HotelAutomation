@@ -185,16 +185,23 @@ const countAddedOn = async (
   });
 };
 
+const livingButNotMarkedClause = (date: Date, includingCancelled: boolean) => ({
+  living: false,
+  startDate: lessThanOrEqualDate(date),
+  endDateExclusive: moreThanDate(date),
+  ...(!includingCancelled && { cancelled: false })
+});
+
+const findLivingButNotMarked = async (date: Date, includingCancelled = false): Promise<BookingModel[]> => {
+  const bookingsRepository = getRepository(BookingModel);
+  return bookingsRepository.find({
+    where: livingButNotMarkedClause(date, includingCancelled)
+  });
+};
+
 const countLivingButNotMarked = async (date: Date, includingCancelled = false): Promise<number> => {
   const bookingsRepository = getRepository(BookingModel);
-  return bookingsRepository.count({
-    where: {
-      living: false,
-      startDate: lessThanOrEqualDate(date),
-      endDateExclusive: moreThanDate(date),
-      ...(!includingCancelled && { cancelled: false })
-    }
-  });
+  return bookingsRepository.countBy(livingButNotMarkedClause(date, includingCancelled));
 };
 
 export default {
@@ -215,5 +222,6 @@ export default {
   countLivingAtDate,
   countCarsAtDate,
   countAddedOn,
-  countLivingButNotMarked
+  countLivingButNotMarked,
+  findLivingButNotMarked
 };

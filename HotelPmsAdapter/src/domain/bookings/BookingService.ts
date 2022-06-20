@@ -3,6 +3,7 @@ import { transientBookings2bookingModels, transientClient2clientModel } from '~/
 import { BookingDto, CreateBookingPayload } from '~/common/types';
 import { BookingTransientModel } from '~/common/types/domain/transient_models';
 import { BookingId, BookingModel } from '~/domain/bookings/BookingModel';
+import { markLastSynchronizationTime } from '~/domain/bookings/helpers/markLastSynchronizationTime';
 import { getRepository } from '~/domain/helpers/orm';
 import { RoomModel } from '~/domain/rooms/RoomModel';
 import { getCloudProvider } from '~/integrations/getCloudProvider';
@@ -15,6 +16,7 @@ const saveTransientBookingsAndIncludedClients = async (
   const clientModels = transientBookings.map(({ client }) => transientClient2clientModel(client));
   const bookingsToSave = transientBookings2bookingModels({ transientBookings, clientModels, savedRooms });
   const dirtySavedBookings = await getRepository(BookingModel).save(bookingsToSave);
+  await markLastSynchronizationTime();
   const savedBookingIds = dirtySavedBookings.map((b) => b.id);
   const savedBookingModels = await BookingRepository.findByIds(savedBookingIds);
   return savedBookingModels.map(mapBookingModel2dto);
@@ -99,6 +101,11 @@ const cancelBooking = async (bookingId: string) => {
   await BookingRepository.cancelBooking(bookingId);
 };
 
+const getLivingButNotMarkedBy = async (date: string) => {
+  const bookings = await BookingRepository.findLivingButNotMarked(new Date(date));
+  return bookings.map(mapBookingModel2dto);
+};
+
 export default {
   fetchPmsAndGetAllActiveBookings,
   getAllBookings,
@@ -112,7 +119,8 @@ export default {
   expiredRemindedPrepayment,
   getBookingsByOwner,
   createBookingAndSyncBookings,
-  cancelBooking
+  cancelBooking,
+  getLivingButNotMarkedBy
 };
 
 export type {

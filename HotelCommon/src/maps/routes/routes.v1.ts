@@ -61,7 +61,7 @@ const routesV1 = {
      * Get booking by id
      */
     byId$get: {
-      relativePath: ':id',
+      relativePath: 'id/:id',
       withPathVariable: createPathReplacer(':id')
     },
     /**
@@ -122,20 +122,21 @@ const routesV1 = {
       relativePath: 'cancel',
       getData: (data: { bookingId: string }) => data
     },
+    /**
+     * Find bookings that should arrive already but not marked as living for some reason
+     */
+    livingNotMarked$get: {
+      relativePath: 'living_not_marked',
+      getQueryParams: (params: { date: string }) => params
+    },
     owner: {
       /**
        * Get bookings by owner (customer/guest) id
        */
       byId$get: {
-        relativePath: ':id',
+        relativePath: 'id/:id',
         withPathVariable: createPathReplacer(':id')
       }
-    },
-    /**
-     * Find bookings that should arrive already but not marked as living for some reason
-     */
-    arrivedNotLiving$get: {
-      relativePath: 'arrived_not_living'
     }
   },
   clients: {
@@ -150,7 +151,7 @@ const routesV1 = {
      * Get client by id
      */
     byId$get: {
-      relativePath: ':id',
+      relativePath: 'id/:id',
       withPathVariable: createPathReplacer(':id')
     }
   },
