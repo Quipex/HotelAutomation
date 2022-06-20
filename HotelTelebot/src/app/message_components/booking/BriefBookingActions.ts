@@ -1,6 +1,6 @@
 import { InlineKeyboardButton } from 'telegraf/typings/markup';
 import { BookingDto } from '~/common/types';
-import { cbPayloadBookingDetails } from '~@callbacks/callback_actions';
+import { cbPayloadBookingDetails } from '~@callbacks/domain/booking/actions';
 import detailedBookingActions from './DetailedBookingActions';
 
 function briefBookingActions(booking: BookingDto) {

@@ -1,6 +1,6 @@
 import { InlineKeyboardButton } from 'telegraf/typings/markup';
 import { ClientDto } from '~/common/types';
-import { cbPayloadClientDetails } from '~@callbacks/callback_actions';
+import { cbPayloadClientDetails } from '~@callbacks/domain/client/actions';
 import detailedClientActions from './DetailedClientActions';
 
 function briefClientActions(client: ClientDto) {

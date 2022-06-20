@@ -6,9 +6,10 @@ function messageHasNoText(ctx: Context) {
 
 async function validateMessage(ctx: Context, next) {
   if (messageHasNoText(ctx)) {
-    return ctx.reply('Message text is undefined', { reply_to_message_id: ctx.message?.message_id });
+    await ctx.reply('Message text is undefined', { reply_to_message_id: ctx.message?.message_id });
+    return;
   }
-  return next();
+  next();
 }
 
 export default validateMessage;

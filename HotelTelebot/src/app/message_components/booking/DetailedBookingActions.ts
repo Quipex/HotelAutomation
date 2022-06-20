@@ -7,9 +7,9 @@ import {
   cbPayloadBookingMoveList,
   cbPayloadBookingPrepaidAsk,
   cbPayloadBookingRefresh,
-  cbPayloadBookingRemindedPrepayment,
-  cbPayloadClientDetails
-} from '~@callbacks/callback_actions';
+  cbPayloadBookingRemindedPrepayment
+} from '~@callbacks/domain/booking/actions';
+import { cbPayloadClientDetails } from '~@callbacks/domain/client/actions';
 
 function detailedBookingActions(
   { id: bookingId, cancelled, living, prepaid, client: { id: clientId }, startDate, source }: BookingDto

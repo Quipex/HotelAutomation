@@ -1,6 +1,6 @@
 import { InlineKeyboardButton } from 'telegraf/typings/markup';
 import { ClientDto } from '~/common/types';
-import { cbPayloadClientBookings, cbPayloadClientRefresh } from '~@callbacks/callback_actions';
+import { cbPayloadClientBookings, cbPayloadClientRefresh } from '~@callbacks/domain/client/actions';
 
 function detailedClientActions({ id }: ClientDto) {
   const actions: InlineKeyboardButton[][] = [];
