@@ -18,6 +18,7 @@ type HotelDailyDashboardDto = {
     notReminded: number
   }
   actuallyLivingButNotMarked: number,
+  synchronizationTime: string
 };
 
 export type { HotelDailyDashboardDto };

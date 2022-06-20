@@ -1,24 +1,11 @@
 /* eslint-disable no-await-in-loop */
 import { BookingNotificationsService } from '~/api/services';
-import bot from '~/app/bot';
 import { sleep } from '~/common/utils/thread';
-import localDb from '~/config/db';
-import env from '~/config/env';
+import appConfig from '~/config/appConfig';
+import localDb from '~/config/localDb';
 import { Notification } from '~@components';
-import { createSchedule } from '../schedule.helper';
-
-const saveLastNotificationId = async (id: number) => {
-  localDb.data.lastNotificationId = id;
-  await localDb.write();
-};
-
-const sendNotificationMessage = (notificationText: string) => {
-  return bot.telegram.sendMessage(
-    env.notificationChannelId,
-    notificationText,
-    { parse_mode: 'HTML' }
-  );
-};
+import { saveLastNotificationId } from './saveLastNotificationId';
+import { sendNotificationMessage } from './sendNotificationMessage';
 
 const checkBookingUpdatesAndNotify = async () => {
   await localDb.read();
@@ -35,7 +22,7 @@ const checkBookingUpdatesAndNotify = async () => {
     try {
       await sendNotificationMessage(Notification(notifications[i]));
       if (i !== lastIndex) {
-        await sleep(500);
+        await sleep(appConfig.data.waitNotificationMs);
       }
     } catch (e) {
       if (i > 0) {
@@ -50,5 +37,4 @@ const checkBookingUpdatesAndNotify = async () => {
   await saveLastNotificationId(lastNotificationId);
 };
 
-// every minute
-createSchedule('0 */1 * * * *', checkBookingUpdatesAndNotify);
+export { checkBookingUpdatesAndNotify };

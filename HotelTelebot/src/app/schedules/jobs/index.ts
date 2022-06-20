@@ -1,3 +1,3 @@
 import './notifyOfBookingUpdates';
-import './remindBookingGuestsArrivedYesterday';
-import './synchronize';
+import './synchronizeData';
+import './generateDashboard';

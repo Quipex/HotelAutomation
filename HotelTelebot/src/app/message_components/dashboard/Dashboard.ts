@@ -1,5 +1,5 @@
 import { Divider } from '~/app/message_components/common';
-import { DATE_SHORT } from '~/common/constants';
+import { DATE_SHORT, DATETIME_MOMENTJS } from '~/common/constants';
 import { HotelDailyDashboardDto } from '~/common/types';
 import { addToDate, formatDate, subtractFromDate } from '~/common/utils/dates';
 
@@ -34,15 +34,24 @@ const getRelevantTitle = (date: Date): string => {
 };
 
 const Dashboard = (
-  { today, tomorrow, noPrepaidBookings, actuallyLivingButNotMarked, unreadNotifications }: HotelDailyDashboardDto,
+  {
+    today,
+    tomorrow,
+    noPrepaidBookings,
+    actuallyLivingButNotMarked,
+    unreadNotifications,
+    synchronizationTime
+  }: HotelDailyDashboardDto,
   date: Date
 ) => {
   const todayTitle = getRelevantTitle(date);
   const theNextDate = addToDate({ date, unit: 'days', amount: 1 }).toDate();
   const tomorrowTitle = getRelevantTitle(theNextDate);
+  const syncTimeText = formatDate(new Date(synchronizationTime), DATETIME_MOMENTJS);
 
   return [
-    '<i>Последнее обновление (booking fetching) WIP</i>',
+    '<i>Последняя синхронизация (с внешним сервером)</i>',
+    `<i>${syncTimeText}</i>`,
     '',
     `<b>${todayTitle}</b>`,
     `${b(today.arrivals)} заезд 📥 | ${b(today.departures)} выезд 📤`,

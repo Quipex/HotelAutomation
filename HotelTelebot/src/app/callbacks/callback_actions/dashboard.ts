@@ -23,6 +23,9 @@ const dashboardUnreadNotifications = prefix('UN');
 const dashboardNotPrepaid = prefix('NPp');
 
 const dashboardNotMarkedLiving = prefix('NML');
+const cbPayloadNotMarkedLiving = (date: string) => {
+  return composeCallbackData(dashboardNotMarkedLiving, date);
+};
 
 export {
   dashboardRefresh,
@@ -33,5 +36,6 @@ export {
   dashboardNotMarkedLiving,
   cbPayloadDayAfter,
   cbPayloadDayBefore,
-  cbPayloadRefreshDashboard
+  cbPayloadRefreshDashboard,
+  cbPayloadNotMarkedLiving
 };

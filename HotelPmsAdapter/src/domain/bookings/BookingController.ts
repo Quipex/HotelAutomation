@@ -2,7 +2,7 @@ import Router from 'koa-router';
 import { BookingCreationConflictError } from '~/common/errors';
 import { routesV1 } from '~/common/maps';
 import { getPathOf } from '~/domain/helpers/routes';
-import BookingPmsService from './BookingService';
+import BookingService from './BookingService';
 
 const BookingController = new Router();
 
@@ -20,20 +20,21 @@ const {
   expiredRemind$get,
   confirmLiving$put,
   confirmPrepayment$put,
-  cancel$put
+  cancel$put,
+  livingNotMarked$get
 } = routesV1.bookings;
 
 BookingController.post(
   getPathOf(index$post),
   async (ctx) => {
-    ctx.body = await BookingPmsService.fetchPmsAndGetAllActiveBookings();
+    ctx.body = await BookingService.fetchPmsAndGetAllActiveBookings();
   }
 );
 
 BookingController.get(
   getPathOf(cached$get),
   async (ctx) => {
-    ctx.body = await BookingPmsService.getAllBookings();
+    ctx.body = await BookingService.getAllBookings();
   }
 );
 
@@ -45,7 +46,7 @@ BookingController.get(
       ctx.status = 400;
       return;
     }
-    ctx.body = await BookingPmsService.getArrivalsBy(utcDate);
+    ctx.body = await BookingService.getArrivalsBy(utcDate);
   }
 );
 
@@ -57,7 +58,7 @@ BookingController.get(
       ctx.status = 400;
       return;
     }
-    ctx.body = await BookingPmsService.getBookingsAddedAfter(utcDate);
+    ctx.body = await BookingService.getBookingsAddedAfter(utcDate);
   }
 );
 
@@ -65,7 +66,7 @@ BookingController.get(
   getPathOf(byId$get),
   async (ctx) => {
     const { id } = ctx.params;
-    const resp = await BookingPmsService.getBookingById(id);
+    const resp = await BookingService.getBookingById(id);
     if (resp) {
       ctx.body = resp;
     } else {
@@ -82,14 +83,14 @@ BookingController.get(
       ctx.status = 400;
       return;
     }
-    ctx.body = await BookingPmsService.getBookingsNotPayedArriveAfter(utcDate);
+    ctx.body = await BookingService.getBookingsNotPayedArriveAfter(utcDate);
   }
 );
 
 BookingController.put(
   getPathOf(sync$put),
   async (ctx) => {
-    await BookingPmsService.fetchPmsAndGetAllActiveBookings();
+    await BookingService.fetchPmsAndGetAllActiveBookings();
     ctx.status = 200;
   }
 );
@@ -103,7 +104,7 @@ BookingController.put(
       ctx.body = { message: 'missing booking id' };
       return;
     }
-    await BookingPmsService.confirmPrepayment(bookingId);
+    await BookingService.confirmPrepayment(bookingId);
     ctx.status = 200;
   }
 );
@@ -117,7 +118,7 @@ BookingController.put(
       ctx.body = { message: 'missing booking id' };
       return;
     }
-    await BookingPmsService.confirmLiving(bookingId);
+    await BookingService.confirmLiving(bookingId);
     ctx.status = 200;
   }
 );
@@ -131,7 +132,7 @@ BookingController.put(
       ctx.body = { message: 'missing booking id' };
       return;
     }
-    await BookingPmsService.remindedOfPrepayment(bookingId);
+    await BookingService.remindedOfPrepayment(bookingId);
     ctx.status = 200;
   }
 );
@@ -139,7 +140,7 @@ BookingController.put(
 BookingController.get(
   getPathOf(expiredRemind$get),
   async (ctx) => {
-    ctx.body = await BookingPmsService.expiredRemindedPrepayment();
+    ctx.body = await BookingService.expiredRemindedPrepayment();
   }
 );
 
@@ -150,7 +151,7 @@ BookingController.put(
       roomNumber, from, to, guestName
     } = ctx.request.body as ReturnType<typeof create$put.getData>;
     try {
-      const newId = await BookingPmsService.createBookingAndSyncBookings({
+      const newId = await BookingService.createBookingAndSyncBookings({
         roomNumber: +roomNumber,
         from: new Date(from),
         to: new Date(to),
@@ -169,6 +170,14 @@ BookingController.put(
   }
 );
 
+BookingController.get(
+  getPathOf(livingNotMarked$get),
+  async (ctx) => {
+    const { date } = ctx.query as unknown as ReturnType<typeof livingNotMarked$get.getQueryParams>;
+    ctx.body = await BookingService.getLivingButNotMarkedBy(date);
+  }
+);
+
 BookingController.put(
   getPathOf(cancel$put),
   async (ctx) => {
@@ -178,7 +187,7 @@ BookingController.put(
       ctx.body = { message: 'missing booking id' };
       return;
     }
-    await BookingPmsService.cancelBooking(bookingId);
+    await BookingService.cancelBooking(bookingId);
     ctx.status = 200;
   }
 );
@@ -187,7 +196,7 @@ BookingController.get(
   getPathOf(owner.byId$get),
   async (ctx) => {
     const { id } = ctx.params;
-    ctx.body = await BookingPmsService.getBookingsByOwner(id);
+    ctx.body = await BookingService.getBookingsByOwner(id);
   }
 );
 

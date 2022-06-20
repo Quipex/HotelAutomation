@@ -1,5 +1,6 @@
 import { HotelDailyDashboardDto } from '~/common/types';
 import { addToDate } from '~/common/utils/dates';
+import localDb from '~/config/localDb';
 import BookingNotificationRepository from '~/domain/booking_notifications/BookingNotificationRepository';
 import BookingRepository from '~/domain/bookings/BookingRepository';
 
@@ -17,6 +18,8 @@ const generateDailyStatus = async (date: Date): Promise<HotelDailyDashboardDto['
 };
 
 const generateDailyDashboardReport = async (date: string): Promise<HotelDailyDashboardDto> => {
+  await localDb.read();
+  const synchronizationTime = localDb.data.lastSynchronization;
   const unreadNotifications = await BookingNotificationRepository.countUnreadNotifications();
   const today = new Date(date);
   const todayStatus = await generateDailyStatus(today);
@@ -41,7 +44,8 @@ const generateDailyDashboardReport = async (date: string): Promise<HotelDailyDas
       notReminded,
       overall,
       reminded: overall - notReminded
-    }
+    },
+    synchronizationTime
   };
 };
 

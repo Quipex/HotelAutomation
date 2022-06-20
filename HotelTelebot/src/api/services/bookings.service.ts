@@ -17,7 +17,8 @@ const {
   remindedPrepayment$put,
   expiredRemind$get,
   notPaid$get,
-  cancel$put
+  cancel$put,
+  livingNotMarked$get
 } = routesV1.bookings;
 
 const fetchBookingById = async (bookingId: string) => {
@@ -116,9 +117,12 @@ const moveBooking = async (...any: any): Promise<any> => {
   throw new Error('Not implemented');
 };
 
-const fetchBookingsArriveAtAndNotLiving = async (...any: any): Promise<any> => {
-  log.error('Not implemented', { any });
-  throw new Error('Not implemented');
+const fetchLivingButNotMarked = async (date: string): Promise<any> => {
+  const {
+    path, method, compactPath: { getQueryParams }
+  } = rv1(livingNotMarked$get);
+  const params = getQueryParams({ date });
+  return await api.call(path, { method, params }) as BookingDto[];
 };
 
 const cancelBooking = async (bookingId: string) => {
@@ -143,6 +147,6 @@ export default {
   fetchClientBookings,
   moveBookingInBatch,
   moveBooking,
-  fetchBookingsArriveAtAndNotLiving,
+  fetchLivingButNotMarked,
   cancelBooking
 };
