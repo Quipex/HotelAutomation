@@ -38,7 +38,7 @@ const getAllBookings = async (): Promise<BookingDto[]> => {
 };
 
 const getArrivalsBy = async (utcDate: string): Promise<BookingDto[]> => {
-  const bookingModels = await BookingRepository.findArrivalsAt(new Date(utcDate));
+  const bookingModels = await BookingRepository.findArrivalsAtDate(new Date(utcDate));
   return bookingModels.map(mapBookingModel2dto);
 };
 
@@ -52,8 +52,23 @@ const getBookingById = async (id: string): Promise<BookingDto | null> => {
   return bookingModel ? mapBookingModel2dto(bookingModel) : null;
 };
 
-const getBookingsNotPayedArriveAfter = async (utcDate: string): Promise<BookingDto[]> => {
-  const bookingModels = await BookingRepository.findNotPaidArriveAfter(new Date(utcDate));
+const getBookingsNotPayedArriveAfter = async (utcDate: string, wereReminded?: boolean, expired?: boolean):
+  Promise<BookingDto[]> => {
+  let bookingModels: BookingModel[] = [];
+  const date = new Date(utcDate);
+  if (wereReminded === undefined) {
+    bookingModels = await BookingRepository.findNotPaidArriveAfter(date);
+  }
+  if (!wereReminded) {
+    bookingModels = await BookingRepository.findNotRemindedNoPrepaid(date);
+  }
+  if (wereReminded) {
+    if (expired) {
+      bookingModels = await BookingRepository.findRemindedAndExpired(date);
+    } else {
+      bookingModels = await BookingRepository.findRemindedNotExpired(date);
+    }
+  }
   return bookingModels.map(mapBookingModel2dto);
 };
 
@@ -76,14 +91,9 @@ const remindedOfPrepayment = async (bookingId: string): Promise<void> => {
   await BookingRepository.registerNewPrepaymentReminding(bookingId);
 };
 
-const expiredRemindedPrepayment = async (): Promise<BookingDto[]> => {
-  return (await BookingRepository.findRemindedAndExpired())
-    .map(mapBookingModel2dto);
-};
-
 const getBookingsByOwner = async (clientId: string): Promise<BookingDto[]> => {
-  return (await BookingRepository.findByOwner(clientId))
-    .map(mapBookingModel2dto);
+  const bookingModels = await BookingRepository.findByOwner(clientId);
+  return bookingModels.map(mapBookingModel2dto);
 };
 
 /**
@@ -116,7 +126,6 @@ export default {
   confirmPrepayment,
   confirmLiving,
   remindedOfPrepayment,
-  expiredRemindedPrepayment,
   getBookingsByOwner,
   createBookingAndSyncBookings,
   cancelBooking,

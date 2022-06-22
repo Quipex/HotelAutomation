@@ -17,24 +17,28 @@ const generateDailyStatus = async (date: Date): Promise<HotelDailyDashboardDto['
   };
 };
 
-const generateDailyDashboardReport = async (date: string): Promise<HotelDailyDashboardDto> => {
+const generateDailyDashboardReport = async (dateAsString: string): Promise<HotelDailyDashboardDto> => {
+  const date = new Date(dateAsString);
   await localDb.read();
   const synchronizationTime = localDb.data.lastSynchronization;
   const unreadNotifications = await BookingNotificationRepository.countUnreadNotifications();
-  const today = new Date(date);
-  const todayStatus = await generateDailyStatus(today);
-  const tomorrow = addToDate({ date: today, amount: 1, unit: 'days' }).toDate();
+  const todayStatus = await generateDailyStatus(date);
+  const tomorrow = addToDate({ date, amount: 1, unit: 'days' }).toDate();
   const tomorrowStatus = await generateDailyStatus(tomorrow);
   const newBookingsOverall = await BookingRepository.countAddedOn(
-    { date: today, manuallyCreated: false }
+    { date, manuallyCreated: false }
   );
   const newBookingsManually = await BookingRepository.countAddedOn(
-    { date: today, manuallyCreated: true }
+    { date, manuallyCreated: true }
   );
-  const actuallyLivingButNotMarked = await BookingRepository.countLivingButNotMarked(today);
-  const notPrepaidBookings = await BookingRepository.findNotPaidArriveAfter(today);
-  const overall = notPrepaidBookings.length;
-  const notReminded = notPrepaidBookings.filter((booking) => booking.prepaymentRemindings.length === 0).length;
+  const actuallyLivingButNotMarked = await BookingRepository.countLivingButNotMarked(date);
+
+  const today = new Date();
+  const overall = await BookingRepository.countNotPaidArriveAfter(today);
+  const notReminded = await BookingRepository.countNotRemindedNoPrepaid(today);
+  const remindedNotExpired = await BookingRepository.countRemindedNotExpired(today);
+  const remindedAndExpired = await BookingRepository.countRemindedAndExpired(today);
+
   return {
     unreadNotifications,
     tomorrow: tomorrowStatus,
@@ -43,7 +47,8 @@ const generateDailyDashboardReport = async (date: string): Promise<HotelDailyDas
     noPrepaidBookings: {
       notReminded,
       overall,
-      reminded: overall - notReminded
+      remindedNotExpired,
+      remindedAndExpired
     },
     synchronizationTime
   };

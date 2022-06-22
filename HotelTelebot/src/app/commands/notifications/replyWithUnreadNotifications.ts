@@ -5,11 +5,11 @@ import appConfig from '~/config/appConfig';
 import { Notification, NotificationActions } from '~@components';
 import { BookingNotificationsService } from '~@services';
 
-const replyWithUnreadNotifications = async (ctx: Context) => {
+const replyWithUnreadNotifications = async (ctx: Context, originalMessageId?: number) => {
   const unreadNotifications = await BookingNotificationsService.getUnreadNotifications();
   const { message_id: messageId } = await ctx.reply(
     unreadNotifications.length ? 'Непрочитанные уведомления 🔔' : 'Все уведомления прочитаны ✅',
-    { reply_to_message_id: ctx.message?.message_id }
+    { reply_to_message_id: ctx.message?.message_id ?? originalMessageId }
   );
   for (let i = 0; i < unreadNotifications.length; i += 1) {
     const notification = unreadNotifications[i];

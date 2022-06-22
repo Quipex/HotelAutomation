@@ -1,14 +1,14 @@
 import { BookingsService } from '~@services';
 import { CallbackHandler } from '~@callbacks/CallbackHandler';
 import { extractMessageId } from '~@callbacks/helpers';
-import { refreshBooking } from './refreshBooking';
+import { cbRefreshBooking } from './cbRefreshBooking';
 
-const confirmCancelAndReply: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
+const cbConfirmCancelAndReply: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
   const [, bookingId, mIdWithPrefix] = cbPayloadArray;
   await BookingsService.cancelBooking(bookingId);
   await ctx.answerCbQuery('✅ Отменено');
   await ctx.deleteMessage(messageId);
-  await refreshBooking({ ctx, cbPayloadArray, messageId: extractMessageId(mIdWithPrefix) });
+  await cbRefreshBooking({ ctx, cbPayloadArray, messageId: extractMessageId(mIdWithPrefix) });
 };
 
-export { confirmCancelAndReply };
+export { cbConfirmCancelAndReply };

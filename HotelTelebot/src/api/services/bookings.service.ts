@@ -15,7 +15,6 @@ const {
   confirmLiving$put,
   confirmPrepayment$put,
   remindedPrepayment$put,
-  expiredRemind$get,
   notPaid$get,
   cancel$put,
   livingNotMarked$get
@@ -45,22 +44,15 @@ const fetchBookingsArriveAt = async (utcDate: string) => {
   return await api.call(path, { method, params }) as BookingDto[];
 };
 
-const fetchBookingsExpiredAndReminded = async () => {
-  const {
-    path, method
-  } = rv1(expiredRemind$get);
-  return await api.call(path, { method }) as BookingDto[];
-};
-
-const fetchNotPayedBookingsArriveAfter = async (utcDate: string) => {
+const fetchNotPayedBookingsArriveAfter = async (utcDate: string, wereReminded?: boolean, expired?: boolean) => {
   const {
     path, method, compactPath: { getQueryParams }
   } = rv1(notPaid$get);
-  const params = getQueryParams({ arrive_after: utcDate });
+  const params = getQueryParams({ arrive_after: utcDate, expired, wereReminded });
   return await api.call(path, { method, params }) as BookingDto[];
 };
 
-const confirmPrepayment = async (bookingId: string) => {
+const confirmPrepayment = async (bookingId: string): Promise<void> => {
   const {
     path, method, compactPath: { getData }
   } = rv1(confirmPrepayment$put);
@@ -117,7 +109,7 @@ const moveBooking = async (...any: any): Promise<any> => {
   throw new Error('Not implemented');
 };
 
-const fetchLivingButNotMarked = async (date: string): Promise<any> => {
+const fetchLivingButNotMarked = async (date: string): Promise<BookingDto[]> => {
   const {
     path, method, compactPath: { getQueryParams }
   } = rv1(livingNotMarked$get);
@@ -137,7 +129,6 @@ export default {
   fetchBookingById,
   fetchBookingsAddedAfter,
   fetchBookingsArriveAt,
-  fetchBookingsExpiredAndReminded,
   fetchNotPayedBookingsArriveAfter,
   confirmPrepayment,
   confirmLiving,

@@ -1,1 +1,1 @@
-export * from './readBookingNotification';
+export * from './cbReadBookingNotification';

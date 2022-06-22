@@ -14,15 +14,15 @@ import {
 } from './actions';
 import {
   confirmBookingAndReply,
-  confirmCancelAndReply,
+  cbConfirmCancelAndReply,
   confirmLivingAndReply,
-  refreshBooking,
+  cbRefreshBooking,
   replyWithMoveBookingUsage,
-  sendBookingDetails,
+  cbSendBookingDetails,
   setRemindedPrepaymentAndReply
 } from './handlers';
 
-registerActionHandler(bookingDetails, sendBookingDetails);
+registerActionHandler(bookingDetails, cbSendBookingDetails);
 registerActionHandler(bookingPrePaidAsk, createConfirmationHandler({
   actionOnConfirm: bookingPrePaidConfirm,
   messageOnConfirm: 'Предоплата 💳'
@@ -34,10 +34,10 @@ registerActionHandler(bookingLivingAsk, createConfirmationHandler({
   messageOnConfirm: 'Проживание 🛌'
 }));
 registerActionHandler(bookingLivingConfirm, confirmLivingAndReply);
-registerActionHandler(bookingRefresh, refreshBooking);
+registerActionHandler(bookingRefresh, cbRefreshBooking);
 registerActionHandler(bookingMoveList, replyWithMoveBookingUsage);
 registerActionHandler(bookingCancelAsk, createConfirmationHandler({
   actionOnConfirm: bookingCancelConfirm,
   messageOnConfirm: 'Отмена бронирования ❌'
 }));
-registerActionHandler(bookingCancelConfirm, confirmCancelAndReply);
+registerActionHandler(bookingCancelConfirm, cbConfirmCancelAndReply);

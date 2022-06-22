@@ -3,7 +3,10 @@ import { addToDate, subtractFromDate } from '~/common/utils/dates';
 /**
  * @return date from given string
  */
-function parseDateFromLiterals(dateLiterals: string): Date | null {
+function parseDateFromLiterals(dateLiterals?: string): Date | null {
+  if (!dateLiterals) {
+    return null;
+  }
   const dateTextLower = dateLiterals.toLowerCase();
   const now = new Date();
   now.setHours(0, 0, 0, 0);

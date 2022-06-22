@@ -1,6 +1,8 @@
 import Router from 'koa-router';
 import { BookingCreationConflictError } from '~/common/errors';
 import { routesV1 } from '~/common/maps';
+import { QueryParams } from '~/common/types';
+import { resolveBooleanFromString } from '~/common/utils/primitives';
 import { getPathOf } from '~/domain/helpers/routes';
 import BookingService from './BookingService';
 
@@ -17,7 +19,6 @@ const {
   sync$put,
   create$put,
   remindedPrepayment$put,
-  expiredRemind$get,
   confirmLiving$put,
   confirmPrepayment$put,
   cancel$put,
@@ -41,7 +42,7 @@ BookingController.get(
 BookingController.get(
   getPathOf(arrive$get),
   async (ctx) => {
-    const { on: utcDate } = ctx.query as unknown as ReturnType<typeof arrive$get.getQueryParams>;
+    const { on: utcDate } = ctx.query as unknown as QueryParams<typeof arrive$get.getQueryParams>;
     if (!utcDate) {
       ctx.status = 400;
       return;
@@ -53,7 +54,9 @@ BookingController.get(
 BookingController.get(
   getPathOf(added$get),
   async (ctx) => {
-    const { after: utcDate } = ctx.query as unknown as ReturnType<typeof added$get.getQueryParams>;
+    const {
+      after: utcDate
+    } = ctx.query as unknown as QueryParams<typeof added$get.getQueryParams>;
     if (!utcDate) {
       ctx.status = 400;
       return;
@@ -78,12 +81,20 @@ BookingController.get(
 BookingController.get(
   getPathOf(notPaid$get),
   async (ctx) => {
-    const { arrive_after: utcDate } = ctx.query as unknown as ReturnType<typeof notPaid$get.getQueryParams>;
+    const {
+      arrive_after: utcDate,
+      wereReminded,
+      expired
+    } = ctx.query as unknown as QueryParams<typeof notPaid$get.getQueryParams>;
     if (!utcDate) {
       ctx.status = 400;
       return;
     }
-    ctx.body = await BookingService.getBookingsNotPayedArriveAfter(utcDate);
+    ctx.body = await BookingService.getBookingsNotPayedArriveAfter(
+      utcDate,
+      resolveBooleanFromString(wereReminded),
+      resolveBooleanFromString(expired)
+    );
   }
 );
 
@@ -137,13 +148,6 @@ BookingController.put(
   }
 );
 
-BookingController.get(
-  getPathOf(expiredRemind$get),
-  async (ctx) => {
-    ctx.body = await BookingService.expiredRemindedPrepayment();
-  }
-);
-
 BookingController.put(
   getPathOf(create$put),
   async (ctx) => {
@@ -173,7 +177,7 @@ BookingController.put(
 BookingController.get(
   getPathOf(livingNotMarked$get),
   async (ctx) => {
-    const { date } = ctx.query as unknown as ReturnType<typeof livingNotMarked$get.getQueryParams>;
+    const { date } = ctx.query as unknown as QueryParams<typeof livingNotMarked$get.getQueryParams>;
     ctx.body = await BookingService.getLivingButNotMarkedBy(date);
   }
 );

@@ -65,15 +65,17 @@ const routesV1 = {
       withPathVariable: createPathReplacer(':id')
     },
     /**
-     * Get bookings that were not paid
+     * Get bookings that are not paid and arrive after 'date'
      */
     notPaid$get: {
       relativePath: 'not_paid',
       /**
        * @param params config
        * @param params.arrive_after date formatted as YYYY-MM-DD
+       * @param [params.expired] should display only expired/not bookings
+       * @param [params.wereReminded] should display that were reminded/not bookings
        */
-      getQueryParams: (params: { arrive_after: string }) => params
+      getQueryParams: (params: { arrive_after: string, expired?: boolean, wereReminded?: boolean }) => params
     },
     /**
      * Fetch pms
@@ -101,12 +103,6 @@ const routesV1 = {
     remindedPrepayment$put: {
       relativePath: 'reminded_prepayment',
       getData: (data: { bookingId: string }) => data
-    },
-    /**
-     * Find bookings that were reminded and already expired (reminded more than 24h ago)
-     */
-    expiredRemind$get: {
-      relativePath: 'expired_remind'
     },
     /**
      * Create booking
