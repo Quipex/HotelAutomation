@@ -15,7 +15,7 @@ const NotPrepaidMenuActions = (): InlineKeyboardButton[][] => {
     callback_data: npmExpired
   }]);
   inlineKeyboard.push([{
-    text: 'Напомнили, не оплатили, еще есть время ⏲',
+    text: 'Напомнили, не оплатили, еще есть время ⏳',
     hide: false,
     callback_data: npmNotExpired
   }]);

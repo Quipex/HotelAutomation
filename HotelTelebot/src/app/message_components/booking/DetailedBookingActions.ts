@@ -30,12 +30,12 @@ function detailedBookingActions(
 
   if (!prepaid && !living) {
     inlineKeyboard.push([{
-      text: 'Подтвердить предоплату ✅',
+      text: 'Подтвердить предоплату... ✅',
       callback_data: cbPayloadBookingPrepaidAsk(bookingId),
       hide: true
     }]);
     inlineKeyboard.push([{
-      text: 'Напомнили за предоплату 💬',
+      text: 'Напомнили про предоплату 💬',
       callback_data: cbPayloadBookingRemindedPrepayment(bookingId),
       hide: false
     }]);
@@ -45,7 +45,7 @@ function detailedBookingActions(
 
   if (shouldBeLiving && !living) {
     inlineKeyboard.push([{
-      text: 'Подтвердить проживание 🏠',
+      text: 'Подтвердить проживание... 🏠',
       callback_data: cbPayloadBookingLivingAsk(bookingId),
       hide: true
     }]);

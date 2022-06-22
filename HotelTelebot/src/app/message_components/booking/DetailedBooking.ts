@@ -1,6 +1,6 @@
 import { DATETIME_MOMENTJS } from '~/common/constants';
 import { BookingDto } from '~/common/types';
-import { formatDate } from '~/common/utils/dates';
+import { formatDate, timeFromNow } from '~/common/utils/dates';
 import ColorfulBooking from './ColorfulBooking';
 
 function DetailedBooking(
@@ -8,10 +8,10 @@ function DetailedBooking(
 ): string {
   const { prepaymentRemindings } = entity;
   const remindings = prepaymentRemindings
-    .map((reminding) => formatDate(reminding.createdAt, DATETIME_MOMENTJS))
+    .map((reminding) => `${formatDate(reminding.createdAt, DATETIME_MOMENTJS)} (${timeFromNow(reminding.createdAt)})`)
     .join('\n');
   const remindingText = prepaymentRemindings.length > 0
-    ? `\nНапомнил за предоплату:\n${remindings}`
+    ? `\nНапомнили за предоплату:\n${remindings}`
     : '';
   return (ColorfulBooking(entity) + remindingText);
 }

@@ -47,9 +47,9 @@ const Dashboard = (
     `${important(unreadNotifications)} уведомлений (непр.) 🔔`,
     Divider(),
     `${notImportant(noPrepaidBookings.overall)} бронирований без предоплаты`,
-    `${important(noPrepaidBookings.remindedAndExpired)} человек, которым напомнили и они не оплатили (прошло время ⏲)`,
+    `${important(noPrepaidBookings.remindedAndExpired)} человек, которым напомнили и они не оплатили (прошло время 🤬)`,
     `${notImportant(noPrepaidBookings.remindedNotExpired)} человек, которым напомнили `
-    + 'и они не оплатили (еще есть время)',
+    + 'и они не оплатили (еще есть время ⏳)',
     `${important(noPrepaidBookings.notReminded)} человек, которым надо напомнить за предоплату`,
     Divider(),
     `${important(actuallyLivingButNotMarked)} проживающих не отмеченных как проживающие`
