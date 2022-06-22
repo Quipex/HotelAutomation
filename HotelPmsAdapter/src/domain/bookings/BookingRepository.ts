@@ -1,11 +1,21 @@
-import { In, Raw } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, In, Raw } from 'typeorm';
 import { SOURCES_MANUAL_CREATION } from '~/common/constants';
 import { formatDate, subtractFromDate } from '~/common/utils/dates';
+import appConfig from '~/config/appConfig';
 import { CarPlateModel } from '~/domain/car_plates/CarPlateModel';
 import { ClientId } from '~/domain/clients/ClientModel';
 import { PrepaymentRemindingsModel } from '~/domain/prepayment_remindings/PrepaymentRemindingsModel';
 import { getRepository, lessThanDate, lessThanOrEqualDate, moreThanDate, moreThanOrEqualDate } from '../helpers/orm';
 import { BookingId, BookingModel } from './BookingModel';
+
+const closestFirstRoomsAsc: FindOptionsOrder<BookingModel> = {
+  startDate: 'ASC',
+  room: { realRoomNumber: 'ASC' }
+};
+
+const getIncludingCancelledClause = (includingCancelled: boolean) => ({
+  ...(!includingCancelled && { cancelled: false })
+});
 
 const findAllBookings = async (): Promise<BookingModel[]> => {
   const bookingsRepository = getRepository(BookingModel);
@@ -20,18 +30,21 @@ const findByIds = async (ids: string[]): Promise<BookingModel[]> => {
 const getConditionForArrivesAt = (startDate: Date, includingCancelled: boolean) => {
   return {
     startDate,
-    ...(!includingCancelled && { cancelled: false })
+    ...getIncludingCancelledClause(includingCancelled)
   };
 };
 
-const findArrivalsAt = async (startDate: Date, includingCancelled = false): Promise<BookingModel[]> => {
+const findArrivalsAtDate = async (startDate: Date, includingCancelled = false): Promise<BookingModel[]> => {
   const bookingsRepository = getRepository(BookingModel);
   return bookingsRepository.find({
     where: getConditionForArrivesAt(startDate, includingCancelled),
-    order: {
-      room: { realRoomNumber: 'ASC' }
-    }
+    order: closestFirstRoomsAsc
   });
+};
+
+const countArrivalsAtDate = async (date: Date, includingCancelled = false): Promise<number> => {
+  const bookingsRepository = getRepository(BookingModel);
+  return bookingsRepository.countBy(getConditionForArrivesAt(date, includingCancelled));
 };
 
 const findAddedAfter = async (date: Date): Promise<BookingModel[]> => {
@@ -40,10 +53,7 @@ const findAddedAfter = async (date: Date): Promise<BookingModel[]> => {
     where: {
       createdAt: moreThanOrEqualDate(date)
     },
-    order: {
-      startDate: 'ASC',
-      room: { realRoomNumber: 'ASC' }
-    }
+    order: closestFirstRoomsAsc
   });
 };
 
@@ -52,19 +62,24 @@ const findById = async (id: BookingId): Promise<BookingModel | null> => {
   return bookingsRepository.findOneBy({ id });
 };
 
+const getNotPaidArriveAfterClause = (date: Date, includingCancelled: boolean): FindOptionsWhere<BookingModel> => ({
+  startDate: moreThanDate(date),
+  prepaid: false,
+  ...getIncludingCancelledClause(includingCancelled)
+});
+
 const findNotPaidArriveAfter = async (date: Date, includingCancelled = false): Promise<BookingModel[]> => {
   const bookingsRepository = getRepository(BookingModel);
+
   return bookingsRepository.find({
-    where: {
-      startDate: moreThanDate(date),
-      prepaid: false,
-      ...(!includingCancelled && { cancelled: false })
-    },
-    order: {
-      startDate: 'ASC',
-      room: { realRoomNumber: 'ASC' }
-    }
+    where: getNotPaidArriveAfterClause(date, includingCancelled),
+    order: closestFirstRoomsAsc
   });
+};
+
+const countNotPaidArriveAfter = async (date: Date, includingCancelled = false): Promise<number> => {
+  const bookingsRepository = getRepository(BookingModel);
+  return bookingsRepository.countBy(getNotPaidArriveAfterClause(date, includingCancelled));
 };
 
 const markAsPrepaid = async (id: BookingId): Promise<void> => {
@@ -84,19 +99,58 @@ const registerNewPrepaymentReminding = async (id: BookingId): Promise<void> => {
   await bookingsRepository.save(foundBooking);
 };
 
-const findRemindedAndExpired = async (): Promise<BookingModel[]> => {
+const getRemindedAndExpiredClause = async (date: Date, includingCancelled: boolean):
+  Promise<FindOptionsWhere<BookingModel>> => {
+  await appConfig.read();
+  const date24hoursAgo = subtractFromDate(
+    { date, amount: appConfig.data.clientPrepaymentHours, unit: 'hours' }
+  ).toDate();
+  return {
+    prepaymentRemindings: { createdAt: lessThanDate(date24hoursAgo) },
+    prepaid: false,
+    ...getIncludingCancelledClause(includingCancelled)
+  };
+};
+
+const findRemindedAndExpired = async (date: Date, includingCancelled = false): Promise<BookingModel[]> => {
   const bookingsRepository = getRepository(BookingModel);
-  const date24hoursAgo = subtractFromDate({ amount: 24, unit: 'hours' }).toDate();
   return bookingsRepository.find({
-    where: {
-      prepaymentRemindings: { createdAt: lessThanDate(date24hoursAgo) },
-      prepaid: false
-    },
-    order: {
-      startDate: 'ASC',
-      room: { realRoomNumber: 'ASC' }
-    }
+    where: await getRemindedAndExpiredClause(date, includingCancelled),
+    order: closestFirstRoomsAsc
   });
+};
+
+const countRemindedAndExpired = async (date: Date, includingCancelled = false): Promise<number> => {
+  const bookingsRepository = getRepository(BookingModel);
+  return bookingsRepository.countBy(await getRemindedAndExpiredClause(date, includingCancelled));
+};
+
+const getRemindedNotExpiredClause = async (date: Date, includingCancelled: boolean):
+  Promise<FindOptionsWhere<BookingModel>> => {
+  await appConfig.read();
+  const date24hoursAgo = subtractFromDate({
+    date,
+    amount: appConfig.data.clientPrepaymentHours,
+    unit: 'hours'
+  }).toDate();
+  return {
+    prepaymentRemindings: { createdAt: moreThanOrEqualDate(date24hoursAgo) },
+    prepaid: false,
+    ...getIncludingCancelledClause(includingCancelled)
+  };
+};
+
+const findRemindedNotExpired = async (date: Date, includingCancelled = false): Promise<BookingModel[]> => {
+  const bookingsRepository = getRepository(BookingModel);
+  return bookingsRepository.find({
+    where: await getRemindedNotExpiredClause(date, includingCancelled),
+    order: closestFirstRoomsAsc
+  });
+};
+
+const countRemindedNotExpired = async (date: Date, includingCancelled = false): Promise<number> => {
+  const bookingsRepository = getRepository(BookingModel);
+  return bookingsRepository.countBy(await getRemindedNotExpiredClause(date, includingCancelled));
 };
 
 const findByOwner = async (clientId: ClientId): Promise<BookingModel[]> => {
@@ -107,10 +161,7 @@ const findByOwner = async (clientId: ClientId): Promise<BookingModel[]> => {
         id: clientId
       }
     },
-    order: {
-      startDate: 'ASC',
-      room: { realRoomNumber: 'ASC' }
-    }
+    order: closestFirstRoomsAsc
   });
 };
 
@@ -119,34 +170,20 @@ const cancelBooking = async (bookingId: string) => {
   await bookingsRepository.update({ id: bookingId }, { cancelled: true });
 };
 
-const countArrivalsAtDate = async (date: Date, includingCancelled = false): Promise<number> => {
-  const bookingsRepository = getRepository(BookingModel);
-  return bookingsRepository.count({
-    where: {
-      startDate: date,
-      ...(!includingCancelled && { cancelled: false })
-    }
-  });
-};
-
 const countDeparturesAtDate = async (date: Date, includingCancelled = false): Promise<number> => {
   const bookingsRepository = getRepository(BookingModel);
-  return bookingsRepository.count({
-    where: {
-      endDateExclusive: date,
-      ...(!includingCancelled && { cancelled: false })
-    }
+  return bookingsRepository.countBy({
+    endDateExclusive: date,
+    ...getIncludingCancelledClause(includingCancelled)
   });
 };
 
 const countLivingAtDate = async (date: Date, includingCancelled = false): Promise<number> => {
   const bookingsRepository = getRepository(BookingModel);
-  return bookingsRepository.count({
-    where: {
-      startDate: lessThanDate(date),
-      endDateExclusive: moreThanDate(date),
-      ...(!includingCancelled && { cancelled: false })
-    }
+  return bookingsRepository.countBy({
+    startDate: lessThanDate(date),
+    endDateExclusive: moreThanDate(date),
+    ...getIncludingCancelledClause(includingCancelled)
   });
 };
 
@@ -155,13 +192,11 @@ const countLivingAtDate = async (date: Date, includingCancelled = false): Promis
  */
 const countCarsAtDate = async (date: Date, includingCancelled = false): Promise<number> => {
   const carPlateRepository = getRepository(CarPlateModel);
-  return carPlateRepository.count({
-    where: {
-      booking: {
-        startDate: lessThanOrEqualDate(date),
-        endDateExclusive: moreThanDate(date),
-        ...(!includingCancelled && { cancelled: false })
-      }
+  return carPlateRepository.countBy({
+    booking: {
+      startDate: lessThanOrEqualDate(date),
+      endDateExclusive: moreThanDate(date),
+      ...getIncludingCancelledClause(includingCancelled)
     }
   });
 };
@@ -176,52 +211,67 @@ const countAddedOn = async (
   { date, manuallyCreated, includingCancelled = false }: NewBookingsAtDateArgs
 ): Promise<number> => {
   const bookingsRepository = getRepository(BookingModel);
-  return bookingsRepository.count({
-    where: {
-      createdAt: Raw((alias) => `CAST(${alias} as date) = :ourDate`, { ourDate: formatDate(date) }),
-      ...(!includingCancelled && { cancelled: false }),
-      ...(manuallyCreated && { source: In(SOURCES_MANUAL_CREATION) })
-    }
+  return bookingsRepository.countBy({
+    createdAt: Raw((alias) => `CAST(${alias} as date) = :ourDate`, { ourDate: formatDate(date) }),
+    ...getIncludingCancelledClause(includingCancelled),
+    ...(manuallyCreated && { source: In(SOURCES_MANUAL_CREATION) })
   });
 };
 
-const livingButNotMarkedClause = (date: Date, includingCancelled: boolean) => ({
+const getClauseLivingButNotMarked = (date: Date, includingCancelled: boolean): FindOptionsWhere<BookingModel> => ({
   living: false,
   startDate: lessThanOrEqualDate(date),
   endDateExclusive: moreThanDate(date),
-  ...(!includingCancelled && { cancelled: false })
+  ...getIncludingCancelledClause(includingCancelled)
 });
 
 const findLivingButNotMarked = async (date: Date, includingCancelled = false): Promise<BookingModel[]> => {
   const bookingsRepository = getRepository(BookingModel);
   return bookingsRepository.find({
-    where: livingButNotMarkedClause(date, includingCancelled)
+    where: getClauseLivingButNotMarked(date, includingCancelled)
   });
 };
 
 const countLivingButNotMarked = async (date: Date, includingCancelled = false): Promise<number> => {
   const bookingsRepository = getRepository(BookingModel);
-  return bookingsRepository.countBy(livingButNotMarkedClause(date, includingCancelled));
+  return bookingsRepository.countBy(getClauseLivingButNotMarked(date, includingCancelled));
+};
+
+const countNotRemindedNoPrepaid = async (date: Date, includingCancelled = false): Promise<number> => {
+  const bookingModels = await findNotRemindedNoPrepaid(date, includingCancelled);
+  return bookingModels.length;
+};
+
+const findNotRemindedNoPrepaid = async (date: Date, includingCancelled = false): Promise<BookingModel[]> => {
+  // :( too bad orm doesn't allow me to customize the query
+  const notPrepaid = await findNotPaidArriveAfter(date, includingCancelled);
+  return notPrepaid.filter((np) => np.prepaymentRemindings.length === 0);
 };
 
 export default {
   findAllBookings,
-  findArrivalsAt,
   findAddedAfter,
   findById,
-  findNotPaidArriveAfter,
-  findRemindedAndExpired,
   findByOwner,
   findByIds,
   markAsPrepaid,
   markAsLiving,
   registerNewPrepaymentReminding,
   cancelBooking,
+  findArrivalsAtDate,
   countArrivalsAtDate,
   countDeparturesAtDate,
   countLivingAtDate,
   countCarsAtDate,
   countAddedOn,
+  findLivingButNotMarked,
   countLivingButNotMarked,
-  findLivingButNotMarked
+  findNotPaidArriveAfter,
+  countNotPaidArriveAfter,
+  findNotRemindedNoPrepaid,
+  countNotRemindedNoPrepaid,
+  findRemindedNotExpired,
+  countRemindedNotExpired,
+  findRemindedAndExpired,
+  countRemindedAndExpired
 };

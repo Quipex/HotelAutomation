@@ -32,7 +32,7 @@ const DashboardActions = (date: Date): InlineKeyboardButton[][] => {
     callback_data: dashboardUnreadNotifications
   }]);
   inlineKeyboard.push([{
-    text: '💰🚫 Без предоплаты (сегодня)',
+    text: '💰🚫 Без предоплаты...',
     hide: false,
     callback_data: dashboardNotPrepaid
   }]);

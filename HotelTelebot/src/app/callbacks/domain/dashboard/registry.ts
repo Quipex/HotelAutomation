@@ -8,17 +8,17 @@ import {
   dashboardUnreadNotifications
 } from './actions';
 import {
-  refreshDashboard,
-  replyWithDashboardDayAfter,
-  replyWithDashboardDayBefore,
-  replyWithNotMarkedLivingBookings,
-  replyWithNotPrepaidMenu,
+  cbRefreshDashboard,
+  cbReplyWithDashboardDayAfter,
+  cbReplyWithDashboardDayBefore,
+  cbReplyWithNotMarkedLivingBookings,
+  cbReplyNotPrepaidMenu,
   cbReplyWithUnreadNotifications
 } from './handlers';
 
-registerActionHandler(dashboardRefresh, refreshDashboard);
-registerActionHandler(dashboardDayAfter, replyWithDashboardDayAfter);
-registerActionHandler(dashboardDayBefore, replyWithDashboardDayBefore);
+registerActionHandler(dashboardRefresh, cbRefreshDashboard);
+registerActionHandler(dashboardDayAfter, cbReplyWithDashboardDayAfter);
+registerActionHandler(dashboardDayBefore, cbReplyWithDashboardDayBefore);
 registerActionHandler(dashboardUnreadNotifications, cbReplyWithUnreadNotifications);
-registerActionHandler(dashboardNotMarkedLiving, replyWithNotMarkedLivingBookings);
-registerActionHandler(dashboardNotPrepaid, replyWithNotPrepaidMenu);
+registerActionHandler(dashboardNotMarkedLiving, cbReplyWithNotMarkedLivingBookings);
+registerActionHandler(dashboardNotPrepaid, cbReplyNotPrepaidMenu);

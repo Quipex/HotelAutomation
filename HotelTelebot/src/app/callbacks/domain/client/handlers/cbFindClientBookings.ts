@@ -3,7 +3,7 @@ import { CallbackHandler } from '~@callbacks/CallbackHandler';
 import { BriefBookingActions, ColorfulBooking } from '~@components';
 import { BookingsService } from '~@services';
 
-const findClientBookings: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
+const cbFindClientBookings: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
   const [, clientId] = cbPayloadArray;
   const bookings = await BookingsService.fetchClientBookings(clientId);
   await ctx.answerCbQuery();
@@ -16,4 +16,4 @@ const findClientBookings: CallbackHandler = async ({ ctx, cbPayloadArray, messag
   }
 };
 
-export { findClientBookings };
+export { cbFindClientBookings };

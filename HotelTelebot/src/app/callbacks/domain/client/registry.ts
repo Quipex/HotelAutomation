@@ -1,7 +1,7 @@
 import { registerActionHandler } from '~@callbacks/CallbackHandler';
 import { clientBookings, clientDetails, clientRefresh } from './actions';
-import { findClientBookings, refreshClient, sendClientDetails } from './handlers';
+import { cbFindClientBookings, cbRefreshClient, cbSendClientDetails } from './handlers';
 
-registerActionHandler(clientDetails, sendClientDetails);
-registerActionHandler(clientRefresh, refreshClient);
-registerActionHandler(clientBookings, findClientBookings);
+registerActionHandler(clientDetails, cbSendClientDetails);
+registerActionHandler(clientRefresh, cbRefreshClient);
+registerActionHandler(clientBookings, cbFindClientBookings);

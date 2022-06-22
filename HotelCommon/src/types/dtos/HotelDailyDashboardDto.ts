@@ -14,8 +14,9 @@ type HotelDailyDashboardDto = {
   unreadNotifications: number,
   noPrepaidBookings: {
     overall: number,
-    reminded: number,
-    notReminded: number
+    notReminded: number,
+    remindedNotExpired: number,
+    remindedAndExpired: number
   }
   actuallyLivingButNotMarked: number,
   synchronizationTime: string
