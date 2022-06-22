@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax,no-await-in-loop */
 import { Context } from 'telegraf';
 import { getRelevantDateText } from '~/common/utils/dates';
-import { BriefBookingActions, ColorfulBooking } from '~@components';
+import { DetailedBooking, DetailedBookingActions } from '~@components';
 import { BookingsService } from '~@services';
 
 const replyNotMarkedAsLiving = async (ctx: Context, date: string, originalMessageId?: number) => {
@@ -14,9 +14,9 @@ const replyNotMarkedAsLiving = async (ctx: Context, date: string, originalMessag
     { reply_to_message_id: originalMessageId }
   );
   for (const booking of arrivals) {
-    await ctx.replyWithHTML(ColorfulBooking(booking), {
+    await ctx.replyWithHTML(DetailedBooking(booking), {
       reply_to_message_id: titleId,
-      reply_markup: { inline_keyboard: BriefBookingActions(booking) }
+      reply_markup: { inline_keyboard: DetailedBookingActions(booking) }
     });
   }
 };

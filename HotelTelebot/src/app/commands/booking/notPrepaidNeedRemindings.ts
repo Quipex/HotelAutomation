@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax,no-await-in-loop */
 import { Context } from 'telegraf';
 import { formatDate, getRelevantDateText } from '~/common/utils/dates';
-import { BriefBookingActions, ColorfulBooking } from '~@components';
+import { DetailedBooking, DetailedBookingActions } from '~@components';
 import { BookingsService } from '~@services';
 
 const replyWithBookingsThatNeedRemindings = async (ctx: Context, date = new Date(), originalMessageId?: number) => {
@@ -14,9 +14,9 @@ const replyWithBookingsThatNeedRemindings = async (ctx: Context, date = new Date
     { reply_to_message_id: ctx.message?.message_id ?? originalMessageId }
   );
   for (const booking of notPrePayedBookings) {
-    await ctx.replyWithHTML(ColorfulBooking(booking), {
+    await ctx.replyWithHTML(DetailedBooking(booking), {
       reply_to_message_id: statusId,
-      reply_markup: { inline_keyboard: BriefBookingActions(booking) }
+      reply_markup: { inline_keyboard: DetailedBookingActions(booking) }
     });
   }
 };

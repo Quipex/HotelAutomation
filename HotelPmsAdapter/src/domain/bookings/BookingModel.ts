@@ -36,7 +36,10 @@ class BookingModel {
   @JoinColumn({ name: 'realRoomNumber' })
   room: RoomModel;
 
-  @OneToMany(() => PrepaymentRemindingsModel, (prepaymentRemindings) => prepaymentRemindings.booking, { eager: true })
+  @OneToMany(() => PrepaymentRemindingsModel, (prepaymentRemindings) => prepaymentRemindings.booking, {
+    eager: true,
+    cascade: ['insert']
+  })
   prepaymentRemindings: PrepaymentRemindingsModel[];
 
   @OneToMany(() => CarPlateModel, (carPlates) => carPlates.booking, { eager: true })

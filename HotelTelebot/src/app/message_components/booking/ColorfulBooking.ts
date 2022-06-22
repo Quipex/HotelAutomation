@@ -21,12 +21,14 @@ function ColorfulBooking(
     client: { fullNameOrig },
     updatedAt,
     id,
-    totalUahCoins
+    totalUahCoins,
+    prepaymentRemindings
   } = booking;
   const statusText = BookingStatus({
     living,
     cancelled,
-    prepaid
+    prepaid,
+    prepaymentRemindings
   }, { emojified: true });
   const arriveText = format('startDate', startDate);
   const departText = format('endDateExclusive', endDateExclusive);

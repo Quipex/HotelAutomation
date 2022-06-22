@@ -18,12 +18,14 @@ function PlainTextBooking(booking: BookingDto): string {
     client: { fullNameOrig },
     updatedAt,
     id,
-    totalUahCoins
+    totalUahCoins,
+    prepaymentRemindings
   } = booking;
   const statusText = BookingStatus({
     living,
     cancelled,
-    prepaid
+    prepaid,
+    prepaymentRemindings
   });
   const arriveText = format('startDate', startDate);
   const departText = format('endDateExclusive', endDateExclusive);
