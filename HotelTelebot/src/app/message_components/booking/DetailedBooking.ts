@@ -11,7 +11,7 @@ function DetailedBooking(
     .map((reminding) => `${formatDate(reminding.createdAt, DATETIME_MOMENTJS)} (${timeFromNow(reminding.createdAt)})`)
     .join('\n');
   const remindingText = prepaymentRemindings.length > 0
-    ? `\nНапомнили за предоплату:\n${remindings}`
+    ? `\nНапомнили про предоплату:\n${remindings}`
     : '';
   return (ColorfulBooking(entity) + remindingText);
 }
