@@ -1,6 +1,6 @@
-import BookingNotificationsService from './bookingNotifications.service';
-import BookingsService from './bookings.service';
-import ClientsService from './clients.service';
+import BookingNotificationService from './bookingNotification.service';
+import BookingService from './booking.service';
+import ClientService from './client.service';
 import DashboardService from './dashboard.service';
 
-export { BookingsService, ClientsService, BookingNotificationsService, DashboardService };
+export { BookingService, ClientService, BookingNotificationService, DashboardService };

@@ -5,3 +5,5 @@ export * from './cbMoveBookingUsage';
 export * from './cbRefreshBooking';
 export * from './cbRemindedPrepayment';
 export * from './cbSendBookingDetails';
+export * from './cbShowBookingNoteMenu';
+export * from './cbClearBookingNote';

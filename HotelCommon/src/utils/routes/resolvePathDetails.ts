@@ -1,4 +1,4 @@
-import { fullRoutesV1 } from '~/maps/routes/routes.v1';
+import { fullRoutesV1 } from '~/maps/routes/v1/routes';
 import { Route } from '~/types/routes';
 
 const createResolvePathDetails = (fullMap) => (path): Partial<Route> => {

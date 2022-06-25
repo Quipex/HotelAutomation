@@ -1,6 +1,9 @@
-/* eslint-disable class-methods-use-this */
+/* eslint-disable class-methods-use-this,no-console */
+import { id as getRequestId } from 'cls-rtracer';
+import { format } from 'sql-formatter';
 import { Logger } from 'typeorm';
 import { appendRequestIdIfPresent } from '~/common/utils/logging';
+import env from '~/config/env';
 import { log, migrationLog, queryLog } from './logger';
 
 class TypeormLogger implements Logger {
@@ -17,6 +20,12 @@ class TypeormLogger implements Logger {
   }
 
   logQuery(query: string, parameters: any[] = []): any {
+    if (env.nodeEnv !== 'prod') {
+      const formattedQuery = format(query);
+      const requestId = getRequestId();
+      const requestIdPrefix = requestId ? `[${requestId}]:\n` : '';
+      console.log(`${requestIdPrefix}${formattedQuery} -- ${parameters}\n`, { query, parameters, requestId });
+    }
     queryLog.info(appendRequestIdIfPresent(query), { parameters });
   }
 

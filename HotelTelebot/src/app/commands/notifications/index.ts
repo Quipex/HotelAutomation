@@ -1,1 +1,1 @@
-export * from './replyWithUnreadNotifications';
+export * from './parseCmdFindUnreadNotifications';

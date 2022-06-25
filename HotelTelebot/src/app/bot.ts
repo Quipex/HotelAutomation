@@ -1,19 +1,21 @@
 import { Telegraf } from 'telegraf';
 import { handleCallbackQuery } from '~/app/callbacks';
 import {
-  findBookingsRemindedAndExpiredPrepayment,
-  parseCommandCreateBookingAndReply,
-  parseCommandDashboardAndReply,
-  parseCommandFindBookingsAddedAfterAndReply,
-  parseCommandFindBookingsArrivedOnAndReply,
-  parseCommandFindBookingsByIdAndReply,
-  parseCommandFindBookingsNotPrePayedAndReply,
-  parseCommandFindClientAndReply,
-  parseCommandFindClientByIdAndReply,
-  parseCommandMoveBookingAndReply,
-  parseCommandMoveBookingInBatchAndReply,
-  replyWithUnreadNotifications,
-  synchronizeDataAndSendStatus
+  parseCmdCreateBooking,
+  parseCmdDashboard,
+  parseCmdFetchBookingsAddedAfter,
+  parseCmdFindBookingById,
+  parseCmdFindBookingsArrivedOn,
+  parseCmdFindBookingsNotPrepaid,
+  parseCmdFindClient,
+  parseCmdFindClientById,
+  parseCmdFindUnreadNotifications,
+  parseCmdMvBooking,
+  parseCmdMvBookingInBatch,
+  parseCmdRemindedExpired,
+  parseCmdSetBookingNote,
+  parseCmdSetClientNote,
+  parseCmdSynchronizeData
 } from '~/app/commands';
 import { authorizeRequest, handleErrors as h, logUsers, pretendTyping, validateMessage } from '~/app/middlewares';
 import {
@@ -28,6 +30,8 @@ import {
   COMMAND_CLIENT_BY_ID,
   COMMAND_CLIENT_FIND_BY_NAME,
   COMMAND_DASHBOARD,
+  COMMAND_SET_BOOKING_NOTE,
+  COMMAND_SET_CLIENT_NOTE,
   COMMAND_SYNC,
   COMMAND_UNREAD_NOTIFICATIONS
 } from '~/common/constants';
@@ -44,19 +48,21 @@ bot.on('callback_query', pretendTyping);
 bot.on('callback_query', h(handleCallbackQuery));
 
 bot.start((ctx) => ctx.reply('Hello!'));
-bot.command(COMMAND_BOOKINGS_ARRIVE_ON, h(parseCommandFindBookingsArrivedOnAndReply));
-bot.command(COMMAND_BOOKINGS_ADDED_AFTER, h(parseCommandFindBookingsAddedAfterAndReply));
-bot.command(COMMAND_BOOKINGS_NOT_PREPAID, h(parseCommandFindBookingsNotPrePayedAndReply));
-bot.command(COMMAND_BOOKINGS_PREPAID_EXPIRED, h(findBookingsRemindedAndExpiredPrepayment));
-bot.command(COMMAND_BOOKING_BY_ID, h(parseCommandFindBookingsByIdAndReply));
-bot.command(COMMAND_BOOKING_CREATE, h(parseCommandCreateBookingAndReply));
-bot.command(COMMAND_BOOKING_MOVE, h(parseCommandMoveBookingAndReply));
-bot.command(COMMAND_BOOKING_MOVE_IN_BATCH, h(parseCommandMoveBookingInBatchAndReply));
-bot.command(COMMAND_CLIENT_FIND_BY_NAME, h(parseCommandFindClientAndReply));
-bot.command(COMMAND_CLIENT_BY_ID, h(parseCommandFindClientByIdAndReply));
-bot.command(COMMAND_SYNC, h(synchronizeDataAndSendStatus));
-bot.command(COMMAND_DASHBOARD, h(parseCommandDashboardAndReply));
-bot.command(COMMAND_UNREAD_NOTIFICATIONS, h(replyWithUnreadNotifications));
+bot.command(COMMAND_BOOKINGS_ARRIVE_ON, h(parseCmdFindBookingsArrivedOn));
+bot.command(COMMAND_BOOKINGS_ADDED_AFTER, h(parseCmdFetchBookingsAddedAfter));
+bot.command(COMMAND_BOOKINGS_NOT_PREPAID, h(parseCmdFindBookingsNotPrepaid));
+bot.command(COMMAND_BOOKINGS_PREPAID_EXPIRED, h(parseCmdRemindedExpired));
+bot.command(COMMAND_BOOKING_BY_ID, h(parseCmdFindBookingById));
+bot.command(COMMAND_BOOKING_CREATE, h(parseCmdCreateBooking));
+bot.command(COMMAND_BOOKING_MOVE, h(parseCmdMvBooking));
+bot.command(COMMAND_BOOKING_MOVE_IN_BATCH, h(parseCmdMvBookingInBatch));
+bot.command(COMMAND_CLIENT_FIND_BY_NAME, h(parseCmdFindClient));
+bot.command(COMMAND_CLIENT_BY_ID, h(parseCmdFindClientById));
+bot.command(COMMAND_SYNC, h(parseCmdSynchronizeData));
+bot.command(COMMAND_DASHBOARD, h(parseCmdDashboard));
+bot.command(COMMAND_UNREAD_NOTIFICATIONS, h(parseCmdFindUnreadNotifications));
+bot.command(COMMAND_SET_BOOKING_NOTE, h(parseCmdSetBookingNote));
+bot.command(COMMAND_SET_CLIENT_NOTE, h(parseCmdSetClientNote));
 
 bot.launch()
   .then(() => {

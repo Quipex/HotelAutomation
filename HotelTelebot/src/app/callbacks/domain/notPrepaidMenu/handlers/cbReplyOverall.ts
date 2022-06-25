@@ -1,8 +1,8 @@
-import { replyWithNotPrepaidOverall } from '~/app/commands';
+import { findNotPrepaidOverallAndReply } from '~/app/commands';
 import { CallbackHandler } from '~@callbacks/CallbackHandler';
 
 const cbReplyOverall: CallbackHandler = async ({ ctx, messageId }) => {
-  await replyWithNotPrepaidOverall(ctx, undefined, messageId);
+  await findNotPrepaidOverallAndReply(ctx, undefined, messageId);
   await ctx.answerCbQuery();
 };
 

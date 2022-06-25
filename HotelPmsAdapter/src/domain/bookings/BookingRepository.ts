@@ -248,6 +248,20 @@ const findNotRemindedNoPrepaid = async (date: Date, includingCancelled = false):
   return notPrepaid.filter((np) => np.prepaymentRemindings.length === 0);
 };
 
+const setNote = async (bookingId: string, textNote: string) => {
+  const bookingsRepository = getRepository(BookingModel);
+  await bookingsRepository.update({ id: bookingId }, { notes: textNote });
+};
+
+const getNote = async (bookingId: string) => {
+  const bookingsRepository = getRepository(BookingModel);
+  const { notes } = await bookingsRepository.findOne({
+    where: { id: bookingId },
+    select: ['id', 'notes']
+  });
+  return { notes };
+};
+
 export default {
   findAllBookings,
   findAddedAfter,
@@ -273,5 +287,7 @@ export default {
   findRemindedNotExpired,
   countRemindedNotExpired,
   findRemindedAndExpired,
-  countRemindedAndExpired
+  countRemindedAndExpired,
+  setNote,
+  getNote
 };

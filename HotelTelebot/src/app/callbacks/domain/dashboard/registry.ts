@@ -4,7 +4,7 @@ import {
   dashboardDayBefore,
   dashboardNotMarkedLiving,
   dashboardNotPrepaid,
-  dashboardRefresh,
+  dashboardRefresh, dashboardToday,
   dashboardUnreadNotifications
 } from './actions';
 import {
@@ -13,12 +13,14 @@ import {
   cbReplyWithDashboardDayBefore,
   cbReplyWithNotMarkedLivingBookings,
   cbReplyNotPrepaidMenu,
-  cbReplyWithUnreadNotifications
+  cbReplyWithUnreadNotifications,
+  cbReplyWithDashboardToday
 } from './handlers';
 
 registerActionHandler(dashboardRefresh, cbRefreshDashboard);
 registerActionHandler(dashboardDayAfter, cbReplyWithDashboardDayAfter);
 registerActionHandler(dashboardDayBefore, cbReplyWithDashboardDayBefore);
+registerActionHandler(dashboardToday, cbReplyWithDashboardToday);
 registerActionHandler(dashboardUnreadNotifications, cbReplyWithUnreadNotifications);
 registerActionHandler(dashboardNotMarkedLiving, cbReplyWithNotMarkedLivingBookings);
 registerActionHandler(dashboardNotPrepaid, cbReplyNotPrepaidMenu);

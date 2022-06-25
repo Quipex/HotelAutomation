@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-syntax,no-await-in-loop */
 import { CallbackHandler } from '~@callbacks/CallbackHandler';
 import { BriefBookingActions, ColorfulBooking } from '~@components';
-import { BookingsService } from '~@services';
+import { BookingService } from '~@services';
 
 const cbFindClientBookings: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
   const [, clientId] = cbPayloadArray;
-  const bookings = await BookingsService.fetchClientBookings(clientId);
+  const bookings = await BookingService.fetchClientBookings(clientId);
   await ctx.answerCbQuery();
   await ctx.reply(`🔎 Found ${bookings.length} bookings`, { reply_to_message_id: messageId });
   for (const booking of bookings) {

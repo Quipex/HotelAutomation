@@ -1,8 +1,7 @@
 import { Context, Middleware } from 'telegraf';
-import DashboardActions from '~/app/message_components/dashboard/DashboardActions';
 import { DASHBOARD_LITERAL } from '~/common/constants';
 import { formatDate, parseDateFromLiterals } from '~/common/utils/dates';
-import { Dashboard } from '~@components';
+import { Dashboard, DashboardActions } from '~@components';
 import { DashboardService } from '~@services';
 
 const replyWithUsage = async (ctx: Context) => {
@@ -20,7 +19,7 @@ const replyWithDashboard = async (ctx: Context, date: string, messageId?: number
   );
 };
 
-const parseCommandDashboardAndReply: Middleware<Context> = async (ctx) => {
+const parseCmdDashboard: Middleware<Context> = async (ctx) => {
   const [, argument] = ctx.message.text.split(' ');
   const date = parseDateFromLiterals(argument ?? 'today');
   if (!date) {
@@ -30,4 +29,4 @@ const parseCommandDashboardAndReply: Middleware<Context> = async (ctx) => {
   await replyWithDashboard(ctx, formatDate(date), ctx.message.message_id);
 };
 
-export { parseCommandDashboardAndReply, replyWithDashboard };
+export { parseCmdDashboard, replyWithDashboard };
