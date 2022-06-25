@@ -3,6 +3,7 @@ import { createConfirmationHandler } from '../general/handlers';
 import {
   bookingCancelAsk,
   bookingCancelConfirm,
+  bookingClearNote,
   bookingDetails,
   bookingLivingAsk,
   bookingLivingConfirm,
@@ -10,15 +11,18 @@ import {
   bookingPrePaidAsk,
   bookingPrePaidConfirm,
   bookingRefresh,
-  bookingRemindedPrepayment
+  bookingRemindedPrepayment,
+  bookingShowNote
 } from './actions';
 import {
-  confirmBookingAndReply,
+  cbClearBookingNote,
   cbConfirmCancelAndReply,
-  confirmLivingAndReply,
   cbRefreshBooking,
-  replyWithMoveBookingUsage,
   cbSendBookingDetails,
+  cbShowBookingNoteMenu,
+  confirmBookingAndReply,
+  confirmLivingAndReply,
+  replyWithMoveBookingUsage,
   setRemindedPrepaymentAndReply
 } from './handlers';
 
@@ -41,3 +45,5 @@ registerActionHandler(bookingCancelAsk, createConfirmationHandler({
   messageOnConfirm: 'Отмена бронирования ❌'
 }));
 registerActionHandler(bookingCancelConfirm, cbConfirmCancelAndReply);
+registerActionHandler(bookingShowNote, cbShowBookingNoteMenu);
+registerActionHandler(bookingClearNote, cbClearBookingNote);

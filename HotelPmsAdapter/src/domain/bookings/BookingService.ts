@@ -116,6 +116,14 @@ const getLivingButNotMarkedBy = async (date: string) => {
   return bookings.map(mapBookingModel2dto);
 };
 
+const setNote = async (bookingId: string, textNote: string) => {
+  await BookingRepository.setNote(bookingId, textNote);
+};
+
+const getNote = async (bookingId: string) => {
+  return BookingRepository.getNote(bookingId);
+};
+
 export default {
   fetchPmsAndGetAllActiveBookings,
   getAllBookings,
@@ -129,7 +137,9 @@ export default {
   getBookingsByOwner,
   createBookingAndSyncBookings,
   cancelBooking,
-  getLivingButNotMarkedBy
+  getLivingButNotMarkedBy,
+  setNote,
+  getNote
 };
 
 export type {

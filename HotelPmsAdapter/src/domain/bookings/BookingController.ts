@@ -22,7 +22,9 @@ const {
   confirmLiving$put,
   confirmPrepayment$put,
   cancel$put,
-  livingNotMarked$get
+  livingNotMarked$get,
+  setNote$patch,
+  note$get
 } = routesV1.bookings;
 
 BookingController.post(
@@ -201,6 +203,23 @@ BookingController.get(
   async (ctx) => {
     const { id } = ctx.params;
     ctx.body = await BookingService.getBookingsByOwner(id);
+  }
+);
+
+BookingController.patch(
+  getPathOf(setNote$patch),
+  async (ctx) => {
+    const { id, noteText } = ctx.request.body as ReturnType<typeof setNote$patch.getData>;
+    await BookingService.setNote(id, noteText);
+    ctx.status = 200;
+  }
+);
+
+BookingController.get(
+  getPathOf(note$get),
+  async (ctx) => {
+    const { id } = ctx.query as unknown as QueryParams<typeof note$get.getQueryParams>;
+    ctx.body = await BookingService.getNote(id);
   }
 );
 

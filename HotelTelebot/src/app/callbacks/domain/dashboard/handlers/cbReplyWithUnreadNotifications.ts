@@ -1,8 +1,8 @@
-import { replyWithUnreadNotifications } from '~/app/commands';
+import { parseCmdFindUnreadNotifications } from '~/app/commands';
 import { CallbackHandler } from '~@callbacks/CallbackHandler';
 
 const cbReplyWithUnreadNotifications: CallbackHandler = async ({ ctx, messageId }) => {
-  await replyWithUnreadNotifications(ctx, messageId);
+  await parseCmdFindUnreadNotifications(ctx, messageId);
   await ctx.answerCbQuery();
 };
 

@@ -1,3 +1,5 @@
+// noinspection SqlResolve
+
 import { getRepository } from '../helpers/orm';
 import { ClientId, ClientModel } from './ClientModel';
 
@@ -11,12 +13,28 @@ const searchClients = async (name: string): Promise<ClientModel[]> => {
   `, [name]);
 };
 
-async function findClient(id: ClientId): Promise<ClientModel | undefined> {
+const findClient = async (id: ClientId): Promise<ClientModel | undefined> => {
   const clientsRepo = getRepository(ClientModel);
   return clientsRepo.findOneBy({ id });
-}
+};
+
+const setNote = async (id: ClientId, text: string) => {
+  const clientsRepo = getRepository(ClientModel);
+  await clientsRepo.update({ id }, { notes: text });
+};
+
+const getNote = async (id: string) => {
+  const clientsRepo = getRepository(ClientModel);
+  const { notes } = await clientsRepo.findOne({
+    where: { id },
+    select: ['id', 'notes']
+  });
+  return { notes };
+};
 
 export {
   searchClients,
-  findClient
+  findClient,
+  setNote,
+  getNote
 };

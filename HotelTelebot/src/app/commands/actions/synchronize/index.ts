@@ -1,2 +1,2 @@
-export * from './synchronizeDataAndSendStatus';
+export * from './parseCmdSynchronizeData';
 export * from './synchronizeDataGenerator';

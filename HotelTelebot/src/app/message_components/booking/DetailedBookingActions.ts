@@ -7,7 +7,7 @@ import {
   cbPayloadBookingMoveList,
   cbPayloadBookingPrepaidAsk,
   cbPayloadBookingRefresh,
-  cbPayloadBookingRemindedPrepayment
+  cbPayloadBookingRemindedPrepayment, cbPayloadBookingShowNote
 } from '~@callbacks/domain/booking/actions';
 import { cbPayloadClientDetails } from '~@callbacks/domain/client/actions';
 
@@ -19,6 +19,7 @@ function detailedBookingActions(
   inlineKeyboard.push([{ text: 'Переместить... 🚪', callback_data: cbPayloadBookingMoveList(bookingId), hide: false }]);
   inlineKeyboard.push([{ text: 'Обновить ♻', callback_data: cbPayloadBookingRefresh(bookingId), hide: true }]);
   inlineKeyboard.push([{ text: 'Клиент 🧑️', callback_data: cbPayloadClientDetails(clientId), hide: false }]);
+  inlineKeyboard.push([{ text: 'Заметки 📝', callback_data: cbPayloadBookingShowNote(bookingId), hide: false }]);
 
   if (cancelled) {
     return inlineKeyboard;

@@ -1,22 +1,23 @@
+import { composeCallbackData } from '~@callbacks/helpers';
+
 const prefix = (text) => `c${text}`;
 
 const clientDetails = prefix('D');
-
-function cbPayloadClientDetails(clientId: string) {
-  return `${clientDetails}|${clientId}`;
-}
+const cbPayloadClientDetails = (clientId: string) => `${clientDetails}|${clientId}`;
 
 const clientBookings = prefix('B');
-
-function cbPayloadClientBookings(clientId: string) {
-  return `${clientBookings}|${clientId}`;
-}
+const cbPayloadClientBookings = (clientId: string) => `${clientBookings}|${clientId}`;
 
 const clientRefresh = prefix('Rf');
+const cbPayloadClientRefresh = (clientId: string) => `${clientRefresh}|${clientId}`;
 
-function cbPayloadClientRefresh(clientId: string) {
-  return `${clientRefresh}|${clientId}`;
-}
+const clientShowNote = prefix('Note');
+const cbPayloadClientShowNote = (clientId: string) => composeCallbackData(clientShowNote, clientId);
+
+const clientClearNote = prefix('RmNote');
+const cbPayloadClientClearNote = (clientId: string) => {
+  return composeCallbackData(clientClearNote, clientId);
+};
 
 export {
   cbPayloadClientBookings,
@@ -24,5 +25,9 @@ export {
   cbPayloadClientRefresh,
   clientBookings,
   clientDetails,
-  cbPayloadClientDetails
+  cbPayloadClientDetails,
+  clientShowNote,
+  cbPayloadClientShowNote,
+  clientClearNote,
+  cbPayloadClientClearNote
 };

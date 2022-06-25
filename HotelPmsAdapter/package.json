@@ -40,14 +40,15 @@
     "cyrillic-to-translit-js": "^3.2.1",
     "dotenv": "^16.0.1",
     "hotel-automation-common": "link:../HotelCommon/dist",
-    "lowdb": "github:dankreiger/lowdb#chore/esm-cjs-hybrid-WITH-LIB",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
+    "lowdb": "github:dankreiger/lowdb#chore/esm-cjs-hybrid-WITH-LIB",
     "pg": "^8.7.1",
     "query-string": "^7.1.0",
     "reflect-metadata": "^0.1.13",
     "selenium-webdriver": "^4.2.0",
+    "sql-formatter": "^7.0.2",
     "typeorm": "^0.3.6"
   }
 }

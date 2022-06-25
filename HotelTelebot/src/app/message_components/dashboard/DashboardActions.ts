@@ -6,6 +6,7 @@ import {
   cbPayloadNotMarkedLiving,
   cbPayloadRefreshDashboard,
   dashboardNotPrepaid,
+  dashboardToday,
   dashboardUnreadNotifications
 } from '~@callbacks/domain/dashboard/actions';
 
@@ -17,15 +18,22 @@ const DashboardActions = (date: Date): InlineKeyboardButton[][] => {
     hide: false,
     callback_data: cbPayloadRefreshDashboard(dateText)
   }]);
-  inlineKeyboard.push([{
-    text: '⬅ День назад',
-    hide: false,
-    callback_data: cbPayloadDayBefore(dateText)
-  }, {
-    text: 'День вперёд ➡',
-    hide: false,
-    callback_data: cbPayloadDayAfter(dateText)
-  }]);
+  inlineKeyboard.push([
+    {
+      text: '⬅ День назад',
+      hide: false,
+      callback_data: cbPayloadDayBefore(dateText)
+    },
+    {
+      text: '🏠 Сегодня',
+      callback_data: dashboardToday,
+      hide: false
+    },
+    {
+      text: 'День вперёд ➡',
+      hide: false,
+      callback_data: cbPayloadDayAfter(dateText)
+    }]);
   inlineKeyboard.push([{
     text: '🔔 Непрочитанные уведомления (сегодня)',
     hide: false,

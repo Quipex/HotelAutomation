@@ -1,11 +1,11 @@
-import { fetchBookingByIdAndReply } from '~/app/commands';
+import { findBookingByIdAndReply } from '~/app/commands';
 import { CallbackHandler } from '~@callbacks/CallbackHandler';
-import { BookingsService } from '~@services';
+import { BookingService } from '~@services';
 
 const setRemindedPrepaymentAndReply: CallbackHandler = async ({ ctx, cbPayloadArray, messageId }) => {
   const [, bookingId] = cbPayloadArray;
-  await BookingsService.putRemindedPrepayment(bookingId);
-  await fetchBookingByIdAndReply(bookingId, ctx);
+  await BookingService.putRemindedPrepayment(bookingId);
+  await findBookingByIdAndReply(bookingId, ctx);
   await ctx.deleteMessage(messageId);
   await ctx.answerCbQuery('✅ Записано время');
 };

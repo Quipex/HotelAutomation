@@ -18,6 +18,8 @@ const cbPayloadDayAfter = (date: string) => {
   return composeCallbackData(dashboardDayAfter, date);
 };
 
+const dashboardToday = prefix('DT');
+
 const dashboardUnreadNotifications = prefix('UN');
 
 const dashboardNotPrepaid = prefix('NPp');
@@ -30,6 +32,7 @@ const cbPayloadNotMarkedLiving = (date: string) => {
 export {
   dashboardRefresh,
   dashboardDayAfter,
+  dashboardToday,
   dashboardDayBefore,
   dashboardNotPrepaid,
   dashboardUnreadNotifications,

@@ -1,9 +1,9 @@
 import { CallbackHandler } from '~@callbacks/CallbackHandler';
-import { fetchBookingByIdAndReply } from '~/app/commands';
+import { findBookingByIdAndReply } from '~/app/commands';
 
 const cbRefreshBooking: CallbackHandler = async ({ ctx, messageId, cbPayloadArray }) => {
   const [, bookingId] = cbPayloadArray;
-  await fetchBookingByIdAndReply(bookingId, ctx);
+  await findBookingByIdAndReply(bookingId, ctx);
   await ctx.answerCbQuery('Обновлено ✅');
   await ctx.deleteMessage(messageId);
 };

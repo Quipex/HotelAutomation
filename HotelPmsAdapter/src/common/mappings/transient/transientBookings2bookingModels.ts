@@ -25,8 +25,8 @@ const transientBookings2bookingModels: TransientBookings2bookingModels = (
       totalUahCoins: transientBooking.totalUahCoins.toString(),
       createdAt: undefined,
       updatedAt: undefined,
-      carPlates: null,
-      prepaymentRemindings: null,
+      carPlates: undefined,
+      prepaymentRemindings: undefined,
       client,
       room
     });

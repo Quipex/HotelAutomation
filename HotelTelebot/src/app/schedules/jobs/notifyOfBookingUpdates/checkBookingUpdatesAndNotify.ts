@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { BookingNotificationsService } from '~/api/services';
+import { BookingNotificationService } from '~/api/services';
 import { sleep } from '~/common/utils/thread';
 import appConfig from '~/config/appConfig';
 import localDb from '~/config/localDb';
@@ -9,7 +9,7 @@ import { sendNotificationMessage } from './sendNotificationMessage';
 
 const checkBookingUpdatesAndNotify = async () => {
   await localDb.read();
-  const notifications = await BookingNotificationsService.getNotifications({
+  const notifications = await BookingNotificationService.getNotifications({
     idAfter: localDb.data.lastNotificationId
   });
 

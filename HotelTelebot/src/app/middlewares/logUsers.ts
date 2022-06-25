@@ -19,7 +19,8 @@ const getMessage = (ctx: TelegrafContext) => {
 const logUsers: Middleware<TelegrafContext> = async (ctx, next) => {
   const { from, updateType } = ctx;
   const requestMessage = getMessage(ctx);
-  usersLog.info(`[user:${from.id}] '${updateType}': ${requestMessage}`, {
+  const userPrefix = from ? `[user:${from.id}]` : '[not_user]';
+  usersLog.info(`${userPrefix} '${updateType}': ${requestMessage}`, {
     user: {
       id: from.id,
       fullName: `${from.first_name} ${from.last_name}`,

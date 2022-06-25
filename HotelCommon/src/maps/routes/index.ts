@@ -1,1 +1,1 @@
-export { routesV1 } from './routes.v1';
+export { routesV1 } from './v1';

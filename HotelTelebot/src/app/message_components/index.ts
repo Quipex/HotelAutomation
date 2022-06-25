@@ -5,3 +5,4 @@ export * from './booking';
 export * from './client';
 export * from './notifications';
 export * from './dashboard';
+export * from './common';

@@ -1,63 +1,50 @@
+import { composeCallbackData } from '~@callbacks/helpers';
+
 const prefix = (text) => `b${text}`;
 
 const bookingPrePaidAsk = prefix('Pp');
 const bookingPrePaidConfirm = prefix('PpY');
-
-function cbPayloadBookingPrepaidAsk(bookingId: string) {
-  return `${bookingPrePaidAsk}|${bookingId}`;
-}
+const cbPayloadBookingPrepaidAsk = (bookingId: string) => `${bookingPrePaidAsk}|${bookingId}`;
 
 const bookingMoveList = prefix('MvL');
-
-function cbPayloadBookingMoveList(bookingId: string) {
-  return `${bookingMoveList}|${bookingId}`;
-}
+const cbPayloadBookingMoveList = (bookingId: string) => `${bookingMoveList}|${bookingId}`;
 
 const bookingMoveAsk = prefix('Mv');
-
-function cbPayloadBookingMoveAsk(bookingId: string, roomNumber: string) {
+const cbPayloadBookingMoveAsk = (bookingId: string, roomNumber: string) => {
   return `${bookingMoveAsk}|${bookingId}|${roomNumber}`;
-}
+};
 
 const bookingMoveConfirm = prefix('MvY');
-
-function cbPayloadBookingMoveConfirm(bookingId: string, roomNumber: string) {
+const cbPayloadBookingMoveConfirm = (bookingId: string, roomNumber: string) => {
   return `${bookingMoveConfirm}|${bookingId}|${roomNumber}`;
-}
+};
 
 const bookingDetails = prefix('D');
-
-function cbPayloadBookingDetails(bookingId: string) {
-  return `${bookingDetails}|${bookingId}`;
-}
+const cbPayloadBookingDetails = (bookingId: string) => `${bookingDetails}|${bookingId}`;
 
 const bookingLivingAsk = prefix('Lv');
-
-function cbPayloadBookingLivingAsk(bookingId: string) {
-  return `${bookingLivingAsk}|${bookingId}`;
-}
-
 const bookingLivingConfirm = prefix('LvY');
+const cbPayloadBookingLivingAsk = (bookingId: string) => `${bookingLivingAsk}|${bookingId}`;
 
 const bookingRemindedPrepayment = prefix('Rp');
-
-function cbPayloadBookingRemindedPrepayment(bookingId: string) {
-  return `${bookingRemindedPrepayment}|${bookingId}`;
-}
+const cbPayloadBookingRemindedPrepayment = (bookingId: string) => `${bookingRemindedPrepayment}|${bookingId}`;
 
 const bookingRefresh = prefix('Rf');
-
-function cbPayloadBookingRefresh(bookingId: string) {
-  return `${bookingRefresh}|${bookingId}`;
-}
+const cbPayloadBookingRefresh = (bookingId: string) => `${bookingRefresh}|${bookingId}`;
 
 const bookingCancelAsk = prefix('C');
-
-function cbPayloadBookingCancelAsk(bookingId: string) {
-  return `${bookingCancelAsk}|${bookingId}`;
-}
-
 const bookingCancelConfirm = prefix('CY');
+const cbPayloadBookingCancelAsk = (bookingId: string) => `${bookingCancelAsk}|${bookingId}`;
+
+const bookingShowNote = prefix('Note');
+const cbPayloadBookingShowNote = (bookingId: string) => {
+  return composeCallbackData(bookingShowNote, bookingId);
+};
+
+const bookingClearNote = prefix('RmNote');
+const cbPayloadBookingClearNote = (bookingId: string) => {
+  return composeCallbackData(bookingClearNote, bookingId);
+};
 
 export {
   bookingDetails,
@@ -80,5 +67,9 @@ export {
   cbPayloadBookingRemindedPrepayment,
   bookingRefresh,
   cbPayloadBookingRefresh,
-  cbPayloadBookingLivingAsk
+  cbPayloadBookingLivingAsk,
+  bookingShowNote,
+  cbPayloadBookingShowNote,
+  bookingClearNote,
+  cbPayloadBookingClearNote
 };

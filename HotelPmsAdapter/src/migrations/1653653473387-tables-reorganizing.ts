@@ -1,3 +1,5 @@
+// noinspection SqlResolve
+
 import { MigrationInterface, QueryRunner } from "typeorm"
 
 export class tablesReorganizing1653653473387 implements MigrationInterface {
@@ -68,23 +70,23 @@ export class tablesReorganizing1653653473387 implements MigrationInterface {
 
       create table bookings
       (
-        id                             varchar(36)
+        id                 varchar(36)
           constraint bookings_pk primary key,
-        "clientId"                     varchar(36)   not null,
-        "realRoomNumber"               int           not null,
-        "createdAt"                    timestamptz   not null default NOW(),
-        "updatedAt"                    timestamptz   not null default NOW(),
-        "bookedAt"                     timestamptz   not null,
-        "startDate"                    date          not null,
-        "endDateExclusive"             date          not null,
-        "totalUahCoins"                bigint,
-        "numberOfGuests"               int,
-        "groupId"                      varchar(15),
-        source                         varchar(15),
-        living                         boolean       not null default false,
-        cancelled                      boolean       not null default false,
-        prepaid                        boolean       not null default false,
-        notes                          text
+        "clientId"         varchar(36) not null,
+        "realRoomNumber"   int         not null,
+        "createdAt"        timestamptz not null default NOW(),
+        "updatedAt"        timestamptz not null default NOW(),
+        "bookedAt"         timestamptz not null,
+        "startDate"        date        not null,
+        "endDateExclusive" date        not null,
+        "totalUahCoins"    bigint,
+        "numberOfGuests"   int,
+        "groupId"          varchar(15),
+        source             varchar(15),
+        living             boolean     not null default false,
+        cancelled          boolean     not null default false,
+        prepaid            boolean     not null default false,
+        notes              text
       );
 
       alter table bookings
@@ -101,7 +103,7 @@ export class tablesReorganizing1653653473387 implements MigrationInterface {
         id             serial
           constraint booking_payments_pk
             primary key,
-        "bookingId"    varchar(36),
+        "bookingId"    varchar(36) not null,
         "createdAt"    timestamptz not null default NOW(),
         notes          text,
         "paidUahCoins" bigint
@@ -118,7 +120,7 @@ export class tablesReorganizing1653653473387 implements MigrationInterface {
         id          serial
           constraint payment_remindings_pk
             primary key,
-        "bookingId" varchar(36),
+        "bookingId" varchar(36) not null,
         "createdAt" timestamptz not null default NOW()
       );
 
@@ -132,7 +134,7 @@ export class tablesReorganizing1653653473387 implements MigrationInterface {
         id          serial
           constraint car_plates_pk
             primary key,
-        "bookingId" varchar(36),
+        "bookingId" varchar(36) not null,
         "createdAt" timestamptz not null default NOW(),
         "updatedAt" timestamptz not null default NOW(),
         value       varchar(15)
