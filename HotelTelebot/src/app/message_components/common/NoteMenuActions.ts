@@ -3,6 +3,7 @@ import { Entity } from '~/common/types';
 import { cbPayloadBookingClearNote } from '~@callbacks/domain/booking/actions';
 import { cbPayloadClientClearNote } from '~@callbacks/domain/client/actions';
 import { cbPayloadCancel } from '~@callbacks/domain/general/actions';
+import { cbPayloadRoomClearNote } from '~@callbacks/domain/room/actions';
 
 const getActionsForEntity = (entity: Entity, id: string) => {
   switch (entity) {
@@ -11,6 +12,9 @@ const getActionsForEntity = (entity: Entity, id: string) => {
     }
     case 'booking': {
       return { clearNote: cbPayloadBookingClearNote(id) };
+    }
+    case 'room': {
+      return { clearNote: cbPayloadRoomClearNote(id) };
     }
     default: {
       return { clearNote: cbPayloadCancel() };

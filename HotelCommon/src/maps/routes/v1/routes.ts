@@ -1,12 +1,13 @@
 import { enhanceWithUuids, mapCompactToFullRoutes } from '../helpers';
-import { bookings, clients, dashboard, notifications, root } from './paths';
+import { bookings, clients, dashboard, notifications, root, rooms } from './paths';
 
 const routesV1 = {
   '/': root,
   dashboard,
   bookings,
   clients,
-  notifications
+  notifications,
+  rooms
 };
 
 enhanceWithUuids(routesV1);

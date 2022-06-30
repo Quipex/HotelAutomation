@@ -1,3 +1,3 @@
-type Entity = 'client' | 'booking';
+type Entity = 'client' | 'booking' | 'room';
 
 export type { Entity };

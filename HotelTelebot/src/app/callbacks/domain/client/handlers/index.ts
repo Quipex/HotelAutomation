@@ -1,5 +1,5 @@
 export * from './cbFindClientBookings';
 export * from './cbRefreshClient';
-export * from './cbSendClientDetails';
+export * from './cbShowClientDetails';
 export * from './cbShowClientNoteMenu';
 export * from './cbClearClientNote';

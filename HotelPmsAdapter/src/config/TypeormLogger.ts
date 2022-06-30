@@ -20,7 +20,7 @@ class TypeormLogger implements Logger {
   }
 
   logQuery(query: string, parameters: any[] = []): any {
-    if (env.nodeEnv !== 'prod') {
+    if (env.nodeEnv !== 'prod' && env.consoleLogEnabled) {
       const formattedQuery = format(query);
       const requestId = getRequestId();
       const requestIdPrefix = requestId ? `[${requestId}]:\n` : '';

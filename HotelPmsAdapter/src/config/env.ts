@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import { getEnv, getOptionalEnv } from '~/config/helpers/env';
 import { resolveBooleanFromString } from '~/common/utils/primitives';
+import { getEnv, getOptionalEnv } from '~/config/helpers/env';
 
 dotenv.config();
 
@@ -20,6 +20,7 @@ interface Env {
   maxApiRetries: number;
   msToSleep_429: number;
   nodeEnv: string;
+  consoleLogEnabled: boolean;
   db: {
     type: string;
     host: string;
@@ -58,6 +59,7 @@ const env: Env = {
   maxApiRetries: Number(getEnv('MAX_API_RETRIES')),
   msToSleep_429: Number(getEnv('TIME_TO_SLEEP')),
   nodeEnv: getEnv('NODE_ENV'),
+  consoleLogEnabled: resolveBooleanFromString(getEnv('CONSOLE_LOG')),
   db: {
     type: getEnv('DB_TYPE'),
     database: getEnv('DB_DATABASE'),
