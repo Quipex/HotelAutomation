@@ -9,11 +9,12 @@ import {
   parseCmdFindBookingsNotPrepaid,
   parseCmdFindClient,
   parseCmdFindClientById,
+  parseCmdFindRoomByNumber,
   parseCmdFindUnreadNotifications,
   parseCmdMvBooking,
   parseCmdMvBookingInBatch,
   parseCmdRemindedExpired,
-  parseCmdSetBookingNote,
+  parseCmdSetRoomNote,
   parseCmdSetClientNote,
   parseCmdSynchronizeData
 } from '~/app/commands';
@@ -30,10 +31,12 @@ import {
   COMMAND_CLIENT_BY_ID,
   COMMAND_CLIENT_FIND_BY_NAME,
   COMMAND_DASHBOARD,
+  COMMAND_ROOM_BY_NUMBER,
   COMMAND_SET_BOOKING_NOTE,
   COMMAND_SET_CLIENT_NOTE,
   COMMAND_SYNC,
-  COMMAND_UNREAD_NOTIFICATIONS
+  COMMAND_UNREAD_NOTIFICATIONS,
+  COMMAND_SET_ROOM_NOTE
 } from '~/common/constants';
 import env from '~/config/env';
 import { log } from '~/config/logger';
@@ -61,8 +64,10 @@ bot.command(COMMAND_CLIENT_BY_ID, h(parseCmdFindClientById));
 bot.command(COMMAND_SYNC, h(parseCmdSynchronizeData));
 bot.command(COMMAND_DASHBOARD, h(parseCmdDashboard));
 bot.command(COMMAND_UNREAD_NOTIFICATIONS, h(parseCmdFindUnreadNotifications));
-bot.command(COMMAND_SET_BOOKING_NOTE, h(parseCmdSetBookingNote));
+bot.command(COMMAND_SET_BOOKING_NOTE, h(parseCmdSetRoomNote));
 bot.command(COMMAND_SET_CLIENT_NOTE, h(parseCmdSetClientNote));
+bot.command(COMMAND_ROOM_BY_NUMBER, h(parseCmdFindRoomByNumber));
+bot.command(COMMAND_SET_ROOM_NOTE, h(parseCmdSetRoomNote));
 
 bot.launch()
   .then(() => {

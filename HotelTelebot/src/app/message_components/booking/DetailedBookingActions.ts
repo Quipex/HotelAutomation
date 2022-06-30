@@ -7,17 +7,33 @@ import {
   cbPayloadBookingMoveList,
   cbPayloadBookingPrepaidAsk,
   cbPayloadBookingRefresh,
-  cbPayloadBookingRemindedPrepayment, cbPayloadBookingShowNote
+  cbPayloadBookingRemindedPrepayment,
+  cbPayloadBookingShowNote
 } from '~@callbacks/domain/booking/actions';
 import { cbPayloadClientDetails } from '~@callbacks/domain/client/actions';
+import { cbPayloadRoomDetails } from '~@callbacks/domain/room/actions';
 
 function detailedBookingActions(
-  { id: bookingId, cancelled, living, prepaid, client: { id: clientId }, startDate, source }: BookingDto
+  {
+    id: bookingId,
+    cancelled,
+    living,
+    prepaid,
+    client: { id: clientId },
+    startDate,
+    source,
+    room: { realRoomNumber }
+  }: BookingDto
 ) {
   const inlineKeyboard: InlineKeyboardButton[][] = [];
 
-  inlineKeyboard.push([{ text: 'Переместить... 🚪', callback_data: cbPayloadBookingMoveList(bookingId), hide: false }]);
+  inlineKeyboard.push([
+    { text: 'Переместить... 📦', callback_data: cbPayloadBookingMoveList(bookingId), hide: false }
+  ]);
   inlineKeyboard.push([{ text: 'Обновить ♻', callback_data: cbPayloadBookingRefresh(bookingId), hide: true }]);
+  inlineKeyboard.push([
+    { text: 'Комната 🚪', callback_data: cbPayloadRoomDetails(realRoomNumber.toString()), hide: true }
+  ]);
   inlineKeyboard.push([{ text: 'Клиент 🧑️', callback_data: cbPayloadClientDetails(clientId), hide: false }]);
   inlineKeyboard.push([{ text: 'Заметки 📝', callback_data: cbPayloadBookingShowNote(bookingId), hide: false }]);
 

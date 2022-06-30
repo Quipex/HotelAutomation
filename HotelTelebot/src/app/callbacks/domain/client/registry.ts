@@ -4,11 +4,11 @@ import {
   cbClearClientNote,
   cbFindClientBookings,
   cbRefreshClient,
-  cbSendClientDetails,
+  cbShowClientDetails,
   cbShowClientNoteMenu
 } from './handlers';
 
-registerActionHandler(clientDetails, cbSendClientDetails);
+registerActionHandler(clientDetails, cbShowClientDetails);
 registerActionHandler(clientRefresh, cbRefreshClient);
 registerActionHandler(clientBookings, cbFindClientBookings);
 registerActionHandler(clientShowNote, cbShowClientNoteMenu);

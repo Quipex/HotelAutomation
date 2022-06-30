@@ -6,3 +6,4 @@ export * from './client';
 export * from './notifications';
 export * from './dashboard';
 export * from './common';
+export * from './room';

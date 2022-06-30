@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { BalconySide } from '~/common/types';
 import { RoomTypeModel } from '~/domain/room_types/RoomTypeModel';
 import { BookingModel } from '../bookings/BookingModel';
-import { BalconySide } from './BalconySide.enum';
 
 @Entity({ name: 'rooms' })
 export class RoomModel {
@@ -28,4 +28,7 @@ export class RoomModel {
 
   @Column({ type: 'boolean', nullable: false })
   hasSeaView: boolean;
+
+  @Column({ type: 'text' })
+  notes: string;
 }
