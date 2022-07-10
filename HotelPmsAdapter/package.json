@@ -49,6 +49,6 @@
     "reflect-metadata": "^0.1.13",
     "selenium-webdriver": "^4.3.0",
     "sql-formatter": "^7.0.4",
-    "typeorm": "^0.3.6"
+    "typeorm": "^0.3.7"
   }
 }
