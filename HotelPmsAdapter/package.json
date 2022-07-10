@@ -36,7 +36,7 @@
     "axios": "^0.27.2",
     "body-parser": "^1.19.1",
     "bunyan": "github:Quipex/node-bunyan#1.8.16-quipex",
-    "cls-rtracer": "^2.6.0",
+    "cls-rtracer": "^2.6.1",
     "cyrillic-to-translit-js": "^3.2.1",
     "dotenv": "^16.0.1",
     "hotel-automation-common": "link:../HotelCommon/dist",

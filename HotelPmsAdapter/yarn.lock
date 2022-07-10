@@ -1261,12 +1261,12 @@ clone-response@^1.0.2:
   dependencies:
     mimic-response "^1.0.0"
 
-cls-rtracer@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/cls-rtracer/-/cls-rtracer-2.6.0.tgz#2d1965d8be80311bf9ba4782a7f53b921b267ab3"
-  integrity sha512-AkerGNOczlS5mj7giIGi0KvqwLy2sckUF7RQe5r0dV4Z/SWUclUwVEhIOJQ3rOcTOBqlBVAtmGbSWirkW1GK4w==
+cls-rtracer@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/cls-rtracer/-/cls-rtracer-2.6.1.tgz#27b6aba2ff751260160bdaef30cb5781364f1f6c"
+  integrity sha512-OsHJlfcjrZCDVjtUX+dmXhLwfjFwwZGAhaD7SapLtewqMveQtD/OAspy53Pb5cTNgXlG+8N1nBLw9bmhSO8iSw==
   dependencies:
-    uuid "8.3.1"
+    uuid "^8.3.2"
 
 co-body@^6.0.0:
   version "6.1.0"
@@ -1429,11 +1429,6 @@ date-fns@^2.28.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.28.0.tgz#9570d656f5fc13143e50c975a3b6bbeb46cd08b2"
   integrity sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==
-
-dayjs@^1.11.3:
-  version "1.11.3"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.3.tgz#4754eb694a624057b9ad2224b67b15d552589258"
-  integrity sha512-xxwlswWOlGhzgQ4TKzASQkUhqERI3egRNqgV4ScR8wlANA/A9tZ7miXa44vTTKEq5l7vWoL5G57bG3zA+Kow0A==
 
 debug@2.6.9:
   version "2.6.9"
@@ -1923,7 +1918,6 @@ highlight.js@^10.7.1:
 
 "hotel-automation-common@link:../HotelCommon/dist":
   version "0.0.0"
-  uid ""
 
 html-encoding-sniffer@^2.0.1:
   version "2.0.1"
@@ -4049,11 +4043,6 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
-
-uuid@8.3.1:
-  version "8.3.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
-  integrity sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
 
 uuid@^8.3.2:
   version "8.3.2"
