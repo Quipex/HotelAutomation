@@ -1198,10 +1198,10 @@ cliui@^7.0.2:
     strip-ansi "^6.0.0"
     wrap-ansi "^7.0.0"
 
-cls-rtracer@^2.6.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/cls-rtracer/-/cls-rtracer-2.6.1.tgz#27b6aba2ff751260160bdaef30cb5781364f1f6c"
-  integrity sha512-OsHJlfcjrZCDVjtUX+dmXhLwfjFwwZGAhaD7SapLtewqMveQtD/OAspy53Pb5cTNgXlG+8N1nBLw9bmhSO8iSw==
+cls-rtracer@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/cls-rtracer/-/cls-rtracer-2.6.2.tgz#249e53051a2356af8d80fd649d22ab7a8eafc339"
+  integrity sha512-9TYlTXQkjaytD2oe+WCEAXArgqlrHzvVW5WnwpUgenuY8D3rMfJVgsCogY77YHM9R3dUOMv3XpKRRn+LQnrUEQ==
   dependencies:
     uuid "^8.3.2"
 
