@@ -30,7 +30,7 @@
     "ts-jest": "^27.1.4",
     "ts-node": "^10.8.2",
     "tsconfig-paths": "^4.0.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.8.2"
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -44,7 +44,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
     "lowdb": "github:dankreiger/lowdb#chore/esm-cjs-hybrid-WITH-LIB",
-    "pg": "^8.7.1",
+    "pg": "^8.8.0",
     "query-string": "^7.1.0",
     "reflect-metadata": "^0.1.13",
     "selenium-webdriver": "^4.3.0",
