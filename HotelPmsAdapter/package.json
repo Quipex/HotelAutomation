@@ -38,7 +38,7 @@
     "bunyan": "github:Quipex/node-bunyan#1.8.16-quipex",
     "cls-rtracer": "^2.6.2",
     "cyrillic-to-translit-js": "^3.2.1",
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.0.2",
     "hotel-automation-common": "link:../HotelCommon/dist",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
