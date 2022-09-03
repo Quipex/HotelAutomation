@@ -42,7 +42,7 @@
     "hotel-automation-common": "link:../HotelCommon/dist",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
-    "koa-router": "^10.1.1",
+    "koa-router": "^12.0.0",
     "lowdb": "github:dankreiger/lowdb#chore/esm-cjs-hybrid-WITH-LIB",
     "pg": "^8.8.0",
     "query-string": "^7.1.0",
