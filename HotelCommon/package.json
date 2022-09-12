@@ -24,7 +24,7 @@
   "dependencies": {
     "dayjs": "^1.11.5",
     "lowdb": "github:dankreiger/lowdb#chore/esm-cjs-hybrid-WITH-LIB",
-    "uuid": "^8.3.2",
+    "uuid": "^9.0.0",
     "yaml": "^2.1.1"
   }
 }
