@@ -14,7 +14,7 @@
     "test": "cross-env NODE_ENV=test jest --config jest.config.js --testTimeout=30000 --runInBand --verbose"
   },
   "devDependencies": {
-    "@types/glob": "^7.1.4",
+    "@types/glob": "^8.0.1",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.45",
     "@types/node-cron": "^3.0.3",
@@ -30,7 +30,7 @@
     "bunyan": "^1.8.15",
     "dotenv": "^16.0.2",
     "express-async-handler": "^1.1.4",
-    "glob": "^8.0.3",
+    "glob": "^8.1.0",
     "hotel-automation-common": "link:../HotelCommon/dist",
     "lowdb": "github:dankreiger/lowdb#chore/esm-cjs-hybrid-WITH-LIB",
     "node-cron": "^3.0.2",
