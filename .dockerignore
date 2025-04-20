@@ -1,2 +1,8 @@
 **/node_modules
+**/target
+**/.git
+**/.vscode
+**/.github
+**/.idea
+**/dist
 **/logs

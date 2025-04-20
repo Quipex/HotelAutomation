@@ -1,35 +1,74 @@
-# Hotel Automation (WIP 🚧)
+# Hotel Automation System
 
-[👉 Link to the board 👈](https://github.com/Quipex/HotelAutomation/projects/1)
+This project provides a hotel automation system with a Spring Boot backend and a Telegram bot interface.
 
-## Local setup
+## Project Structure
 
-Run `yarn run setupdev` at the root of the project. This will set up the dev environment and instruct you what to do
-next.
+- `backend-service`: Java Spring Boot application for hotel management
+- `telegram-bot-service`: TypeScript application for Telegram bot interaction
 
-After initial setup, run `yarn run start:server` to start the server and `yarn run start:tg` to start telegram bot.
+## Prerequisites
 
-## 🐳 Docker
+- Docker and Docker Compose
+- Java 17 (for local development)
+- Node.js 18 (for local development)
+- PostgreSQL (for local development)
 
-[➡ Docker README](.docker/README.md)
+## Configuration
 
-## 💻 Script commands (for development 👷‍♂️)
+### Telegram Bot
 
-> 💡 All the .env paths are specified at [scripts/constants/envsToSetup.mjs](scripts/constants/envsToSetup.mjs)
+To run the Telegram bot, you need to obtain a bot token from BotFather on Telegram:
 
-- `yarn run setupdev` - triggers all the scripts to set up a project: `setupenv`, `createdirs`, `install:all`, `husky install`
-- `yarn run checkenv` - compares .env.example files and folders with their .env respective clones. Outputs if there are
-  any differences in the set of keys. Useful to test whether the developer has added a new key to .env or .env.example
-  that is omitted at its respectful copy.
-- `yarn run setupenv` - follows all the specified [⬆](scripts/constants/envsToSetup.mjs) .env paths and creates .env
-  files from .env.example.
-- `yarn run audit:all` - runs audit for all the modules
-- `yarn run install:all` - builds common module and installs all the modules
-- `yarn run lint:all` - lints all the modules
+1. Open Telegram and search for `@BotFather`
+2. Start a chat and send `/newbot` command
+3. Follow the instructions to create a new bot
+4. Copy the token provided by BotFather
 
-## ⛓ Git hooks
+Create a `.env` file in the root directory with the following content:
 
-> Implemented with husky (`husky install`) and some manual scripting
+```
+TELEGRAM_BOT_TOKEN=your_token_here
+```
 
-- `pre-commit` lints all the staged files
-- `pre-push` runs `checkenv` and `test`
+## Running with Docker
+
+Build and run all services using Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+This will start:
+- PostgreSQL database
+- Backend service (Spring Boot)
+- Telegram bot service
+
+## Local Development
+
+### Backend Service
+
+```bash
+cd backend-service
+./mvnw spring-boot:run
+```
+
+### Telegram Bot Service
+
+```bash
+cd telegram-bot-service
+npm install
+npm run dev
+```
+
+## API Endpoints
+
+The backend service provides the following endpoints:
+
+- `GET /api/health`: Health check endpoint
+
+More endpoints will be added in future phases.
+
+## License
+
+This project is proprietary and confidential.
