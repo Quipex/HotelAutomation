@@ -36,7 +36,7 @@ TELEGRAM_BOT_TOKEN=your_token_here
 Build and run all services using Docker Compose:
 
 ```bash
-docker-compose up -d
+docker-compose --env-file ./telegram-bot-service/.env up -d --build
 ```
 
 This will start:
