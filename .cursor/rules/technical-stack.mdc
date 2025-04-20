@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Technical stack
+
+- Java for the backend, Spring as a framework
+- React/TS for the frontend
+- SQL databases, never JSON file storage
+- Separate databases for dev, test and prod
+- E2E tests with Cypress
