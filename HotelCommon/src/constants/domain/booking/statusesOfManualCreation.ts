@@ -1,3 +1,0 @@
-const SOURCES_MANUAL_CREATION = ['easyms', 'FRONT_DESK', null];
-
-export { SOURCES_MANUAL_CREATION };

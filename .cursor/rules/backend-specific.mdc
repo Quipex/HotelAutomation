@@ -1,0 +1,13 @@
+---
+description: 
+globs: backend-service/**
+alwaysApply: false
+---
+
+# Backend-specific rules
+
+1. For the spring configurations use .yml files. Don't create .properties files.
+
+2. Use JOOQ only when it's required to have complex queries and conditions need to be set conditionally. When using JOOQ, never use conditions as raw strings.
+
+3. The project uses domain splitting of the packages
