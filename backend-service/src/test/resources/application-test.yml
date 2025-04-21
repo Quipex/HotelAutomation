@@ -1,0 +1,49 @@
+# Test configuration
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        # Решение проблем с типами PostgreSQL
+        globally_quoted_identifiers: true
+  # Вы можете использовать любой из вариантов:
+  # Вариант 1: Отключить Flyway и использовать Hibernate для создания схемы
+  flyway:
+    enabled: false
+  # Вариант 2: Включить Flyway с H2-совместимыми миграциями
+  # flyway:
+  #   enabled: true
+  #   locations: classpath:db/migration/h2
+  #   baseline-on-migrate: true
+
+# EasyMS PMS Integration test settings
+easyms:
+  base-url: http://test-url
+  auth:
+    login: test-user
+    password: test-password
+  timeouts:
+    connect: 1s
+    read: 2s
+  retry:
+    max-attempts: 2
+    backoff-delay: 100
+
+# Test metrics configuration
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus 

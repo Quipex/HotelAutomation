@@ -27,5 +27,6 @@ public class AuditLogEntity {
     private String objectId;
 
     @Column(columnDefinition = "jsonb")
+    @Convert(converter = JsonbConverter.class)
     private String details;
 }
