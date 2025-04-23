@@ -1,5 +1,7 @@
 package com.hotel.backendservice.booking;
 
+import com.hotel.backendservice.client.ClientEntity;
+import com.hotel.backendservice.room.RoomEntity;
 import lombok.RequiredArgsConstructor;
 import org.jooq.*;
 import org.jooq.Record;
@@ -60,14 +62,14 @@ public class BookingJooqRepository {
     private List<BookingDto> mapToBookingDtos(Result<Record> records) {
         return records.stream()
                 .map(record -> {
-                    com.hotel.backendservice.booking.BookingEntity entity = new com.hotel.backendservice.booking.BookingEntity();
+                    BookingEntity entity = new BookingEntity();
                     entity.setId(record.get("b.id", java.util.UUID.class));
 
-                    com.hotel.backendservice.client.ClientEntity client = new com.hotel.backendservice.client.ClientEntity();
+                    ClientEntity client = new ClientEntity();
                     client.setId(record.get("c.id", java.util.UUID.class));
                     entity.setClient(client);
 
-                    com.hotel.backendservice.room.RoomEntity room = new com.hotel.backendservice.room.RoomEntity();
+                    RoomEntity room = new RoomEntity();
                     room.setId(record.get("r.id", java.util.UUID.class));
                     entity.setRoom(room);
 

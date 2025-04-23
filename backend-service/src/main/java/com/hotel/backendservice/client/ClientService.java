@@ -6,13 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ClientService {
 
     private final ClientRepository clientRepository;
-    private final ClientJooqRepository clientJooqRepository;
     private final ClientMapper clientMapper;
 
     /**
@@ -73,6 +73,9 @@ public class ClientService {
      */
     @Transactional(readOnly = true)
     public List<ClientDto> searchByName(String name) {
-        return clientJooqRepository.findByNameFuzzy(name);
+        List<ClientEntity> entities = clientRepository.findByNameFuzzy(name);
+        return entities.stream()
+                .map(clientMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

@@ -26,7 +26,6 @@ public class ClientEntity {
     private String fullName;
 
     @Column(columnDefinition = "text[]")
-    @Convert(converter = PhoneArrayConverter.class)
     private String[] phones;
 
     private String email;
@@ -39,4 +38,4 @@ public class ClientEntity {
 
     @UpdateTimestamp
     private Instant updatedAt;
-} 
+}

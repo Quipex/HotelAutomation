@@ -1,7 +1,6 @@
 package com.hotel.backendservice.config;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +17,7 @@ import reactor.netty.http.client.HttpClient;
  */
 @Configuration
 public class EasyMsConfig {
-    
+
     @Bean
     public WebClient easyMsWebClient(WebClient.Builder builder,
             @Value("${easyms.base-url}") String baseUrl,
@@ -32,4 +31,4 @@ public class EasyMsConfig {
                     .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(readTimeout.toMillis(), TimeUnit.MILLISECONDS)))))
             .build();
     }
-} 
+}

@@ -7,13 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService {
 
     private final RoomRepository roomRepository;
-    private final RoomJooqRepository roomJooqRepository;
     private final RoomMapper roomMapper;
 
     /**
@@ -86,7 +86,10 @@ public class RoomService {
      */
     @Transactional(readOnly = true)
     public List<RoomDto> searchByNumber(String number) {
-        return roomJooqRepository.searchByNumber(number);
+        List<RoomEntity> entities = roomRepository.findByNumberContaining(number);
+        return entities.stream()
+                .map(roomMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -99,6 +102,10 @@ public class RoomService {
      */
     @Transactional(readOnly = true)
     public List<RoomDto> findAvailableRooms(LocalDate fromDate, int numDays, int guests) {
-        return roomJooqRepository.findAvailableRooms(fromDate, numDays, guests);
+        LocalDate toDate = fromDate.plusDays(numDays);
+        List<RoomEntity> entities = roomRepository.findAvailableRooms(fromDate, toDate, guests);
+        return entities.stream()
+                .map(roomMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
