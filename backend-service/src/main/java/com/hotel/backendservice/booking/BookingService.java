@@ -3,7 +3,6 @@ package com.hotel.backendservice.booking;
 import com.hotel.backendservice.booking.BookingEntity;
 import com.hotel.backendservice.booking.BookingRepository;
 import com.hotel.backendservice.booking.BookingDto;
-import com.hotel.backendservice.booking.BookingJooqRepository;
 import com.hotel.backendservice.booking.BookingMapper;
 import com.hotel.backendservice.client.ClientRepository;
 import com.hotel.backendservice.room.RoomRepository;
@@ -20,7 +19,6 @@ import java.util.UUID;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-    private final BookingJooqRepository bookingJooqRepository;
     private final BookingMapper bookingMapper;
     private final ClientRepository clientRepository;
     private final RoomRepository roomRepository;
@@ -117,6 +115,6 @@ public class BookingService {
      */
     @Transactional(readOnly = true)
     public List<BookingDto> search(LocalDate from, Boolean prepaid, String source) {
-        return bookingJooqRepository.search(from, prepaid, source);
+        return bookingRepository.search(from, prepaid, source);
     }
 }

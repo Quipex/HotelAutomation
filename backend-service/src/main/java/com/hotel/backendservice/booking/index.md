@@ -16,8 +16,10 @@ This package contains components for managing hotel bookings, including creation
 
 - **BookingService.java** - Service layer implementing booking business logic, including validation, creation, updates, and search operations. Manages transactions and orchestrates repository operations.
 
-- **BookingRepository.java** - JPA repository interface providing standard CRUD operations and custom queries for BookingEntity objects.
+- **BookingRepository.java** - JPA repository interface providing standard CRUD operations and custom queries for BookingEntity objects. Extends BookingRepositoryCustom for advanced search capabilities.
 
-- **BookingHistoryRepository.java** - JPA repository for BookingHistoryEntity objects, enabling retrieval of booking change history.
+- **BookingRepositoryAdvanced.java** - Repository fragment interface defining custom search methods for complex booking queries.
 
-- **BookingJooqRepository.java** - Advanced repository implementation using jOOQ for complex booking queries and search functionality, providing more flexible querying capabilities than standard JPA. 
+- **BookingRepositoryAdvancedImpl.java** - Implementation of the custom repository fragment using jOOQ for complex queries, providing more flexible querying capabilities than standard JPA.
+
+- **BookingHistoryRepository.java** - JPA repository for BookingHistoryEntity objects, enabling retrieval of booking change history. 

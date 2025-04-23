@@ -4,7 +4,6 @@ import com.hotel.backendservice.client.ClientEntity;
 import com.hotel.backendservice.room.RoomEntity;
 import lombok.RequiredArgsConstructor;
 import org.jooq.*;
-import org.jooq.Record;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -13,21 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the custom repository fragment using jOOQ
+ */
 @Repository
 @RequiredArgsConstructor
-public class BookingJooqRepository {
+public class BookingRepositoryAdvancedImpl implements BookingRepositoryAdvanced {
 
     private final DSLContext dslContext;
     private final BookingMapper bookingMapper;
 
-    /**
-     * Search bookings with complex filtering
-     *
-     * @param from      The date to filter from (check-in date)
-     * @param prepaid   Whether the booking is prepaid or not
-     * @param source    The booking source
-     * @return List of matching bookings
-     */
+    @Override
     public List<BookingDto> search(LocalDate from, Boolean prepaid, String source) {
         List<Condition> conditions = new ArrayList<>();
 
