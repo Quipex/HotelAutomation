@@ -4,6 +4,7 @@ import com.hotel.backendservice.client.ClientEntity;
 import com.hotel.backendservice.room.RoomEntity;
 import lombok.RequiredArgsConstructor;
 import org.jooq.*;
+import org.jooq.Record;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
