@@ -26,6 +26,10 @@ spring:
     console:
       enabled: true
       path: /h2-console
+  # Disable security for tests
+  security:
+    basic:
+      enabled: false
 
 # EasyMS PMS Integration test settings
 easyms:
@@ -57,9 +61,3 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
-
-# Disable security for tests
-spring:
-  security:
-    basic:
-      enabled: false
