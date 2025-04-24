@@ -1,15 +1,12 @@
 package com.hotel.backendservice;
 
+import com.hotel.backendservice.config.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.hotel.backendservice.sync.EasyMsClientRest;
 
-@SpringBootTest
-@ActiveProfiles("test")
-class BackendServiceApplicationTests {
+class BackendServiceApplicationTests extends AbstractIntegrationTest {
 
     @MockBean
     private EasyMsClientRest easyMsClientRest;
