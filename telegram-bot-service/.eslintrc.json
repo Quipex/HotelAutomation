@@ -14,7 +14,7 @@
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     // путь до вашего tsconfig.json
-    "project": "./tsconfig.json",
+    "project": "./tsconfig.eslint.json",
     // корневая папка для типов
     "tsconfigRootDir": ".",
     "ecmaVersion": 11,
@@ -51,5 +51,9 @@
     "no-param-reassign": "off",
     "prefer-promise-reject-errors": "off",
     "import/no-named-as-default": "off"
-  }
+  },
+  "ignorePatterns": [
+    "jest.config.js",
+    "coverage"
+  ]
 }

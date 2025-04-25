@@ -1,11 +1,11 @@
-import { Context, Telegraf } from 'telegraf';
+import { Telegraf, Context } from 'telegraf';
 import { api } from '../api';
 import { formatSyncStatus } from '../formatter';
 
 /**
  * Register sync related handlers
  */
-export function registerSyncHandlers(bot: Telegraf<Context>) {
+export function registerSyncHandlers(bot: Telegraf) {
   // Handler for '/sync' command - trigger manual sync
   bot.command('sync', async (ctx) => {
     try {

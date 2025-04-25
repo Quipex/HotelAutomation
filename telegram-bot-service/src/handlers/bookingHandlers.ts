@@ -1,17 +1,17 @@
-import { Context, Telegraf } from 'telegraf';
+import { Telegraf, Context } from 'telegraf';
 import { api } from '../api';
 import { formatBooking } from '../formatter';
 
 /**
  * Register booking related handlers
  */
-export function registerBookingHandlers(bot: Telegraf<Context>) {
+export function registerBookingHandlers(bot: Telegraf) {
   // Handler for '/booking <id>' command
   bot.command('booking', async (ctx) => {
     try {
       const args = ctx.message.text.split(' ');
       if (args.length < 2) {
-        return ctx.reply('Пожалуйста, укажите ID бронирования. Пример: /booking 123');
+        return await ctx.reply('Пожалуйста, укажите ID бронирования. Пример: /booking 123');
       }
 
       const bookingId = args[1];
@@ -25,7 +25,7 @@ export function registerBookingHandlers(bot: Telegraf<Context>) {
         return ctx.reply(`Бронирование с ID ${ctx.message.text.split(' ')[1]} не найдено.`);
       }
 
-      ctx.reply('Произошла ошибка при получении данных бронирования. Пожалуйста, попробуйте позже.');
+      return ctx.reply('Произошла ошибка при получении данных бронирования. Пожалуйста, попробуйте позже.');
     }
   });
 

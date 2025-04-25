@@ -1,24 +1,19 @@
 import { AxiosResponse } from 'axios';
-import { Context, Telegraf } from 'telegraf';
+import { Context } from 'telegraf';
 import { api } from '../../api';
 import { registerBookingHandlers } from '../bookingHandlers';
 
 // Mock the API
 jest.mock('../../api');
-const mockApi = api as jest.Mocked<typeof api>;
+const mockApi = jest.mocked(api);
 
 describe('Booking Handlers', () => {
-  let bot: Telegraf<Context>;
-
   beforeEach(() => {
-    bot = new Telegraf('TEST_TOKEN');
     jest.clearAllMocks();
   });
 
   test('booking handler should get and format booking info', async () => {
-    registerBookingHandlers(bot);
-
-    // Mock the API response
+    // Mock booking data
     const mockBookingData = {
       id: '123',
       client: {
@@ -44,107 +39,149 @@ describe('Booking Handlers', () => {
 
     mockApi.getBooking.mockResolvedValue(mockResponse);
 
-    // Mock Telegraf Context
+    // Create a mock bot with spies
+    const mockBot = {
+      command: jest.fn()
+    };
+
+    // Register handlers
+    registerBookingHandlers(mockBot as any);
+
+    // Extract the booking command handler
+    expect(mockBot.command).toHaveBeenCalled();
+    const [commandName, handler] = mockBot.command.mock.calls.find(
+      (call) => call[0] === 'booking'
+    );
+
+    // Verify command name
+    expect(commandName).toBe('booking');
+
+    // Mock context with booking ID
     const mockCtx = {
       message: { text: '/booking 123' },
       reply: jest.fn(),
       replyWithMarkdown: jest.fn()
     };
 
-    // Find and execute the booking command handler
-    const bookingHandler = (bot as any).handlers.command.find(
-      (h: any) => h.triggers.includes('booking')
-    )?.middleware;
+    // Call the handler
+    await handler(mockCtx as any);
 
-    await bookingHandler(mockCtx as any);
-
-    // Verify that API was called correctly
+    // Verify API call
     expect(mockApi.getBooking).toHaveBeenCalledWith('123');
 
-    // Verify that the reply was called with formatted data
+    // Verify reply with formatted data
     expect(mockCtx.replyWithMarkdown).toHaveBeenCalled();
 
-    // Get the reply text and verify it contains expected elements
+    // Verify reply content
     const replyText = mockCtx.replyWithMarkdown.mock.calls[0][0];
     expect(replyText).toContain('Бронирование №123');
-    expect(replyText).toContain('Клиент: John Doe');
-    expect(replyText).toContain('Номер: 101');
-    expect(replyText).toContain('Заметки: VIP guest');
+    expect(replyText).toContain('*Клиент:* John Doe');
+    expect(replyText).toContain('*Номер:* 101');
+    expect(replyText).toContain('*Заметки:* VIP guest');
   });
 
   test('booking handler should handle missing ID', async () => {
-    registerBookingHandlers(bot);
-
-    // Mock Telegraf Context with missing ID
-    const mockCtx = {
-      message: { text: '/booking' },
-      reply: jest.fn(),
-      replyWithMarkdown: jest.fn()
+    // Create a mock bot with spies
+    const mockBot = {
+      command: jest.fn()
     };
 
-    // Find and execute the booking command handler
-    const bookingHandler = (bot as any).handlers.command.find(
-      (h: any) => h.triggers.includes('booking')
-    )?.middleware;
+    // Register handlers
+    registerBookingHandlers(mockBot as any);
 
-    await bookingHandler(mockCtx as any);
+    // Extract the booking command handler
+    const [commandName, handler] = mockBot.command.mock.calls.find(
+      (call) => call[0] === 'booking'
+    );
 
-    // Verify that the appropriate error message was sent
+    // Verify command name
+    expect(commandName).toBe('booking');
+
+    // Mock context without booking ID
+    const mockCtx = {
+      message: { text: '/booking' },
+      reply: jest.fn()
+    };
+
+    // Call the handler
+    await handler(mockCtx as any);
+
+    // Verify error message
     expect(mockCtx.reply).toHaveBeenCalledWith(
       expect.stringContaining('Пожалуйста, укажите ID бронирования')
     );
+
+    // Verify API was not called
     expect(mockApi.getBooking).not.toHaveBeenCalled();
   });
 
   test('booking handler should handle API errors', async () => {
-    registerBookingHandlers(bot);
-
     // Mock API error
     mockApi.getBooking.mockRejectedValue(new Error('API error'));
 
-    // Mock Telegraf Context
-    const mockCtx = {
-      message: { text: '/booking 123' },
-      reply: jest.fn(),
-      replyWithMarkdown: jest.fn()
+    // Create a mock bot with spies
+    const mockBot = {
+      command: jest.fn()
     };
 
-    // Find and execute the booking command handler
-    const bookingHandler = (bot as any).handlers.command.find(
-      (h: any) => h.triggers.includes('booking')
-    )?.middleware;
+    // Register handlers
+    registerBookingHandlers(mockBot as any);
 
-    await bookingHandler(mockCtx as any);
+    // Extract the booking command handler
+    const [commandName, handler] = mockBot.command.mock.calls.find(
+      (call) => call[0] === 'booking'
+    );
 
-    // Verify that the appropriate error message was sent
+    // Verify command name
+    expect(commandName).toBe('booking');
+
+    // Mock context with booking ID
+    const mockCtx = {
+      message: { text: '/booking 123' },
+      reply: jest.fn()
+    };
+
+    // Call the handler
+    await handler(mockCtx as any);
+
+    // Verify error message
     expect(mockCtx.reply).toHaveBeenCalledWith(
       expect.stringContaining('Произошла ошибка при получении данных бронирования')
     );
   });
 
   test('booking handler should handle 404 not found', async () => {
-    registerBookingHandlers(bot);
-
-    // Mock 404 error response
+    // Mock API 404 error
     const error = new Error('Not found');
     (error as any).response = { status: 404 };
     mockApi.getBooking.mockRejectedValue(error);
 
-    // Mock Telegraf Context
-    const mockCtx = {
-      message: { text: '/booking 999' },
-      reply: jest.fn(),
-      replyWithMarkdown: jest.fn()
+    // Create a mock bot with spies
+    const mockBot = {
+      command: jest.fn()
     };
 
-    // Find and execute the booking command handler
-    const bookingHandler = (bot as any).handlers.command.find(
-      (h: any) => h.triggers.includes('booking')
-    )?.middleware;
+    // Register handlers
+    registerBookingHandlers(mockBot as any);
 
-    await bookingHandler(mockCtx as any);
+    // Extract the booking command handler
+    const [commandName, handler] = mockBot.command.mock.calls.find(
+      (call) => call[0] === 'booking'
+    );
 
-    // Verify that the appropriate not found message was sent
+    // Verify command name
+    expect(commandName).toBe('booking');
+
+    // Mock context with non-existent booking ID
+    const mockCtx = {
+      message: { text: '/booking 999' },
+      reply: jest.fn()
+    };
+
+    // Call the handler
+    await handler(mockCtx as any);
+
+    // Verify not found message
     expect(mockCtx.reply).toHaveBeenCalledWith(
       expect.stringContaining('Бронирование с ID 999 не найдено')
     );
