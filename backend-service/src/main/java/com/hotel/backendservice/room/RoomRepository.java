@@ -47,4 +47,33 @@ public interface RoomRepository extends JpaRepository<RoomEntity, UUID> {
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate,
             @Param("guests") int guests);
+            
+    /**
+     * Find available rooms as DTO projections for a given date range and guest count
+     *
+     * @param fromDate The check-in date
+     * @param toDate   The check-out date
+     * @param guests   The number of guests
+     * @return List of available room DTOs with specific projection
+     */
+    @Query(value =
+      "SELECT r.id        AS room_id,  " +
+      "       r.number    AS number,   " +
+      "       r.type      AS type,     " +
+      "       r.capacity  AS capacity, " +
+      "       r.floor     AS floor,    " +
+      "       r.has_sea_view AS has_sea_view " +
+      "FROM room r " +
+      "WHERE r.capacity >= :guests " +
+      "  AND NOT EXISTS ( " +
+      "    SELECT 1 FROM booking b " +
+      "    WHERE b.room_id = r.id " +
+      "      AND NOT (b.checkout_date < :fromDate OR b.checkin_date > :toDate) " +
+      ")", 
+      nativeQuery = true)
+    List<RoomAvailabilityDto> findAvailableRoomsProjection(
+        @Param("fromDate") LocalDate fromDate,
+        @Param("toDate")   LocalDate toDate,
+        @Param("guests")   int guests
+    );
 } 

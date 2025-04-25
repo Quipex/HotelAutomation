@@ -13,8 +13,8 @@ const apiClient = axios.create({
 // API methods
 export const api = {
   // Booking related endpoints
-  get: async (endpoint: string) => {
-    return apiClient.get(endpoint);
+  get: async (endpoint: string, config = {}) => {
+    return apiClient.get(endpoint, config);
   },
 
   post: async (endpoint: string, data: any = {}) => {
@@ -36,6 +36,12 @@ export const api = {
 
   getAvailableRooms: async (fromDate: string, numDays: number, guests: number) => {
     return apiClient.get('/rooms/available', {
+      params: { fromDate, numDays, guests }
+    });
+  },
+  
+  getAvailableRoomsDto: async (fromDate: string, numDays: number, guests: number) => {
+    return apiClient.get('/rooms/available/dto', {
       params: { fromDate, numDays, guests }
     });
   },

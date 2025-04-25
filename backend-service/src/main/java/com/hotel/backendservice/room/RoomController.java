@@ -4,9 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -17,6 +20,7 @@ import java.util.UUID;
 @RequestMapping("/api/rooms")
 @RequiredArgsConstructor
 @Tag(name = "Room Controller", description = "API for managing rooms")
+@Validated
 public class RoomController {
 
     private final RoomService roomService;
@@ -68,5 +72,16 @@ public class RoomController {
             @Parameter(description = "Number of guests", required = true)
             @RequestParam int guests) {
         return ResponseEntity.ok(roomService.findAvailableRooms(fromDate, numDays, guests));
+    }
+
+    @GetMapping("/available/dto")
+    @Operation(summary = "Find available rooms with DTO projections", 
+               description = "Find rooms available for a given date, duration and number of guests using DTO projections")
+    public List<RoomAvailabilityDto> available(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+        @RequestParam @Min(1) @Max(365) int numDays,
+        @RequestParam @Min(1) @Max(10) int guests
+    ) {
+        return roomService.findAvailable(fromDate, numDays, guests);
     }
 }
