@@ -13,22 +13,22 @@ import java.util.List;
 @Configuration
 public class OpenApiConfig {
 
-    @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("Hotel Management API")
-                        .description("API for managing hotel bookings, clients, and rooms")
-                        .version("v1.0.0")
-                        .contact(new Contact()
-                                .name("Hotel Management")
-                                .email("contact@hotel.com")
-                                .url("https://hotel.com"))
-                        .license(new License()
-                                .name("Private License")
-                                .url("https://hotel.com/license")))
-                .servers(List.of(
-                        new Server().url("/").description("Current server")
-                ));
-    }
+  @Bean
+  public OpenAPI openAPI() {
+    return new OpenAPI()
+      .info(new Info()
+        .title("Hotel Management API")
+        .description("API for managing hotel bookings, clients, and rooms")
+        .version("v1.0.0")
+        .contact(new Contact()
+          .name("Hotel Management")
+          .email("contact@hotel.com")
+          .url("https://hotel.com"))
+        .license(new License()
+          .name("Private License")
+          .url("https://hotel.com/license")))
+      .servers(List.of(
+        new Server().url("/").description("Current server")
+      ));
+  }
 }

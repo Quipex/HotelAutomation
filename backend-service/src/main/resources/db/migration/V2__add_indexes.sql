@@ -1,3 +1,5 @@
+-- noinspection SqlResolveForFile
+
 -- Migration file to add indexes for Hotel Automation System
 
 -- First, make sure the pg_trgm extension is installed for text search
@@ -28,4 +30,4 @@ CREATE INDEX idx_notification_status ON notification (status);
 -- Payment indexes
 -- B-tree indexes on booking_id and paid_at for payment queries
 CREATE INDEX idx_payment_booking_id ON payment (booking_id);
-CREATE INDEX idx_payment_paid_at ON payment (paid_at); 
+CREATE INDEX idx_payment_paid_at ON payment (paid_at);

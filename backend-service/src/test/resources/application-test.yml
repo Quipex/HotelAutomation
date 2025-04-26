@@ -1,7 +1,7 @@
 # Test configuration
 spring:
   datasource:
-    # URL, username, password will be provided by TestContainers
+  # URL, username, password will be provided by TestContainers
   jpa:
     hibernate:
       ddl-auto: validate
@@ -20,6 +20,12 @@ spring:
   security:
     basic:
       enabled: false
+
+# Telegram notification test settings
+notification:
+  telegram:
+    bot-token: test-token
+    admin-chat-id: 123456
 
 # EasyMS PMS Integration test settings
 easyms:

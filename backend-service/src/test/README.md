@@ -2,7 +2,8 @@
 
 ## PostgreSQL Testcontainers Setup
 
-This project uses [Testcontainers](https://www.testcontainers.org/) with PostgreSQL for integration testing. Testcontainers provides lightweight, throwaway instances of common databases that can be used for testing.
+This project uses [Testcontainers](https://www.testcontainers.org/) with PostgreSQL for integration testing.
+Testcontainers provides lightweight, throwaway instances of common databases that can be used for testing.
 
 ### Base Test Classes
 
@@ -31,7 +32,8 @@ class YourIntegrationTest extends AbstractIntegrationTest {
 
 ### Test Configuration
 
-The test configuration is provided by the base classes and `application-test.yml`. The PostgreSQL connection properties are dynamically set by the base classes using `@DynamicPropertySource`.
+The test configuration is provided by the base classes and `application-test.yml`. The PostgreSQL connection properties
+are dynamically set by the base classes using `@DynamicPropertySource`.
 
 ### Requirements
 

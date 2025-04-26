@@ -1,5 +1,9 @@
 package com.hotel.backendservice.client;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,35 +11,37 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "client")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClientEntity {
-    @Id
-    private UUID id;
+  @Id
+  private UUID id;
 
-    private String firstName;
-    private String lastName;
-    private String middleName;
+  private String firstName;
+  private String lastName;
+  private String middleName;
 
-    @Column(name = "full_name", insertable = false, updatable = false)
-    private String fullName;
+  @Column(name = "full_name", insertable = false, updatable = false)
+  private String fullName;
 
-    @Column(columnDefinition = "text[]")
-    private String[] phones;
+  @Column(columnDefinition = "text[]")
+  private String[] phones;
 
-    private String email;
+  private String email;
 
-    @Column(columnDefinition = "TEXT")
-    private String notes;
+  @Column(columnDefinition = "TEXT")
+  private String notes;
 
-    @CreationTimestamp
-    private Instant createdAt;
+  @CreationTimestamp
+  private Instant createdAt;
 
-    @UpdateTimestamp
-    private Instant updatedAt;
+  @UpdateTimestamp
+  private Instant updatedAt;
 }

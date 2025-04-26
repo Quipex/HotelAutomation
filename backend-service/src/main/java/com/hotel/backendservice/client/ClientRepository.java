@@ -10,13 +10,13 @@ import java.util.UUID;
 
 @Repository
 public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
-    
-    /**
-     * Find clients by fuzzy name matching using PostgreSQL's similarity operator (%)
-     *
-     * @param name The name pattern to search for
-     * @return List of matching clients
-     */
-    @Query(value = "SELECT * FROM client WHERE full_name % :name ORDER BY full_name <-> :name", nativeQuery = true)
-    List<ClientEntity> findByNameFuzzy(@Param("name") String name);
-} 
+
+  /**
+   * Find clients by fuzzy name matching using PostgreSQL's similarity operator (%)
+   *
+   * @param name The name pattern to search for
+   * @return List of matching clients
+   */
+  @Query(value = "SELECT * FROM client WHERE full_name % :name ORDER BY full_name <-> :name", nativeQuery = true)
+  List<ClientEntity> findByNameFuzzy(@Param("name") String name);
+}

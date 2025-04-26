@@ -39,6 +39,12 @@ easyms:
     max-attempts: 3
     backoff-delay: 2s
 
+# Notification configuration
+notification:
+  telegram:
+    bot-token: ${TELEGRAM_BOT_TOKEN}
+    admin-chat-id: ${TELEGRAM_ADMIN_CHAT_ID}
+
 # Management & Metrics configuration
 management:
   metrics:

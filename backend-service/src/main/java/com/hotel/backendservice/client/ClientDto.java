@@ -14,24 +14,24 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ClientDto {
 
-    private UUID id;
+  private UUID id;
 
-    @NotNull(message = "First name is required")
-    @Size(min = 1, max = 50, message = "First name must be between 1 and 50 characters")
-    private String firstName;
+  @NotNull(message = "First name is required")
+  @Size(min = 1, max = 50, message = "First name must be between 1 and 50 characters")
+  private String firstName;
 
-    @NotNull(message = "Last name is required")
-    @Size(min = 1, max = 50, message = "Last name must be between 1 and 50 characters")
-    private String lastName;
+  @NotNull(message = "Last name is required")
+  @Size(min = 1, max = 50, message = "Last name must be between 1 and 50 characters")
+  private String lastName;
 
-    @Size(max = 50, message = "Middle name must be less than 50 characters")
-    private String middleName;
+  @Size(max = 50, message = "Middle name must be less than 50 characters")
+  private String middleName;
 
-    private String[] phones;
+  private String[] phones;
 
-    @Email(message = "Email should be valid")
-    private String email;
+  @Email(message = "Email should be valid")
+  private String email;
 
-    @Size(max = 2000, message = "Notes should be less than 2000 characters")
-    private String notes;
+  @Size(max = 2000, message = "Notes should be less than 2000 characters")
+  private String notes;
 }

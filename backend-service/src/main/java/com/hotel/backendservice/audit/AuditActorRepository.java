@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AuditActorRepository extends JpaRepository<AuditActorEntity, Long> {
-    // Custom methods can be added here as needed
-} 
+  // Custom methods can be added here as needed
+}

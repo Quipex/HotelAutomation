@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthResponseDto {
-    private String token;
-    private Long expiresIn;
-} 
+  private String token;
+  private Long expiresIn;
+}
