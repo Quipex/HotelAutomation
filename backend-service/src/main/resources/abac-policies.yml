@@ -1,0 +1,25 @@
+# ABAC (Attribute-Based Access Control) Policies
+# This file contains policies for controlling access to system features
+# Each policy is defined as a SpEL (Spring Expression Language) expression
+
+policies:
+  # User must have 'admin' role to access admin features
+  admin: "role == 'admin'"
+
+  # User must have 'admin' or 'manager' role to access management features
+  manager: "role == 'admin' or role == 'manager'"
+  
+  # User can only access their own data unless they are an admin
+  view_data: "role == 'admin' or userId == #targetUserId"
+  
+  # Only telegram users can access telegram-specific features
+  telegram_only: "platform == 'telegram'"
+  
+  # Only web users can access web-specific features
+  web_only: "platform == 'web'"
+  
+  # User can only modify their own bookings unless they are an admin or manager
+  modify_booking: "role == 'admin' or role == 'manager' or userId == #bookingUserId"
+  
+  # Allow anyone to view available rooms
+  view_available_rooms: "true" 
