@@ -1,18 +1,75 @@
 # Audit Package
 
-This package provides auditing capabilities for tracking system activities and user interactions.
+This package provides a comprehensive auditing solution for tracking user actions across the hotel automation system.
 
 ## Files
 
-- **AuditLogEntity.java** - Entity representing an audit log entry that tracks actions performed in the system,
-  including who performed the action, what was done, and when it occurred. Contains metadata such as timestamp, actor,
-  action type, and JSON details.
+- **AuditableAction.java** - Annotation to mark methods that should be audited. It includes attributes for specifying the action type, object type, and expressions to extract object IDs and details.
 
-- **AuditActorEntity.java** - Entity representing the actor (user or system) who performed an action being audited.
-  Stores attributes like user ID, username, platform, IP address, and user agent information.
+- **AuditAspect.java** - Aspect that intercepts methods annotated with @AuditableAction and logs the action to the audit log. It extracts relevant information from method parameters and results using reflection and SpEL expressions.
 
-- **AuditLogRepository.java** - JPA repository for persisting and retrieving AuditLogEntity records, including query
-  methods for retrieving audit logs by object type and ID.
+- **AuditContextHolder.java** - ThreadLocal storage for audit context, which contains information about the current user, platform, IP address, and other metadata needed for auditing.
 
-- **AuditActorRepository.java** - JPA repository for persisting and retrieving AuditActorEntity records, providing basic
-  CRUD operations for audit actors. 
+- **AuditService.java** - Service for managing audit logs, including creating audit actors and log entries, and retrieving audit logs for specific objects.
+
+- **AuditLogEntity.java** & **AuditActorEntity.java** - JPA entities representing audit log entries and actors who perform actions.
+
+- **AuditLogRepository.java** & **AuditActorRepository.java** - Spring Data JPA repositories for database operations on audit entities.
+
+## Usage
+
+### Setting up Audit Context
+
+Before calling methods that should be audited, set up the audit context:
+
+```java
+AuditContextHolder.AuditContext context = new AuditContextHolder.AuditContext(
+    "web",           // platform
+    "user123",       // userId
+    "John Doe",      // userName
+    "johndoe",       // userNick
+    "Mozilla/5.0...", // userAgent
+    "192.168.1.1"    // ipAddress
+);
+AuditContextHolder.setContext(context);
+
+// Don't forget to clear context when done
+try {
+    // Call methods that will be audited
+} finally {
+    AuditContextHolder.clearContext();
+}
+```
+
+### Marking Methods for Auditing
+
+Annotate methods that should be logged to the audit trail:
+
+```java
+@AuditableAction(
+    action = "create",
+    objectType = "booking",
+    objectIdExpression = "#result.id",
+    detailsExpression = "{ 'roomId': #booking.roomId, 'startDate': #booking.startDate }"
+)
+public Booking createBooking(BookingRequest booking) {
+    // Method implementation
+}
+```
+
+### Retrieving Audit Logs
+
+```java
+// Get all audit logs for a specific booking
+List<AuditLogEntity> logs = auditService.findAuditLogsForObject("booking", bookingId);
+```
+
+## Integration with ABAC
+
+The audit system integrates with the Attribute-Based Access Control (ABAC) system by:
+
+1. Providing user context information that ABAC policies can use to make authorization decisions
+2. Recording access control decisions and violations in the audit log
+3. Using the same context holder mechanism for both audit information and ABAC attributes
+
+This integration ensures consistent security enforcement and comprehensive auditing of all system activities. 
