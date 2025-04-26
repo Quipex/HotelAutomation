@@ -209,20 +209,4 @@ class RoomServiceTest {
     assertEquals(1, results.size());
     assertEquals(roomId, results.get(0).getId());
   }
-
-  @Test
-  void findAvailableDelegatesToRepo() {
-    // Arrange
-    LocalDate from = LocalDate.of(2025, 5, 1);
-    int days = 3, guests = 2;
-    List<RoomAvailabilityDto> expected = List.of();
-    when(roomRepository.findAvailableRoomsProjection(from, from.plusDays(days - 1), guests)).thenReturn(expected);
-
-    // Act
-    List<RoomAvailabilityDto> result = roomService.findAvailable(from, days, guests);
-
-    // Assert
-    assertSame(expected, result);
-    verify(roomRepository).findAvailableRoomsProjection(from, from.plusDays(days - 1), guests);
-  }
 }

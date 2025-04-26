@@ -39,12 +39,6 @@ export const api = {
       params: { fromDate, numDays, guests }
     });
   },
-  
-  getAvailableRoomsDto: async (fromDate: string, numDays: number, guests: number) => {
-    return apiClient.get('/rooms/available/dto', {
-      params: { fromDate, numDays, guests }
-    });
-  },
 
   syncData: async () => {
     return apiClient.post('/sync');

@@ -108,18 +108,4 @@ public class RoomService {
       .map(roomMapper::toDto)
       .collect(Collectors.toList());
   }
-
-  /**
-   * Find available rooms and return as DTO projections for a given date, number of days, and guest count
-   *
-   * @param fromDate The check-in date
-   * @param numDays  The number of days of stay
-   * @param guests   The number of guests
-   * @return List of available room DTOs as projections
-   */
-  @Transactional(readOnly = true)
-  public List<RoomAvailabilityDto> findAvailable(LocalDate fromDate, int numDays, int guests) {
-    LocalDate toDate = fromDate.plusDays(numDays - 1);
-    return roomRepository.findAvailableRoomsProjection(fromDate, toDate, guests);
-  }
 }

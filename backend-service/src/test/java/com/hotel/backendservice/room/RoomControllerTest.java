@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,48 +30,24 @@ class RoomControllerTest {
   void availableEndpointReturnsList() throws Exception {
     // Arrange
     UUID roomId = UUID.randomUUID();
-    RoomAvailabilityDto dto = new RoomAvailabilityDto() {
-      @Override
-      public UUID getRoomId() {
-        return roomId;
-      }
+    RoomDto dto = new RoomDto();
+    dto.setId(roomId);
+    dto.setNumber("101");
+    dto.setType("STANDARD");
+    dto.setCapacity(2);
+    dto.setFloor(1);
+    dto.setHasSeaView(true);
 
-      @Override
-      public String getNumber() {
-        return "101";
-      }
-
-      @Override
-      public String getType() {
-        return "STANDARD";
-      }
-
-      @Override
-      public int getCapacity() {
-        return 2;
-      }
-
-      @Override
-      public int getFloor() {
-        return 1;
-      }
-
-      @Override
-      public boolean isHasSeaView() {
-        return true;
-      }
-    };
-
-    when(svc.findAvailable(any(), anyInt(), anyInt()))
+    when(svc.findAvailableRooms(any(LocalDate.class), anyInt(), anyInt()))
       .thenReturn(List.of(dto));
 
     // Act & Assert
-    mvc.perform(get("/api/rooms/available/dto")
+    mvc.perform(get("/api/rooms/available")
         .param("fromDate", "2025-05-01")
         .param("numDays", "3")
         .param("guests", "2"))
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$[0].roomId").value(roomId.toString()))
+      .andExpect(jsonPath("$[0].id").value(roomId.toString()))
       .andExpect(jsonPath("$[0].number").value("101"))
       .andExpect(jsonPath("$[0].type").value("STANDARD"))
       .andExpect(jsonPath("$[0].capacity").value(2))
