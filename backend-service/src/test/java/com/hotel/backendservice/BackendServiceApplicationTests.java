@@ -7,11 +7,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 class BackendServiceApplicationTests extends AbstractIntegrationTest {
 
-  @MockBean
-  private EasyMsClientRest easyMsClientRest;
+    @MockBean
+    private EasyMsClientRest easyMsClientRest;
 
-  @Test
-  void contextLoads() {
-    // Basic test to verify that the Spring context loads correctly
-  }
+    @Test
+    void contextLoads() {
+        // Basic test to verify that the Spring context loads correctly
+    }
 }

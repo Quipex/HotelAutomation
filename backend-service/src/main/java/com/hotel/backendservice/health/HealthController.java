@@ -11,11 +11,11 @@ import java.util.Map;
 @RequestMapping("/api/health")
 public class HealthController {
 
-  @GetMapping
-  public Map<String, Object> healthCheck() {
-    Map<String, Object> response = new HashMap<>();
-    response.put("status", "UP");
-    response.put("service", "backend-service");
-    return response;
-  }
+    @GetMapping
+    public Map<String, Object> healthCheck() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "UP");
+        response.put("service", "backend-service");
+        return response;
+    }
 }

@@ -1,7 +1,5 @@
 package com.hotel.backendservice.config.abac;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.hotel.backendservice.notification.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,12 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.expression.Expression;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -48,99 +44,99 @@ class PolicyServiceTest {
     void reloadPolicies_shouldLoadValidPolicies() throws IOException {
         // Write valid policies to the temporary file
         String yamlContent = "policies:\n" +
-                "  admin: \"role == 'admin'\"\n" +
-                "  manager: \"role == 'admin' or role == 'manager'\"\n" +
-                "  user: \"true\"\n";
-        
+            "  admin: \"role == 'admin'\"\n" +
+            "  manager: \"role == 'admin' or role == 'manager'\"\n" +
+            "  user: \"true\"\n";
+
         try (FileWriter writer = new FileWriter(tempPolicyFile.toFile())) {
             writer.write(yamlContent);
         }
-        
+
         // Reload policies
         boolean result = policyService.reloadPolicies();
-        
+
         // Verify
         assertTrue(result);
-        
+
         // Check that policies were loaded
         Expression adminPolicy = policyService.getPolicy("admin");
         assertNotNull(adminPolicy);
-        
+
         Expression managerPolicy = policyService.getPolicy("manager");
         assertNotNull(managerPolicy);
-        
+
         Expression userPolicy = policyService.getPolicy("user");
         assertNotNull(userPolicy);
-        
+
         // Verify no notifications were sent
         verify(notificationService, never()).notify(anyString(), anyString());
     }
-    
+
     @Test
     void reloadPolicies_shouldFailWithInvalidPolicies() throws IOException {
         // Write invalid policies to the temporary file
         String yamlContent = "policies:\n" +
-                "  admin: \"role == 'admin'\"\n" +
-                "  invalid: \"role === 'manager'\"\n"; // Invalid SpEL syntax
-        
+            "  admin: \"role == 'admin'\"\n" +
+            "  invalid: \"role === 'manager'\"\n"; // Invalid SpEL syntax
+
         try (FileWriter writer = new FileWriter(tempPolicyFile.toFile())) {
             writer.write(yamlContent);
         }
-        
+
         // Reload policies
         boolean result = policyService.reloadPolicies();
-        
+
         // Verify
         assertFalse(result);
-        
+
         // Admin policy should be loaded, but invalid one should not
         Expression adminPolicy = policyService.getPolicy("admin");
         assertNotNull(adminPolicy);
-        
+
         Expression invalidPolicy = policyService.getPolicy("invalid");
         assertNull(invalidPolicy);
-        
+
         // Verify notification was sent
         verify(notificationService).notify(eq("admin"), contains("Failed to parse policy expression"));
     }
-    
+
     @Test
     void reloadPolicies_shouldHandleMissingFile() {
         // Set non-existent file
         ReflectionTestUtils.setField(policyService, "policiesFile", "non-existent-file.yml");
-        
+
         // Reload policies
         boolean result = policyService.reloadPolicies();
-        
+
         // Should be true but log a warning (no exception)
         assertTrue(result);
-        
+
         // Verify no notifications were sent
         verify(notificationService, never()).notify(anyString(), anyString());
     }
-    
+
     @Test
     void reloadPolicies_shouldHandleInvalidYaml() throws IOException {
         // Write invalid YAML to the temporary file
         String yamlContent = "policies:\n" +
-                "  admin: \"role == 'admin\"\n" + // Missing closing quote
-                "  manager: role == 'manager'\n"; // No quotes at all
-        
+            "  admin: \"role == 'admin\"\n" + // Missing closing quote
+            "  manager: role == 'manager'\n"; // No quotes at all
+
         try (FileWriter writer = new FileWriter(tempPolicyFile.toFile())) {
             writer.write(yamlContent);
         }
-        
+
         // Mock the YAML parser to throw an exception
         doThrow(new IOException("Invalid YAML"))
-                .when(policyService).loadPolicyConfig();
-        
+            .when(policyService).loadPolicyConfig();
+
         // Reload policies
         boolean result = policyService.reloadPolicies();
-        
+
         // Verify
         assertFalse(result);
-        
+
         // Verify notification was sent
         verify(notificationService).notify(eq("admin"), contains("Failed to reload ABAC policies"));
     }
-} 
+}

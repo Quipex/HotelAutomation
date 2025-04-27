@@ -17,21 +17,21 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuditLogEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private Instant timestamp = Instant.now();
+    private Instant timestamp = Instant.now();
 
-  @ManyToOne
-  @JoinColumn(name = "actor_id")
-  private AuditActorEntity actor;
+    @ManyToOne
+    @JoinColumn(name = "actor_id")
+    private AuditActorEntity actor;
 
-  private String action;
-  private String objectType;
-  private String objectId;
+    private String action;
+    private String objectType;
+    private String objectId;
 
-  @JdbcTypeCode(SqlTypes.JSON)
-  @Column(columnDefinition = "jsonb")
-  private String details;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private String details;
 }

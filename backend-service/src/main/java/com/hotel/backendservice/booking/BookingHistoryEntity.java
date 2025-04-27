@@ -15,18 +15,18 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingHistoryEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "booking_id")
-  private BookingEntity booking;
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
+    private BookingEntity booking;
 
-  private String field;
-  private String oldValue;
-  private String newValue;
+    private String field;
+    private String oldValue;
+    private String newValue;
 
-  @Column(nullable = false)
-  private Instant timestamp = Instant.now();
+    @Column(nullable = false)
+    private Instant timestamp = Instant.now();
 }

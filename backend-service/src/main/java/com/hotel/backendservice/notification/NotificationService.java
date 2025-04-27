@@ -5,11 +5,11 @@ package com.hotel.backendservice.notification;
  */
 public interface NotificationService {
 
-  /**
-   * Send a notification to the specified channel
-   *
-   * @param channel the notification channel (e.g., "easyms", "system", "telegram")
-   * @param message the notification message
-   */
-  void notify(String channel, String message);
+    /**
+     * Send a notification to the specified channel
+     *
+     * @param channel the notification channel (e.g., "easyms", "system", "telegram")
+     * @param message the notification message
+     */
+    void notify(String channel, String message);
 }

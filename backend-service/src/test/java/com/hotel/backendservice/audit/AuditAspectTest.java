@@ -17,7 +17,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuditAspectTest {
@@ -53,20 +54,20 @@ class AuditAspectTest {
         AuditActorEntity actor = new AuditActorEntity();
         actor.setId(1L);
         when(auditService.getOrCreateActor(
-                eq("test"), eq("test-user"), eq("Test User"), eq("test-nick"), eq("test-agent"), eq("127.0.0.1")
+            eq("test"), eq("test-user"), eq("Test User"), eq("test-nick"), eq("test-agent"), eq("127.0.0.1")
         )).thenReturn(actor);
 
         // Set up method signature mock
         when(joinPoint.getSignature()).thenReturn(methodSignature);
-        
+
         // Mock the method to have the @AuditableAction annotation
         Method testMethod = TestService.class.getMethod("testMethod", String.class);
         when(methodSignature.getMethod()).thenReturn(testMethod);
-        
+
         // Mock parameter names and args
         when(methodSignature.getParameterNames()).thenReturn(new String[]{"testParam"});
         when(joinPoint.getArgs()).thenReturn(new Object[]{"test-value"});
-        
+
         // Mock objectMapper
         when(objectMapper.writeValueAsString(any())).thenReturn("{\"testParam\":\"test-value\"}");
     }
@@ -75,25 +76,25 @@ class AuditAspectTest {
     void auditMethod_shouldCreateAuditLog() throws Exception {
         // Mock return value
         UUID testUuid = UUID.randomUUID();
-        
+
         // Execute the aspect method
         auditAspect.auditMethod(joinPoint, testUuid);
-        
+
         // Verify that the auditService was called with the correct parameters
         ArgumentCaptor<AuditActorEntity> actorCaptor = ArgumentCaptor.forClass(AuditActorEntity.class);
         ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> objectTypeCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> objectIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> detailsCaptor = ArgumentCaptor.forClass(String.class);
-        
+
         verify(auditService).createAuditLog(
-                actorCaptor.capture(),
-                actionCaptor.capture(),
-                objectTypeCaptor.capture(),
-                objectIdCaptor.capture(),
-                detailsCaptor.capture()
+            actorCaptor.capture(),
+            actionCaptor.capture(),
+            objectTypeCaptor.capture(),
+            objectIdCaptor.capture(),
+            detailsCaptor.capture()
         );
-        
+
         // Verify the captured values
         assertEquals(1L, actorCaptor.getValue().getId());
         assertEquals("test-action", actionCaptor.getValue());
@@ -101,7 +102,7 @@ class AuditAspectTest {
         assertEquals(testUuid.toString(), objectIdCaptor.getValue());
         assertEquals("{\"testParam\":\"test-value\"}", detailsCaptor.getValue());
     }
-    
+
     // Test service class for the test
     public static class TestService {
         @AuditableAction(action = "test-action", objectType = "test-object")
@@ -109,4 +110,4 @@ class AuditAspectTest {
             return UUID.randomUUID();
         }
     }
-} 
+}

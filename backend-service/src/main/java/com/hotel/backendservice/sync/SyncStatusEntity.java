@@ -15,14 +15,14 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SyncStatusEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private Instant lastSyncAt;
-  private String status;
-  private Long duration;
+    private Instant lastSyncAt;
+    private String status;
+    private Long duration;
 
-  @Column(columnDefinition = "TEXT")
-  private String details;
+    @Column(columnDefinition = "TEXT")
+    private String details;
 }

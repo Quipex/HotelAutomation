@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<NotificationEntity, UUID> {
-  List<NotificationEntity> findByStatus(NotificationStatus status);
+    List<NotificationEntity> findByStatus(NotificationStatus status);
 
-  List<NotificationEntity> findByStatusOrderByCreatedAtDesc(NotificationStatus status);
+    List<NotificationEntity> findByStatusOrderByCreatedAtDesc(NotificationStatus status);
 }

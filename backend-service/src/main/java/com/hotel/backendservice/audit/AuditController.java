@@ -27,20 +27,20 @@ public class AuditController {
      * Get audit logs for a specific object
      *
      * @param objectType The type of object (e.g., "booking", "client", "room")
-     * @param objectId The ID of the object
+     * @param objectId   The ID of the object
      * @return List of audit logs for the object
      */
     @GetMapping
-    @Operation(summary = "Get audit logs for an object", 
-            description = "Get audit logs for a specific object type and ID")
+    @Operation(summary = "Get audit logs for an object",
+        description = "Get audit logs for a specific object type and ID")
     public ResponseEntity<List<AuditLogEntity>> getAuditLogs(
-            @Parameter(description = "Object type (e.g., booking, client, room)", required = true)
-            @RequestParam String objectType,
-            
-            @Parameter(description = "Object ID", required = true)
-            @RequestParam String objectId
+        @Parameter(description = "Object type (e.g., booking, client, room)", required = true)
+        @RequestParam String objectType,
+
+        @Parameter(description = "Object ID", required = true)
+        @RequestParam String objectId
     ) {
         List<AuditLogEntity> auditLogs = auditService.findAuditLogsForObject(objectType, objectId);
         return ResponseEntity.ok(auditLogs);
     }
-} 
+}

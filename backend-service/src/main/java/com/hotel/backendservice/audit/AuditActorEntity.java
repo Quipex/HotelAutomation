@@ -16,17 +16,17 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuditActorEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String platform;
-  private String userId;
-  private String userName;
-  private String userNick;
-  private String userAgent;
-  private String ipAddress;
+    private String platform;
+    private String userId;
+    private String userName;
+    private String userNick;
+    private String userAgent;
+    private String ipAddress;
 
-  @CreationTimestamp
-  private Instant createdAt;
+    @CreationTimestamp
+    private Instant createdAt;
 }

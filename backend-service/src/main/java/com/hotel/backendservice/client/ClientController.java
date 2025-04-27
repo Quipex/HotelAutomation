@@ -17,42 +17,42 @@ import java.util.UUID;
 @Tag(name = "Client Controller", description = "API for managing clients")
 public class ClientController {
 
-  private final ClientService clientService;
+    private final ClientService clientService;
 
-  @GetMapping("/{id}")
-  @Operation(summary = "Find client by ID", description = "Returns a client based on ID")
-  public ResponseEntity<ClientDto> findById(
-    @Parameter(description = "Client ID", required = true)
-    @PathVariable UUID id) {
-    return ResponseEntity.ok(clientService.findById(id));
-  }
-
-  @PostMapping
-  @Operation(summary = "Create a new client", description = "Creates a new client and returns the created entity")
-  public ResponseEntity<ClientDto> create(
-    @Parameter(description = "Client data", required = true)
-    @Valid @RequestBody ClientDto clientDto) {
-    return ResponseEntity.ok(clientService.create(clientDto));
-  }
-
-  @PatchMapping("/{id}")
-  @Operation(summary = "Update client", description = "Updates an existing client and returns the updated entity")
-  public ResponseEntity<ClientDto> update(
-    @Parameter(description = "Client ID", required = true)
-    @PathVariable UUID id,
-    @Parameter(description = "Updated client data", required = true)
-    @Valid @RequestBody ClientDto clientDto) {
-    return ResponseEntity.ok(clientService.update(id, clientDto));
-  }
-
-  @GetMapping
-  @Operation(summary = "Search clients", description = "Search clients by name (fuzzy search)")
-  public ResponseEntity<List<ClientDto>> searchByName(
-    @Parameter(description = "Name to search for (fuzzy search)")
-    @RequestParam(required = false) String name) {
-    if (name == null || name.isBlank()) {
-      return ResponseEntity.badRequest().build();
+    @GetMapping("/{id}")
+    @Operation(summary = "Find client by ID", description = "Returns a client based on ID")
+    public ResponseEntity<ClientDto> findById(
+        @Parameter(description = "Client ID", required = true)
+        @PathVariable UUID id) {
+        return ResponseEntity.ok(clientService.findById(id));
     }
-    return ResponseEntity.ok(clientService.searchByName(name));
-  }
+
+    @PostMapping
+    @Operation(summary = "Create a new client", description = "Creates a new client and returns the created entity")
+    public ResponseEntity<ClientDto> create(
+        @Parameter(description = "Client data", required = true)
+        @Valid @RequestBody ClientDto clientDto) {
+        return ResponseEntity.ok(clientService.create(clientDto));
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Update client", description = "Updates an existing client and returns the updated entity")
+    public ResponseEntity<ClientDto> update(
+        @Parameter(description = "Client ID", required = true)
+        @PathVariable UUID id,
+        @Parameter(description = "Updated client data", required = true)
+        @Valid @RequestBody ClientDto clientDto) {
+        return ResponseEntity.ok(clientService.update(id, clientDto));
+    }
+
+    @GetMapping
+    @Operation(summary = "Search clients", description = "Search clients by name (fuzzy search)")
+    public ResponseEntity<List<ClientDto>> searchByName(
+        @Parameter(description = "Name to search for (fuzzy search)")
+        @RequestParam(required = false) String name) {
+        if (name == null || name.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(clientService.searchByName(name));
+    }
 }

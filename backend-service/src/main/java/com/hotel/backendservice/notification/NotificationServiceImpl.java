@@ -17,35 +17,35 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-  @Qualifier("telegram")
-  private final NotificationService telegramNotificationService;
+    @Qualifier("telegram")
+    private final NotificationService telegramNotificationService;
 
-  @Qualifier("logging")
-  private final NotificationService loggingNotificationService;
+    @Qualifier("logging")
+    private final NotificationService loggingNotificationService;
 
-  private final MeterRegistry meterRegistry;
+    private final MeterRegistry meterRegistry;
 
-  @Override
-  public void notify(String channel, String message) {
-    log.debug("Routing notification to channel: {}", channel);
-    meterRegistry.counter("notifications.requests", "channel", channel).increment();
+    @Override
+    public void notify(String channel, String message) {
+        log.debug("Routing notification to channel: {}", channel);
+        meterRegistry.counter("notifications.requests", "channel", channel).increment();
 
-    try {
-      switch (channel.toLowerCase()) {
-        case "telegram":
-          telegramNotificationService.notify(channel, message);
-          break;
-        default:
-          // Fall back to logging service for unsupported channels
-          log.warn("No specific handler for channel '{}', using logging service", channel);
-          loggingNotificationService.notify(channel, message);
-          break;
-      }
-    } catch (Exception e) {
-      log.error("Error routing notification", e);
-      // If routing fails, try to at least log the notification
-      loggingNotificationService.notify(channel,
-        "Failed to route notification: " + e.getMessage() + ". Original message: " + message);
+        try {
+            switch (channel.toLowerCase()) {
+                case "telegram":
+                    telegramNotificationService.notify(channel, message);
+                    break;
+                default:
+                    // Fall back to logging service for unsupported channels
+                    log.warn("No specific handler for channel '{}', using logging service", channel);
+                    loggingNotificationService.notify(channel, message);
+                    break;
+            }
+        } catch (Exception e) {
+            log.error("Error routing notification", e);
+            // If routing fails, try to at least log the notification
+            loggingNotificationService.notify(channel,
+                "Failed to route notification: " + e.getMessage() + ". Original message: " + message);
+        }
     }
-  }
 }

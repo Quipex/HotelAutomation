@@ -13,22 +13,22 @@ import org.springframework.web.client.RestTemplate;
 @TestConfiguration
 public class TestConfig {
 
-  /**
-   * Provides a RestTemplate bean that can be mocked in tests
-   * We mark it as @Primary to ensure it's used instead of any other RestTemplate
-   */
-  @Bean
-  @Primary
-  public RestTemplate restTemplate() {
-    return new RestTemplate();
-  }
+    /**
+     * Provides a RestTemplate bean that can be mocked in tests
+     * We mark it as @Primary to ensure it's used instead of any other RestTemplate
+     */
+    @Bean
+    @Primary
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
-  /**
-   * Provides a MeterRegistry bean for metrics testing
-   */
-  @Bean
-  @Primary
-  public MeterRegistry meterRegistry() {
-    return new SimpleMeterRegistry();
-  }
+    /**
+     * Provides a MeterRegistry bean for metrics testing
+     */
+    @Bean
+    @Primary
+    public MeterRegistry meterRegistry() {
+        return new SimpleMeterRegistry();
+    }
 }

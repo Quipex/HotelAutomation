@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface SyncStatusRepository extends JpaRepository<SyncStatusEntity, Long> {
-  @Query("SELECT s FROM SyncStatusEntity s ORDER BY s.lastSyncAt DESC")
-  Optional<SyncStatusEntity> findLatestSyncStatus();
+    @Query("SELECT s FROM SyncStatusEntity s ORDER BY s.lastSyncAt DESC")
+    Optional<SyncStatusEntity> findLatestSyncStatus();
 }

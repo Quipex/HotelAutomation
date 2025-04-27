@@ -1,6 +1,5 @@
 package com.hotel.backendservice.config.abac;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,8 +10,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PolicyControllerTest {
@@ -52,4 +52,4 @@ public class PolicyControllerTest {
         assertEquals("Failed to reload ABAC policies, check server logs", response.getBody().get("message"));
         verify(policyService).reloadPolicies();
     }
-} 
+}

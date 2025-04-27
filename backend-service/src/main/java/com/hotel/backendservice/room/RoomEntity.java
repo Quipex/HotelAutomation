@@ -18,19 +18,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomEntity {
-  @Id
-  private UUID id;
+    @Id
+    private UUID id;
 
-  @Column(unique = true)
-  private String number;
+    @Column(unique = true)
+    private String number;
 
-  private Integer floor;
-  private Boolean hasSeaView;
-  private String balconySide;
-  private String type;
-  private Integer maxAdults;
-  private Integer capacity;
+    private Integer floor;
+    private Boolean hasSeaView;
+    private String balconySide;
+    private String type;
+    private Integer maxAdults;
+    private Integer capacity;
 
-  @Column(columnDefinition = "TEXT")
-  private String notes;
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 }

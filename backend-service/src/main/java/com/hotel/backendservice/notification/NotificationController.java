@@ -11,21 +11,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationController {
 
-  private final NotificationService notificationService;
-  private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
-  @PostMapping("/send")
-  public ResponseEntity<Void> sendNotification(@RequestParam String channel, @RequestBody String message) {
-    notificationService.notify(channel, message);
-    return ResponseEntity.ok().build();
-  }
-
-  @GetMapping
-  public ResponseEntity<List<NotificationEntity>> getNotifications(
-    @RequestParam(required = false) NotificationStatus status) {
-    if (status != null) {
-      return ResponseEntity.ok(notificationRepository.findByStatusOrderByCreatedAtDesc(status));
+    @PostMapping("/send")
+    public ResponseEntity<Void> sendNotification(@RequestParam String channel, @RequestBody String message) {
+        notificationService.notify(channel, message);
+        return ResponseEntity.ok().build();
     }
-    return ResponseEntity.ok(notificationRepository.findAll());
-  }
+
+    @GetMapping
+    public ResponseEntity<List<NotificationEntity>> getNotifications(
+        @RequestParam(required = false) NotificationStatus status) {
+        if (status != null) {
+            return ResponseEntity.ok(notificationRepository.findByStatusOrderByCreatedAtDesc(status));
+        }
+        return ResponseEntity.ok(notificationRepository.findAll());
+    }
 }

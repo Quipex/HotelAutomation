@@ -18,24 +18,24 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotificationEntity {
-  @Id
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  private UUID id;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
 
-  private String channel;
+    private String channel;
 
-  @Column(columnDefinition = "TEXT")
-  private String message;
+    @Column(columnDefinition = "TEXT")
+    private String message;
 
-  @Enumerated(EnumType.STRING)
-  private NotificationStatus status;
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus status;
 
-  @CreationTimestamp
-  private Instant createdAt;
+    @CreationTimestamp
+    private Instant createdAt;
 
-  private Instant lastAttemptAt;
+    private Instant lastAttemptAt;
 
-  @Column(columnDefinition = "TEXT")
-  private String errorDetails;
+    @Column(columnDefinition = "TEXT")
+    private String errorDetails;
 }

@@ -18,20 +18,20 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class LoggingNotificationService implements NotificationService {
 
-  private final NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
-  @Override
-  public void notify(String channel, String message) {
-    log.info("Notification [{}]: {}", channel, message);
+    @Override
+    public void notify(String channel, String message) {
+        log.info("Notification [{}]: {}", channel, message);
 
-    // Create and save notification entity
-    NotificationEntity notification = new NotificationEntity();
-    notification.setChannel(channel);
-    notification.setMessage(message);
-    notification.setStatus(NotificationStatus.SENT); // Always mark as sent
-    notification.setCreatedAt(Instant.now());
-    notification.setLastAttemptAt(Instant.now());
+        // Create and save notification entity
+        NotificationEntity notification = new NotificationEntity();
+        notification.setChannel(channel);
+        notification.setMessage(message);
+        notification.setStatus(NotificationStatus.SENT); // Always mark as sent
+        notification.setCreatedAt(Instant.now());
+        notification.setLastAttemptAt(Instant.now());
 
-    notificationRepository.save(notification);
-  }
+        notificationRepository.save(notification);
+    }
 }

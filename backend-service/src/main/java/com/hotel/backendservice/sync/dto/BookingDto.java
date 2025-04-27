@@ -18,17 +18,17 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class BookingDto {
 
-  private String pmsId;
-  private String guestName;
-  private String guestEmail;
-  private String guestPhone;
-  private String roomNumber;
-  private LocalDate checkInDate;
-  private LocalDate checkOutDate;
-  private BigDecimal totalAmount;
-  private String status;
-  private String source;
-  private Instant createdAt;
-  private Boolean isPrepaid;
-  private String notes;
+    private String pmsId;
+    private String guestName;
+    private String guestEmail;
+    private String guestPhone;
+    private String roomNumber;
+    private LocalDate checkInDate;
+    private LocalDate checkOutDate;
+    private BigDecimal totalAmount;
+    private String status;
+    private String source;
+    private Instant createdAt;
+    private Boolean isPrepaid;
+    private String notes;
 }

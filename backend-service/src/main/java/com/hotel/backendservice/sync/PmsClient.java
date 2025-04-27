@@ -10,26 +10,26 @@ import java.util.List;
  */
 public interface PmsClient {
 
-  /**
-   * Authenticate with the PMS
-   *
-   * @return authentication token
-   */
-  String authenticate();
+    /**
+     * Authenticate with the PMS
+     *
+     * @return authentication token
+     */
+    String authenticate();
 
-  /**
-   * Fetch new bookings since the specified time
-   *
-   * @param since time from which to fetch bookings
-   * @return list of new bookings
-   */
-  List<BookingDto> fetchNewBookings(Instant since);
+    /**
+     * Fetch new bookings since the specified time
+     *
+     * @param since time from which to fetch bookings
+     * @return list of new bookings
+     */
+    List<BookingDto> fetchNewBookings(Instant since);
 
-  /**
-   * Fetch a specific booking by its PMS ID
-   *
-   * @param pmsId the ID of the booking in the PMS
-   * @return the booking details
-   */
-  BookingDto fetchBookingById(String pmsId);
+    /**
+     * Fetch a specific booking by its PMS ID
+     *
+     * @param pmsId the ID of the booking in the PMS
+     * @return the booking details
+     */
+    BookingDto fetchBookingById(String pmsId);
 }

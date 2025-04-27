@@ -6,13 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for checking permissions using ABAC policies
+ * Annotation to mark methods that require authorization check against an ABAC policy.
+ * The policy name is specified as the annotation value.
  */
-@Target({ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CheckPermission {
     /**
-     * The name of the policy to check
+     * The name of the policy to check against.
      */
     String value();
 } 

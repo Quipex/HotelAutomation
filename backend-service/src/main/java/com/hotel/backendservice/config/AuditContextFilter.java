@@ -23,7 +23,7 @@ public class AuditContextFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         try {
             setupAuditContext(request);
             filterChain.doFilter(request, response);
@@ -34,6 +34,7 @@ public class AuditContextFilter extends OncePerRequestFilter {
 
     /**
      * Set up audit context based on the HTTP request
+     *
      * @param request The HTTP request
      */
     private void setupAuditContext(HttpServletRequest request) {
@@ -41,7 +42,7 @@ public class AuditContextFilter extends OncePerRequestFilter {
         // In a real application, this would come from JWT token, session, etc.
         String userId = request.getHeader("X-User-ID");
         String userName = request.getHeader("X-User-Name");
-        
+
         // Create and populate audit context
         AuditContextHolder.AuditContext context = new AuditContextHolder.AuditContext();
         context.setPlatform("web");
@@ -50,13 +51,14 @@ public class AuditContextFilter extends OncePerRequestFilter {
         context.setUserNick(request.getHeader("X-User-Nick"));
         context.setUserAgent(request.getHeader("User-Agent"));
         context.setIpAddress(getClientIp(request));
-        
+
         AuditContextHolder.setContext(context);
         log.debug("Set up audit context for web request: {}", context);
     }
-    
+
     /**
      * Get client IP address from request
+     *
      * @param request The HTTP request
      * @return The client IP address
      */
@@ -68,4 +70,4 @@ public class AuditContextFilter extends OncePerRequestFilter {
         }
         return request.getRemoteAddr();
     }
-} 
+}

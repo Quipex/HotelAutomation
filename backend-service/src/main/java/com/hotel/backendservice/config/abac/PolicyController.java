@@ -24,25 +24,26 @@ public class PolicyController {
 
     /**
      * Reload ABAC policies from the configured file
+     *
      * @return Response with success status and message
      */
     @PostMapping("/reload")
-    @Operation(summary = "Reload ABAC policies", 
-            description = "Reload ABAC policies from the configured file")
+    @Operation(summary = "Reload ABAC policies",
+        description = "Reload ABAC policies from the configured file")
     @CheckPermission("admin")
     public ResponseEntity<Map<String, Object>> reloadPolicies() {
         boolean success = policyService.reloadPolicies();
-        
+
         Map<String, Object> response = new HashMap<>();
         response.put("success", success);
-        response.put("message", success ? 
-                "ABAC policies reloaded successfully" : 
-                "Failed to reload ABAC policies, check server logs");
-        
+        response.put("message", success ?
+            "ABAC policies reloaded successfully" :
+            "Failed to reload ABAC policies, check server logs");
+
         if (success) {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.badRequest().body(response);
         }
     }
-} 
+}
