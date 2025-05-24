@@ -4,17 +4,23 @@ This package provides a comprehensive auditing solution for tracking user action
 
 ## Files
 
-- **AuditableAction.java** - Annotation to mark methods that should be audited. It includes attributes for specifying the action type, object type, and expressions to extract object IDs and details.
+- **AuditableAction.java** - Annotation to mark methods that should be audited. It includes attributes for specifying
+  the action type, object type, and expressions to extract object IDs and details.
 
-- **AuditAspect.java** - Aspect that intercepts methods annotated with @AuditableAction and logs the action to the audit log. It extracts relevant information from method parameters and results using reflection and SpEL expressions.
+- **AuditAspect.java** - Aspect that intercepts methods annotated with @AuditableAction and logs the action to the audit
+  log. It extracts relevant information from method parameters and results using reflection and SpEL expressions.
 
-- **AuditContextHolder.java** - ThreadLocal storage for audit context, which contains information about the current user, platform, IP address, and other metadata needed for auditing.
+- **AuditContextHolder.java** - ThreadLocal storage for audit context, which contains information about the current
+  user, platform, IP address, and other metadata needed for auditing.
 
-- **AuditService.java** - Service for managing audit logs, including creating audit actors and log entries, and retrieving audit logs for specific objects.
+- **AuditService.java** - Service for managing audit logs, including creating audit actors and log entries, and
+  retrieving audit logs for specific objects.
 
-- **AuditLogEntity.java** & **AuditActorEntity.java** - JPA entities representing audit log entries and actors who perform actions.
+- **AuditLogEntity.java** & **AuditActorEntity.java** - JPA entities representing audit log entries and actors who
+  perform actions.
 
-- **AuditLogRepository.java** & **AuditActorRepository.java** - Spring Data JPA repositories for database operations on audit entities.
+- **AuditLogRepository.java** & **AuditActorRepository.java** - Spring Data JPA repositories for database operations on
+  audit entities.
 
 ## Usage
 

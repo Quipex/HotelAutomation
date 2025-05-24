@@ -1,4 +1,4 @@
-package com.hotel.backendservice.config.abac;
+package com.hotel.backendservice.security.abac;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,4 +18,4 @@ public class PolicyConfig {
      * Map of policy names to SpEL expressions
      */
     private Map<String, String> policies = new HashMap<>();
-} 
+}

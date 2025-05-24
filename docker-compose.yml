@@ -29,6 +29,8 @@ services:
       - DB_NAME=hotel_db
       - DB_USER=postgres
       - DB_PASSWORD=postgres
+    env_file:
+      - backend-service/.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -36,13 +38,12 @@ services:
   telegram-bot-service:
     build:
       context: ./telegram-bot-service
-    environment:
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-      - BACKEND_API_URL=http://backend-service:8080/api
+    env_file:
+      - telegram-bot-service/.env
     ports:
       - "3000:3000"
     depends_on:
       - backend-service
 
 volumes:
-  pgdata: 
+  pgdata:

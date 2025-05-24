@@ -1,6 +1,7 @@
-package com.hotel.backendservice.config.abac;
+package com.hotel.backendservice.security.abac;
 
 import com.hotel.backendservice.notification.NotificationService;
+import com.hotel.backendservice.security.abac.PolicyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,10 +44,12 @@ class PolicyServiceTest {
     @Test
     void reloadPolicies_shouldLoadValidPolicies() throws IOException {
         // Write valid policies to the temporary file
-        String yamlContent = "policies:\n" +
-            "  admin: \"role == 'admin'\"\n" +
-            "  manager: \"role == 'admin' or role == 'manager'\"\n" +
-            "  user: \"true\"\n";
+        String yamlContent = """
+            policies:
+              admin: "role == 'admin'"
+              manager: "role == 'admin' or role == 'manager'"
+              user: "true"
+            """;
 
         try (FileWriter writer = new FileWriter(tempPolicyFile.toFile())) {
             writer.write(yamlContent);

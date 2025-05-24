@@ -19,11 +19,10 @@ import java.util.concurrent.TimeUnit;
 public class EasyMsConfig {
 
     @Bean
-    public WebClient easyMsWebClient(WebClient.Builder builder,
-                                     @Value("${easyms.base-url}") String baseUrl,
+    public WebClient easyMsWebClient(@Value("${easyms.base-url}") String baseUrl,
                                      @Value("${easyms.timeouts.connect}") Duration connectTimeout,
                                      @Value("${easyms.timeouts.read}") Duration readTimeout) {
-        return builder
+        return WebClient.builder()
             .baseUrl(baseUrl)
             .clientConnector(new ReactorClientHttpConnector(
                 HttpClient.create()

@@ -1,7 +1,7 @@
 ---
 description: 
-globs: backend-service/**
-alwaysApply: false
+globs: 
+alwaysApply: true
 ---
 
 # Backend-specific rules
@@ -15,3 +15,9 @@ alwaysApply: false
   3.1. When editing any file in the backend, make sure to update the index.md with the corresponding changes.
 
   3.2. When indexing the files in the project, always try to read the index.md first. If there is something unclear, read the files directly. 
+
+4. When creating a new functionality, make sure it's audited and ABAC policy is set.
+
+  4.1. Audit is inside src/main/java/com/hotel/backendservice/audit/index.md
+
+  4.2. Abac is inside 

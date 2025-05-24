@@ -1,4 +1,4 @@
-package com.hotel.backendservice.config.abac;
+package com.hotel.backendservice.security.abac;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,4 +16,4 @@ public @interface CheckPermission {
      * The name of the policy to check against.
      */
     String value();
-} 
+}

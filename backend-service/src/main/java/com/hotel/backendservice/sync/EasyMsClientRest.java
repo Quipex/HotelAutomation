@@ -28,12 +28,17 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class EasyMsClientRest implements PmsClient {
 
     private final WebClient easyMsWebClient;
     private final MeterRegistry registry;
     private final NotificationService notificationService;
+
+    public EasyMsClientRest(WebClient easyMsWebClient, MeterRegistry registry, NotificationService notificationService) {
+        this.easyMsWebClient = easyMsWebClient;
+        this.registry = registry;
+        this.notificationService = notificationService;
+    }
 
     @Value("${easyms.auth.login}")
     private String login;

@@ -1,5 +1,7 @@
-package com.hotel.backendservice.config.abac;
+package com.hotel.backendservice.security.abac;
 
+import com.hotel.backendservice.security.abac.PolicyController;
+import com.hotel.backendservice.security.abac.PolicyService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

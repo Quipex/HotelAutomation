@@ -1,15 +1,16 @@
 package com.hotel.backendservice.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -19,122 +20,126 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ClientController.class)
+@WithMockUser(username = "test-user", roles = {"ADMIN"})
 class ClientControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-  @MockBean
-  private ClientService clientService;
+    @MockBean
+    private ClientService clientService;
 
-  private UUID clientId;
-  private ClientDto clientDto;
+    @Test
+    void findById_ShouldReturnClient_WhenClientExists() throws Exception {
+        // Given
+        UUID clientId = UUID.fromString("5a65c9c5-0d9d-4084-b60b-9ab3f79a1bc5");
+        ClientDto clientDto = new ClientDto();
+        clientDto.setId(clientId);
+        clientDto.setFirstName("John");
+        clientDto.setLastName("Doe");
+        clientDto.setPhones(new String[]{"123-456-7890"});
+        clientDto.setEmail("john.doe@example.com");
 
-  @BeforeEach
-  void setUp() {
-    clientId = UUID.randomUUID();
+        when(clientService.findById(clientId)).thenReturn(clientDto);
 
-    clientDto = new ClientDto();
-    clientDto.setId(clientId);
-    clientDto.setFirstName("John");
-    clientDto.setLastName("Doe");
-    clientDto.setEmail("john.doe@example.com");
-    clientDto.setPhones(new String[]{"123-456-7890"});
-    clientDto.setNotes("Test client");
-  }
+        // When & Then
+        mockMvc.perform(get("/api/clients/{id}", clientId))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(clientId.toString()))
+            .andExpect(jsonPath("$.firstName").value("John"))
+            .andExpect(jsonPath("$.lastName").value("Doe"))
+            .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+    }
 
-  @Test
-  void findById_ShouldReturnClient_WhenClientExists() throws Exception {
-    // Arrange
-    when(clientService.findById(clientId)).thenReturn(clientDto);
+    @Test
+    void create_ShouldReturnCreatedClient_WhenValidInput() throws Exception {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setFirstName("Jane");
+        inputDto.setLastName("Smith");
+        inputDto.setPhones(new String[]{"234-567-8901"});
+        inputDto.setEmail("jane.smith@example.com");
 
-    // Act & Assert
-    mockMvc.perform(get("/api/clients/{id}", clientId))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.id").value(clientId.toString()))
-      .andExpect(jsonPath("$.firstName").value("John"))
-      .andExpect(jsonPath("$.lastName").value("Doe"));
-  }
+        UUID generatedId = UUID.randomUUID();
+        ClientDto outputDto = new ClientDto();
+        outputDto.setId(generatedId);
+        outputDto.setFirstName("Jane");
+        outputDto.setLastName("Smith");
+        outputDto.setPhones(new String[]{"234-567-8901"});
+        outputDto.setEmail("jane.smith@example.com");
 
-  @Test
-  void create_ShouldReturnCreatedClient_WhenValidInput() throws Exception {
-    // Arrange
-    ClientDto inputDto = new ClientDto();
-    inputDto.setFirstName("Jane");
-    inputDto.setLastName("Smith");
-    inputDto.setEmail("jane.smith@example.com");
-    inputDto.setPhones(new String[]{"234-567-8901"});
+        when(clientService.create(any(ClientDto.class))).thenReturn(outputDto);
 
-    ClientDto createdDto = new ClientDto();
-    createdDto.setId(UUID.randomUUID());
-    createdDto.setFirstName("Jane");
-    createdDto.setLastName("Smith");
-    createdDto.setEmail("jane.smith@example.com");
-    createdDto.setPhones(new String[]{"234-567-8901"});
+        // When & Then
+        mockMvc.perform(post("/api/clients")
+                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(inputDto)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(generatedId.toString()))
+            .andExpect(jsonPath("$.firstName").value("Jane"))
+            .andExpect(jsonPath("$.lastName").value("Smith"))
+            .andExpect(jsonPath("$.email").value("jane.smith@example.com"));
+    }
 
-    when(clientService.create(any(ClientDto.class))).thenReturn(createdDto);
+    @Test
+    void update_ShouldReturnUpdatedClient_WhenValidInput() throws Exception {
+        // Given
+        UUID clientId = UUID.fromString("066f8ea6-39e9-40ed-9bbe-5351f4e6324e");
+        ClientDto inputDto = new ClientDto();
+        inputDto.setNotes("Updated notes");
 
-    // Act & Assert
-    mockMvc.perform(post("/api/clients")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(inputDto)))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.id").exists())
-      .andExpect(jsonPath("$.firstName").value("Jane"))
-      .andExpect(jsonPath("$.lastName").value("Smith"));
-  }
+        ClientDto outputDto = new ClientDto();
+        outputDto.setId(clientId);
+        outputDto.setFirstName("John");
+        outputDto.setLastName("Doe");
+        outputDto.setNotes("Updated notes");
 
-  @Test
-  void update_ShouldReturnUpdatedClient_WhenValidInput() throws Exception {
-    // Arrange
-    ClientDto updateDto = new ClientDto();
-    updateDto.setNotes("Updated notes");
+        when(clientService.update(eq(clientId), any(ClientDto.class))).thenReturn(outputDto);
 
-    ClientDto updatedDto = new ClientDto();
-    updatedDto.setId(clientId);
-    updatedDto.setFirstName("John");
-    updatedDto.setLastName("Doe");
-    updatedDto.setEmail("john.doe@example.com");
-    updatedDto.setPhones(new String[]{"123-456-7890"});
-    updatedDto.setNotes("Updated notes");
+        // When & Then
+        mockMvc.perform(patch("/api/clients/{id}", clientId)
+                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(inputDto)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(clientId.toString()))
+            .andExpect(jsonPath("$.firstName").value("John"))
+            .andExpect(jsonPath("$.lastName").value("Doe"))
+            .andExpect(jsonPath("$.notes").value("Updated notes"));
+    }
 
-    when(clientService.update(eq(clientId), any(ClientDto.class))).thenReturn(updatedDto);
+    @Test
+    void searchByName_ShouldReturnClients_WhenNameMatches() throws Exception {
+        // Given
+        String name = "John";
+        ClientDto clientDto = new ClientDto();
+        clientDto.setId(UUID.randomUUID());
+        clientDto.setFirstName("John");
+        clientDto.setLastName("Doe");
 
-    // Act & Assert
-    mockMvc.perform(patch("/api/clients/{id}", clientId)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(updateDto)))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.id").value(clientId.toString()))
-      .andExpect(jsonPath("$.notes").value("Updated notes"));
-  }
+        when(clientService.searchByName(eq(name))).thenReturn(List.of(clientDto));
 
-  @Test
-  void searchByName_ShouldReturnClients_WhenNameMatches() throws Exception {
-    // Arrange
-    String name = "John";
-    when(clientService.searchByName(name)).thenReturn(Arrays.asList(clientDto));
+        // When & Then
+        mockMvc.perform(get("/api/clients")
+                .param("name", name))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$[0].firstName").value("John"))
+            .andExpect(jsonPath("$[0].lastName").value("Doe"));
+    }
 
-    // Act & Assert
-    mockMvc.perform(get("/api/clients")
-        .param("name", name))
-      .andExpect(status().isOk())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$[0].id").value(clientId.toString()))
-      .andExpect(jsonPath("$[0].firstName").value("John"));
-  }
-
-  @Test
-  void searchByName_ShouldReturnBadRequest_WhenNameIsBlank() throws Exception {
-    // Act & Assert
-    mockMvc.perform(get("/api/clients")
-        .param("name", ""))
-      .andExpect(status().isBadRequest());
-  }
+    @Test
+    void searchByName_ShouldReturnBadRequest_WhenNameIsBlank() throws Exception {
+        // When & Then
+        mockMvc.perform(get("/api/clients")
+                .param("name", ""))
+            .andExpect(status().isBadRequest());
+    }
 }

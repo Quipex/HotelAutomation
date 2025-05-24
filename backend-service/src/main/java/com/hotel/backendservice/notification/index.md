@@ -14,7 +14,7 @@ This package contains components for sending and tracking notifications across v
   logs and database. Useful for development, testing, or as a fallback notification mechanism.
 
 - **TelegramNotificationService.java** - Implementation of NotificationService for sending notifications through the
-  Telegram Bot API to specified chat IDs.
+  Telegram Bot API to specified chat IDs. Uses WebClient for asynchronous and reactive HTTP requests.
 
 - **NotificationStatus.java** - Enum defining possible notification statuses: SENT and FAILED.
 

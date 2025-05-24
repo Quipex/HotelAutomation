@@ -29,6 +29,3 @@ ALTER TABLE notification
 -- Make the status column NOT NULL
 ALTER TABLE notification
   ALTER COLUMN status SET NOT NULL;
-
--- Add index on status to improve query performance
-CREATE INDEX idx_notification_status ON notification (status);

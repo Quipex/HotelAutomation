@@ -17,16 +17,16 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "booking_id")
-  private BookingEntity booking;
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
+    private BookingEntity booking;
 
-  private BigDecimal amount;
-  private Instant paidAt;
-  private String accountType;
-  private String accountNumber;
+    private BigDecimal amount;
+    private Instant paidAt;
+    private String accountType;
+    private String accountNumber;
 }

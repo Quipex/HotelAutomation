@@ -22,4 +22,13 @@ policies:
   modify_booking: "role == 'admin' or role == 'manager' or userId == #bookingUserId"
   
   # Allow anyone to view available rooms
-  view_available_rooms: "true" 
+  view_available_rooms: "true"
+  
+  # Allow users to view their own bookings, managers and admins can view all bookings
+  view_booking: "role == 'admin' or role == 'manager' or userId == #bookingUserId"
+  
+  # Allow users to create bookings
+  create_booking: "true"
+  
+  # Allow managers and admins to view all bookings
+  view_bookings: "role == 'admin' or role == 'manager'" 

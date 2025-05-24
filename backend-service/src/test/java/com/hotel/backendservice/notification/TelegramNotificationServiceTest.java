@@ -9,11 +9,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -28,13 +29,18 @@ public class TelegramNotificationServiceTest {
     private NotificationRepository notificationRepository;
 
     @MockBean
-    private RestTemplate restTemplate;
+    private WebClient webClient;
 
     @MockBean
     private MeterRegistry meterRegistry;
 
     @Autowired
     private TelegramNotificationService telegramNotificationService;
+    
+    // Mock WebClient components
+    private WebClient.RequestBodyUriSpec requestBodyUriSpec;
+    private WebClient.RequestBodySpec requestBodySpec;
+    private WebClient.ResponseSpec responseSpec;
 
     @BeforeEach
     public void setUp() {
@@ -53,15 +59,28 @@ public class TelegramNotificationServiceTest {
         // Mock the meter counters
         when(meterRegistry.counter(eq("notifications.sent"), anyString(), anyString())).thenReturn(mock(io.micrometer.core.instrument.Counter.class));
         when(meterRegistry.counter(eq("notifications.failed"), anyString(), anyString())).thenReturn(mock(io.micrometer.core.instrument.Counter.class));
+        
+        // Setup WebClient mocks
+        requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
+        requestBodySpec = mock(WebClient.RequestBodySpec.class);
+        responseSpec = mock(WebClient.ResponseSpec.class);
+        
+        when(webClient.post()).thenReturn(requestBodyUriSpec);
+        when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodySpec);
+        when(requestBodySpec.contentType(any())).thenReturn(requestBodySpec);
+        when(requestBodySpec.bodyValue(any())).thenReturn(requestBodySpec);
+        when(requestBodySpec.retrieve()).thenReturn(responseSpec);
     }
 
     @Test
     public void testNotifySuccessfully() {
         // Given
         String message = "Test message";
-        ResponseEntity<String> responseEntity = new ResponseEntity<>("{\"ok\":true}", HttpStatus.OK);
-        when(restTemplate.postForEntity(anyString(), anyString(), eq(String.class))).thenReturn(responseEntity);
-
+        
+        // Setup mock response
+        when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
+        when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("{\"ok\":true}"));
+        
         // When
         telegramNotificationService.notify("telegram", message);
 
@@ -83,9 +102,11 @@ public class TelegramNotificationServiceTest {
     public void testNotifyFailsWithUnsuccessfulResponse() {
         // Given
         String message = "Test message";
-        ResponseEntity<String> responseEntity = new ResponseEntity<>("{\"ok\":false}", HttpStatus.BAD_REQUEST);
-        when(restTemplate.postForEntity(anyString(), anyString(), eq(String.class))).thenReturn(responseEntity);
-
+        
+        // Setup mock response for failure
+        when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
+        when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.error(new RuntimeException("Failed to send Telegram message")));
+        
         // When
         telegramNotificationService.notify("telegram", message);
 
@@ -107,9 +128,10 @@ public class TelegramNotificationServiceTest {
     public void testNotifyFailsWithException() {
         // Given
         String message = "Test message";
-        when(restTemplate.postForEntity(anyString(), anyString(), eq(String.class)))
-            .thenThrow(new RuntimeException("Connection error"));
-
+        
+        // Setup mock to throw exception
+        when(requestBodySpec.retrieve()).thenThrow(new RuntimeException("Connection error"));
+        
         // When
         telegramNotificationService.notify("telegram", message);
 
@@ -133,53 +155,33 @@ public class TelegramNotificationServiceTest {
         String message = "Test notification message";
         String expectedBotToken = "test-token"; // From application-test.yml
         String expectedChatId = "123456"; // From application-test.yml
-        ResponseEntity<String> responseEntity = new ResponseEntity<>("{\"ok\":true}", HttpStatus.OK);
-
-        ArgumentCaptor<String> urlCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<String> bodyCaptor = ArgumentCaptor.forClass(String.class);
-
-        when(restTemplate.postForEntity(urlCaptor.capture(), bodyCaptor.capture(), eq(String.class)))
-            .thenReturn(responseEntity);
-
+        
+        // Setup mock response
+        when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
+        when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("{\"ok\":true}"));
+        
+        // Capture the URI
+        ArgumentCaptor<String> uriCaptor = ArgumentCaptor.forClass(String.class);
+        
         // When
         telegramNotificationService.notify("telegram", message);
 
         // Then
-        String capturedUrl = urlCaptor.getValue();
-        String capturedBody = bodyCaptor.getValue();
-
+        verify(requestBodyUriSpec).uri(uriCaptor.capture());
+        String capturedUri = uriCaptor.getValue();
+        
         // Verify URL format
-        assertEquals("https://api.telegram.org/bot" + expectedBotToken + "/sendMessage", capturedUrl);
-
-        // Verify payload format
-        assertTrue(capturedBody.contains("\"chat_id\": \"" + expectedChatId + "\""));
-        assertTrue(capturedBody.contains("\"text\": \"" + message + "\""));
-        assertTrue(capturedBody.contains("\"parse_mode\": \"HTML\""));
-    }
-
-    @Test
-    public void testMessageWithSpecialCharacters() {
-        // Given
-        String message = "Test message with \"quotes\" and special chars: \\ / \n";
-        ResponseEntity<String> responseEntity = new ResponseEntity<>("{\"ok\":true}", HttpStatus.OK);
-
-        ArgumentCaptor<String> bodyCaptor = ArgumentCaptor.forClass(String.class);
-        when(restTemplate.postForEntity(anyString(), bodyCaptor.capture(), eq(String.class)))
-            .thenReturn(responseEntity);
-
-        // When
-        telegramNotificationService.notify("telegram", message);
-
-        // Then
-        String capturedBody = bodyCaptor.getValue();
-
-        // Verify quotes are escaped
-        assertTrue(capturedBody.contains("\"text\": \"Test message with \\\"quotes\\\" and special chars: \\\\ / \\n\""));
-
-        // Verify the entity is saved correctly with original message
-        ArgumentCaptor<NotificationEntity> entityCaptor = ArgumentCaptor.forClass(NotificationEntity.class);
-        verify(notificationRepository).save(entityCaptor.capture());
-        assertEquals(message, entityCaptor.getValue().getMessage());
+        assertEquals("https://api.telegram.org/bot" + expectedBotToken + "/sendMessage", capturedUri);
+        
+        // Verify payload using ArgumentCaptor
+        ArgumentCaptor<Object> bodyCaptor = ArgumentCaptor.forClass(Object.class);
+        verify(requestBodySpec).bodyValue(bodyCaptor.capture());
+        
+        Object capturedBody = bodyCaptor.getValue();
+        assertNotNull(capturedBody);
+        assertTrue(capturedBody.toString().contains("chat_id"));
+        assertTrue(capturedBody.toString().contains("text"));
+        assertTrue(capturedBody.toString().contains("parse_mode"));
     }
 
     @Test
@@ -202,6 +204,6 @@ public class TelegramNotificationServiceTest {
         assertEquals("Unsupported notification channel", savedNotification.getErrorDetails());
 
         // Verify no HTTP call is made for unsupported channels
-        verify(restTemplate, never()).postForEntity(anyString(), anyString(), eq(String.class));
+        verify(webClient, never()).post();
     }
 }

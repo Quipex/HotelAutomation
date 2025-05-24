@@ -8,20 +8,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 
 @Service
 @Qualifier("telegram")
 @Slf4j
-@RequiredArgsConstructor
 public class TelegramNotificationService implements NotificationService {
 
     private final NotificationRepository notificationRepository;
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
     private final MeterRegistry meterRegistry;
 
     @Value("${notification.telegram.bot-token}")
@@ -34,6 +34,12 @@ public class TelegramNotificationService implements NotificationService {
     @Setter
     private boolean adminAlertsEnabled = true;
 
+    public TelegramNotificationService(NotificationRepository notificationRepository, WebClient webClient, MeterRegistry meterRegistry) {
+        this.notificationRepository = notificationRepository;
+        this.webClient = webClient;
+        this.meterRegistry = meterRegistry;
+    }
+
     @Override
     public void notify(String channel, String message) {
         log.debug("Sending notification via channel {}: {}", channel, message);
@@ -45,7 +51,7 @@ public class TelegramNotificationService implements NotificationService {
         notification.setCreatedAt(Instant.now());
 
         if (!"telegram".equals(channel)) {
-            // Currently only supporting telegram
+            // Currently, only supporting telegram
             log.warn("Unsupported notification channel: {}", channel);
             notification.setStatus(NotificationStatus.FAILED);
             notification.setErrorDetails("Unsupported notification channel");
@@ -103,24 +109,38 @@ public class TelegramNotificationService implements NotificationService {
             // Telegram Bot API URL
             String url = "https://api.telegram.org/bot" + botToken + "/sendMessage";
 
-            // Request payload
-            String requestBody = String.format(
-                "{\"chat_id\": \"%s\", \"text\": \"%s\", \"parse_mode\": \"HTML\"}",
+            // Create request payload
+            TelegramMessageRequest requestBody = new TelegramMessageRequest(
                 adminChatId,
-                message.replace("\"", "\\\"")
+                message,
+                "HTML"
             );
 
-            ResponseEntity<String> response = restTemplate.postForEntity(
-                url,
-                requestBody,
-                String.class
-            );
+            // Make the request using WebClient
+            Boolean success = webClient.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBody)
+                .retrieve()
+                .onStatus(status -> status != HttpStatus.OK,
+                    clientResponse -> Mono.error(
+                        new RuntimeException("Failed to send Telegram message. Status: " + clientResponse.statusCode())
+                    )
+                )
+                .bodyToMono(String.class)
+                .map(response -> true)
+                .onErrorReturn(false)
+                .block();
 
-            return response.getStatusCode() == HttpStatus.OK;
+            return success != null && success;
         } catch (Exception e) {
             log.error("Error sending Telegram message", e);
             // Rethrow the exception to allow the calling method to handle it
             throw e;
         }
+    }
+
+    // Inner class to represent the Telegram message request
+    private record TelegramMessageRequest(String chat_id, String text, String parse_mode) {
     }
 }

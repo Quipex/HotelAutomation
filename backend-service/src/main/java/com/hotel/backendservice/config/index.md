@@ -13,3 +13,6 @@ This package contains configuration classes for the hotel automation system.
 
 - **EasyMsConfig.java** - Configuration for the EasyMS PMS (Property Management System) client. Sets up a WebClient with
   appropriate timeouts and connection settings for making HTTP requests to the EasyMS system. 
+
+- **NotificationConfig.java** - Configuration for notification services. Provides a WebClient bean for making HTTP
+  requests to external notification services like Telegram.

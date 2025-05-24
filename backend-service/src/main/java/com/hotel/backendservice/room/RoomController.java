@@ -1,6 +1,6 @@
 package com.hotel.backendservice.room;
 
-import com.hotel.backendservice.config.abac.CheckPermission;
+import com.hotel.backendservice.security.abac.CheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

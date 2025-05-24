@@ -1,4 +1,4 @@
-package com.hotel.backendservice.config.abac;
+package com.hotel.backendservice.security.abac;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

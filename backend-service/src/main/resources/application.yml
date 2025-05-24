@@ -9,7 +9,7 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
-  
+
   # JPA/Hibernate configuration
   jpa:
     hibernate:
@@ -19,7 +19,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: ${SHOW_SQL:false}
     properties.hibernate.format_sql: true
-  
+
   # Flyway configuration
   flyway:
     enabled: true
@@ -47,14 +47,14 @@ notification:
 
 # Management & Metrics configuration
 management:
-  metrics:
-    export:
-      prometheus:
-        enabled: true
   endpoints:
     web:
       exposure:
         include: health,info,prometheus,metrics
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 # Logging configuration
 logging:
@@ -63,4 +63,4 @@ logging:
     com.hotel: DEBUG
     org.springframework.web: INFO
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE 
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
