@@ -28,7 +28,7 @@ public class NotificationRetryJob {
      * Scheduled job to retry failed notifications
      * Runs based on configured interval
      */
-    @Scheduled(fixedRateString = "${notification.retry.interval-minutes} * 60 * 1000")
+    @Scheduled(fixedRateString = "${notification.retry.interval-minutes:15}m")
     public void retryFailedNotifications() {
         log.info("Starting notification retry job");
 
