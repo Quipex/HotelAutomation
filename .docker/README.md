@@ -10,7 +10,7 @@
 
 ### Bringing up
 
-`docker-compose -p hotel-automation -f .docker/composes/prod.docker-compose.yml up -d`
+`docker compose -p hotel-automation -f .docker/composes/prod.docker-compose.yml up -d`
 
 - `-p` for project name
 - `-f` for docker-compose file
@@ -18,7 +18,7 @@
 
 ### Tearing down
 
-`docker-compose -p hotel-automation -f .docker/composes/prod.docker-compose.yml down`
+`docker compose -p hotel-automation -f .docker/composes/prod.docker-compose.yml down`
 
 ## 🏃‍♂️ Run PmsAdapter
 

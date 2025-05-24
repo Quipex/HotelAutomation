@@ -28,7 +28,7 @@ public class NotificationRetryJob {
     public void retryFailedNotifications() {
         log.info("Starting notification retry job");
 
-        List<NotificationEntity> failedNotifications = notificationRepository.findByStatus(NotificationStatus.FAILED);
+        List<NotificationEntity> failedNotifications = notificationRepository.findByStatusRaw(NotificationStatus.FAILED.name());
         int retryCount = 0;
 
         for (NotificationEntity notification : failedNotifications) {

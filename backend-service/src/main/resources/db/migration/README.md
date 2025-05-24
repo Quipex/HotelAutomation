@@ -46,7 +46,7 @@ Creates indexes to improve query performance:
 
 When the application starts, Flyway will automatically apply these migrations. To manually verify:
 
-1. Start the application using `docker-compose up`
+1. Start the application using `docker compose up`
 2. Connect to the database: `docker exec -it hotel-automation_postgres_1 psql -U postgres -d hotel_db`
 3. List tables: `\dt`
 4. List indexes: `\di` 

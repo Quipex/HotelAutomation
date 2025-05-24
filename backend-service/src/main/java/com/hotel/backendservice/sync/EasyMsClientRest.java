@@ -9,6 +9,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Backoff;
@@ -34,7 +35,7 @@ public class EasyMsClientRest implements PmsClient {
     private final MeterRegistry registry;
     private final NotificationService notificationService;
 
-    public EasyMsClientRest(WebClient easyMsWebClient, MeterRegistry registry, NotificationService notificationService) {
+    public EasyMsClientRest(@Qualifier("easy_ms") WebClient easyMsWebClient, MeterRegistry registry, NotificationService notificationService) {
         this.easyMsWebClient = easyMsWebClient;
         this.registry = registry;
         this.notificationService = notificationService;
