@@ -34,7 +34,7 @@ public class TelegramNotificationService implements NotificationService {
     @Setter
     private boolean adminAlertsEnabled = true;
 
-    public TelegramNotificationService(NotificationRepository notificationRepository, WebClient webClient, MeterRegistry meterRegistry) {
+    public TelegramNotificationService(NotificationRepository notificationRepository, @Qualifier("easy_ms") WebClient webClient, MeterRegistry meterRegistry) {
         this.notificationRepository = notificationRepository;
         this.webClient = webClient;
         this.meterRegistry = meterRegistry;

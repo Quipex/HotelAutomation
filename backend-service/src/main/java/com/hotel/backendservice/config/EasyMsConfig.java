@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class EasyMsConfig {
 
-    @Bean
+    @Bean("easy_ms")
     public WebClient easyMsWebClient(@Value("${easyms.base-url}") String baseUrl,
                                      @Value("${easyms.timeouts.connect}") Duration connectTimeout,
                                      @Value("${easyms.timeouts.read}") Duration readTimeout) {
