@@ -44,6 +44,10 @@ notification:
   telegram:
     bot-token: ${TELEGRAM_BOT_TOKEN}
     admin-chat-id: ${TELEGRAM_ADMIN_CHAT_ID}
+  retry:
+    interval-minutes: 15
+    max-retries: 3
+    retry-threshold-minutes: 30
 
 # Management & Metrics configuration
 management:

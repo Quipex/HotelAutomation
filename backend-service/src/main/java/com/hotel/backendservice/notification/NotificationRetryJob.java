@@ -2,6 +2,7 @@ package com.hotel.backendservice.notification;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -17,14 +18,17 @@ public class NotificationRetryJob {
     private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
 
-    private static final int MAX_RETRY_COUNT = 3;
-    private static final Duration RETRY_THRESHOLD = Duration.ofMinutes(30);
+    @Value("${notification.retry.max-retries}")
+    private int maxRetryCount;
+
+    @Value("${notification.retry.retry-threshold-minutes}")
+    private int retryThresholdMinutes;
 
     /**
      * Scheduled job to retry failed notifications
-     * Runs every 15 minutes
+     * Runs based on configured interval
      */
-    @Scheduled(fixedRate = 15 * 60 * 1000)
+    @Scheduled(fixedRateString = "${notification.retry.interval-minutes} * 60 * 1000")
     public void retryFailedNotifications() {
         log.info("Starting notification retry job");
 
@@ -52,11 +56,12 @@ public class NotificationRetryJob {
 
         Duration timeSinceCreation = Duration.between(notification.getCreatedAt(), Instant.now());
         Duration timeSinceLastAttempt = Duration.between(notification.getLastAttemptAt(), Instant.now());
+        Duration retryThreshold = Duration.ofMinutes(retryThresholdMinutes);
 
-        // Count retries as number of 30-minute intervals since creation
-        long estimatedRetryCount = timeSinceCreation.toMinutes() / RETRY_THRESHOLD.toMinutes();
+        // Count retries as number of threshold intervals since creation
+        long estimatedRetryCount = timeSinceCreation.toMinutes() / retryThreshold.toMinutes();
 
         // If we've retried too many times or the last attempt was too recent, skip
-        return estimatedRetryCount >= MAX_RETRY_COUNT || timeSinceLastAttempt.compareTo(RETRY_THRESHOLD) < 0;
+        return estimatedRetryCount >= maxRetryCount || timeSinceLastAttempt.compareTo(retryThreshold) < 0;
     }
 }
