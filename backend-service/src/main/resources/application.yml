@@ -29,6 +29,10 @@ spring:
 # EasyMS PMS Integration
 easyms:
   base-url: ${EASYMS_BASE_URL:https://my.easyms.co/api}
+  organization-id: 446
+  sync:
+    start-month: 5  # May
+    end-month: 9    # September
   auth:
     login: ${EASYMS_LOGIN}
     password: ${EASYMS_PASSWORD}

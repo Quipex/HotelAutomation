@@ -1,33 +1,67 @@
 package com.hotel.backendservice.sync.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.util.List;
 
-/**
- * Data Transfer Object for booking information from EasyMS PMS
- */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class BookingDto {
-    private String pmsId;
-    private String guestName;
-    private String guestEmail;
-    private String guestPhone;
-    private String roomNumber;
-    private LocalDate checkInDate;
-    private LocalDate checkOutDate;
-    private BigDecimal totalAmount;
+    private String id;
+    private Integer organizationId;
+    private CustomerDto customer;
+    private List<RoomReservationDto> rooms;
     private String status;
+    private List<Object> services;
+    private Long bookedAt;
+    private Long modifiedAt;
     private String source;
-    private Instant createdAt;
-    private Boolean isPrepaid;
-    private String notes;
+    private Integer responsibleUserId;
+    
+    @Data
+    public static class CustomerDto {
+        private String name;
+        private String email;
+        private String telephone;
+        private String remarks;
+        private String address;
+        private String city;
+        private String countryCode;
+        private String zip;
+        private String ccName;
+        private String ccNumber;
+        private String ccExpirationDate;
+    }
+    
+    @Data
+    public static class RoomReservationDto {
+        private String roomReservationId;
+        private String roomId;
+        private Integer categoryId;
+        private Long arrival;
+        private Long departure;
+        private String guestName;
+        private List<Object> addOns;
+        private Integer numberOfGuests;
+        private List<GuestExtraChargeDto> guestExtraCharges;
+        private String remarks;
+        private Integer rateId;
+        private String status;
+        private String currencyCode;
+        private Double invoice;
+        private Double paid;
+        private Boolean locked;
+        private Boolean detailed;
+    }
+    
+    @Data
+    public static class GuestExtraChargeDto {
+        private Double amount;
+        private String currency;
+        private Boolean included;
+        private Boolean perNight;
+        private Boolean perPerson;
+        private String percentage;
+        private String text;
+    }
 }
