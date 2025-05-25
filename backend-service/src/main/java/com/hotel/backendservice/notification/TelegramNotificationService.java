@@ -2,7 +2,6 @@ package com.hotel.backendservice.notification;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,7 +33,7 @@ public class TelegramNotificationService implements NotificationService {
     @Setter
     private boolean adminAlertsEnabled = true;
 
-    public TelegramNotificationService(NotificationRepository notificationRepository, @Qualifier("easy_ms") WebClient webClient, MeterRegistry meterRegistry) {
+    public TelegramNotificationService(NotificationRepository notificationRepository, @Qualifier("easy_ms_web_client") WebClient webClient, MeterRegistry meterRegistry) {
         this.notificationRepository = notificationRepository;
         this.webClient = webClient;
         this.meterRegistry = meterRegistry;

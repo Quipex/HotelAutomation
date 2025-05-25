@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingDto {
-
     private String pmsId;
     private String guestName;
     private String guestEmail;

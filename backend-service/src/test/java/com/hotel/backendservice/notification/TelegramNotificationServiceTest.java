@@ -36,7 +36,7 @@ public class TelegramNotificationServiceTest {
 
     @Autowired
     private TelegramNotificationService telegramNotificationService;
-    
+
     // Mock WebClient components
     private WebClient.RequestBodyUriSpec requestBodyUriSpec;
     private WebClient.RequestBodySpec requestBodySpec;
@@ -59,16 +59,16 @@ public class TelegramNotificationServiceTest {
         // Mock the meter counters
         when(meterRegistry.counter(eq("notifications.sent"), anyString(), anyString())).thenReturn(mock(io.micrometer.core.instrument.Counter.class));
         when(meterRegistry.counter(eq("notifications.failed"), anyString(), anyString())).thenReturn(mock(io.micrometer.core.instrument.Counter.class));
-        
+
         // Setup WebClient mocks
         requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
         requestBodySpec = mock(WebClient.RequestBodySpec.class);
         responseSpec = mock(WebClient.ResponseSpec.class);
-        
+
         when(webClient.post()).thenReturn(requestBodyUriSpec);
         when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodySpec);
         when(requestBodySpec.contentType(any())).thenReturn(requestBodySpec);
-        when(requestBodySpec.bodyValue(any())).thenReturn(requestBodySpec);
+//        when(requestBodySpec.bodyValue(any())).thenReturn(requestBodySpec);
         when(requestBodySpec.retrieve()).thenReturn(responseSpec);
     }
 
@@ -76,11 +76,11 @@ public class TelegramNotificationServiceTest {
     public void testNotifySuccessfully() {
         // Given
         String message = "Test message";
-        
+
         // Setup mock response
         when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("{\"ok\":true}"));
-        
+
         // When
         telegramNotificationService.notify("telegram", message);
 
@@ -102,11 +102,11 @@ public class TelegramNotificationServiceTest {
     public void testNotifyFailsWithUnsuccessfulResponse() {
         // Given
         String message = "Test message";
-        
+
         // Setup mock response for failure
         when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.error(new RuntimeException("Failed to send Telegram message")));
-        
+
         // When
         telegramNotificationService.notify("telegram", message);
 
@@ -128,10 +128,10 @@ public class TelegramNotificationServiceTest {
     public void testNotifyFailsWithException() {
         // Given
         String message = "Test message";
-        
+
         // Setup mock to throw exception
         when(requestBodySpec.retrieve()).thenThrow(new RuntimeException("Connection error"));
-        
+
         // When
         telegramNotificationService.notify("telegram", message);
 
@@ -155,28 +155,28 @@ public class TelegramNotificationServiceTest {
         String message = "Test notification message";
         String expectedBotToken = "test-token"; // From application-test.yml
         String expectedChatId = "123456"; // From application-test.yml
-        
+
         // Setup mock response
         when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("{\"ok\":true}"));
-        
+
         // Capture the URI
         ArgumentCaptor<String> uriCaptor = ArgumentCaptor.forClass(String.class);
-        
+
         // When
         telegramNotificationService.notify("telegram", message);
 
         // Then
         verify(requestBodyUriSpec).uri(uriCaptor.capture());
         String capturedUri = uriCaptor.getValue();
-        
+
         // Verify URL format
         assertEquals("https://api.telegram.org/bot" + expectedBotToken + "/sendMessage", capturedUri);
-        
+
         // Verify payload using ArgumentCaptor
         ArgumentCaptor<Object> bodyCaptor = ArgumentCaptor.forClass(Object.class);
         verify(requestBodySpec).bodyValue(bodyCaptor.capture());
-        
+
         Object capturedBody = bodyCaptor.getValue();
         assertNotNull(capturedBody);
         assertTrue(capturedBody.toString().contains("chat_id"));
