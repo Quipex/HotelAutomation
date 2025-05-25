@@ -3,8 +3,8 @@ package com.hotel.backendservice.config;
 import org.junit.jupiter.api.Tag;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 @Transactional
 public abstract class AbstractIntegrationTest {
 
-    @MockBean
+    @MockitoBean
     DataSource dataSource;
 
     // Instead of connecting to a real database with TestContainers,

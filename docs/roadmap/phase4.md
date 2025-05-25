@@ -76,7 +76,7 @@ management:
 
 ### 4.6. Реализация EasyMsClientRest
 
-В `com.hotel.backendservice.sync.EasyMsClientRest`:
+В `com.hotel.backendservice.sync.EasyMsClient`:
 
 - Инжектим `WebClient`, `MeterRegistry` и (пока заглушку) `NotificationService` как простой логгер или дефолтная реализация, например:
   ```text
