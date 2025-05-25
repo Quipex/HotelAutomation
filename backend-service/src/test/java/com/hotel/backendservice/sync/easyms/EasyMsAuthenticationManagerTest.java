@@ -38,6 +38,8 @@ class EasyMsAuthenticationManagerTest {
         ReflectionTestUtils.setField(authManager, "password", "test-password");
         ReflectionTestUtils.setField(authManager, "tokenUrl", "https://test.easyms.co/oauth/token");
         ReflectionTestUtils.setField(authManager, "tokenRefreshThresholdSeconds", 300);
+        ReflectionTestUtils.setField(authManager, "basicAuthUsername", "easyms");
+        ReflectionTestUtils.setField(authManager, "basicAuthPassword", "secret");
         ReflectionTestUtils.setField(authManager, "plainRestTemplate", plainRestTemplate);
     }
 

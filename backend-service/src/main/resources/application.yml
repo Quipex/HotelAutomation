@@ -34,6 +34,9 @@ easyms:
     password: ${EASYMS_PASSWORD}
     token-url: ${EASYMS_TOKEN_URL:https://my.easyms.co/oauth/token}
     token-refresh-threshold-seconds: 300
+    basic-auth:
+      username: ${EASYMS_BASIC_AUTH_USERNAME:easyms}
+      password: ${EASYMS_BASIC_AUTH_PASSWORD:secret}
   timeouts:
     connect: 10s
     read: 30s

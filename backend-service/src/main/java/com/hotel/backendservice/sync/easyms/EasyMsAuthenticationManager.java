@@ -14,7 +14,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
@@ -32,6 +34,12 @@ public class EasyMsAuthenticationManager {
 
     @Value("${easyms.auth.token-url}")
     private String tokenUrl;
+    
+    @Value("${easyms.auth.basic-auth.username}")
+    private String basicAuthUsername;
+    
+    @Value("${easyms.auth.basic-auth.password}")
+    private String basicAuthPassword;
 
     protected final RestTemplate plainRestTemplate;
     protected final AtomicReference<TokenInfo> tokenInfoRef = new AtomicReference<>();
@@ -92,6 +100,12 @@ public class EasyMsAuthenticationManager {
         try {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            
+            // Add Basic Authentication
+            String authHeader = basicAuthUsername + ":" + basicAuthPassword;
+            String encodedAuth = Base64.getEncoder().encodeToString(authHeader.getBytes(StandardCharsets.UTF_8));
+            String basicAuth = "Basic " + encodedAuth;
+            headers.add(HttpHeaders.AUTHORIZATION, basicAuth);
 
             var formData = new LinkedMultiValueMap<String, String>();
             formData.add("username", username);
