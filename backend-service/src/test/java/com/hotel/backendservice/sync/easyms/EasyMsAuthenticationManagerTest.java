@@ -3,33 +3,31 @@ package com.hotel.backendservice.sync.easyms;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Field;
 import java.time.Instant;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class EasyMsAuthenticationManagerTest {
 
     @InjectMocks
     private EasyMsAuthenticationManager authManager;
 
-    @Spy
-    private RestTemplate plainRestTemplate = new RestTemplate();
+    @Mock
+    private RestTemplate plainRestTemplate;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -39,6 +37,8 @@ class EasyMsAuthenticationManagerTest {
         ReflectionTestUtils.setField(authManager, "username", "test-user");
         ReflectionTestUtils.setField(authManager, "password", "test-password");
         ReflectionTestUtils.setField(authManager, "tokenUrl", "https://test.easyms.co/oauth/token");
+        ReflectionTestUtils.setField(authManager, "tokenRefreshThresholdSeconds", 300);
+        ReflectionTestUtils.setField(authManager, "plainRestTemplate", plainRestTemplate);
     }
 
     @Test
@@ -47,8 +47,9 @@ class EasyMsAuthenticationManagerTest {
         var mockResponse = createMockTokenResponse();
         var responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
 
-        doReturn(responseEntity).when(plainRestTemplate).postForEntity(
-                anyString(), any(HttpEntity.class), eq(EasyMsAuthenticationManager.TokenResponse.class));
+        when(plainRestTemplate.postForEntity(
+                anyString(), any(HttpEntity.class), eq(EasyMsAuthenticationManager.TokenResponse.class)))
+                .thenReturn(responseEntity);
 
         // When
         authManager.init(); // This should populate the token cache
@@ -63,14 +64,17 @@ class EasyMsAuthenticationManagerTest {
     @Test
     void getAccessToken_whenTokenExpired_shouldRefreshToken() throws Exception {
         // Given
-        // Create a token info with an expired token
-        setExpiredTokenInfo();
-
+        // First set up a successful response for the refresh call
         var mockResponse = createMockTokenResponse();
         var responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
 
-        doReturn(responseEntity).when(plainRestTemplate).postForEntity(
-                anyString(), any(HttpEntity.class), eq(EasyMsAuthenticationManager.TokenResponse.class));
+        when(plainRestTemplate.postForEntity(
+                anyString(), any(HttpEntity.class), eq(EasyMsAuthenticationManager.TokenResponse.class)))
+                .thenReturn(responseEntity);
+        
+        // Manually set an expired token in the tokenInfoRef
+        authManager.tokenInfoRef.set(new EasyMsAuthenticationManager.TokenInfo(
+                "old-token", "old-refresh", Instant.now().minusSeconds(600)));
 
         // When
         var accessToken = authManager.getAccessToken();
@@ -84,16 +88,19 @@ class EasyMsAuthenticationManagerTest {
     @Test
     void forceRefreshToken_shouldRefreshTokenRegardlessOfExpiration() throws Exception {
         // Given
-        // Set an initial valid token
-        setValidTokenInfo();
-
+        // Set up a mock response for the refresh
         EasyMsAuthenticationManager.TokenResponse mockResponse = createMockTokenResponse();
         mockResponse.setAccessToken("new-access-token");
         ResponseEntity<EasyMsAuthenticationManager.TokenResponse> responseEntity =
                 new ResponseEntity<>(mockResponse, HttpStatus.OK);
 
-        doReturn(responseEntity).when(plainRestTemplate).postForEntity(
-                anyString(), any(HttpEntity.class), eq(EasyMsAuthenticationManager.TokenResponse.class));
+        when(plainRestTemplate.postForEntity(
+                anyString(), any(HttpEntity.class), eq(EasyMsAuthenticationManager.TokenResponse.class)))
+                .thenReturn(responseEntity);
+        
+        // Set a valid token that shouldn't normally be refreshed
+        authManager.tokenInfoRef.set(new EasyMsAuthenticationManager.TokenInfo(
+                "valid-token", "valid-refresh", Instant.now().plusSeconds(3600)));
 
         // When
         authManager.forceRefreshToken();
@@ -114,42 +121,5 @@ class EasyMsAuthenticationManagerTest {
         response.setScope("backoffice");
         response.setJti("test-jti");
         return response;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void setExpiredTokenInfo() throws Exception {
-        // Create an expired token (one that expired 10 minutes ago)
-        Object tokenInfo = createTokenInfo("old-token", "old-refresh", Instant.now().minusSeconds(600));
-
-        // Get access to the tokenInfoRef field
-        Field tokenInfoRefField = EasyMsAuthenticationManager.class.getDeclaredField("tokenInfoRef");
-        tokenInfoRefField.setAccessible(true);
-
-        // Set the expired token
-        AtomicReference<Object> tokenInfoRef = (AtomicReference<Object>) tokenInfoRefField.get(authManager);
-        tokenInfoRef.set(tokenInfo);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void setValidTokenInfo() throws Exception {
-        // Create a valid token (expires in 1 hour)
-        Object tokenInfo = createTokenInfo("valid-token", "valid-refresh", Instant.now().plusSeconds(3600));
-
-        // Get access to the tokenInfoRef field
-        Field tokenInfoRefField = EasyMsAuthenticationManager.class.getDeclaredField("tokenInfoRef");
-        tokenInfoRefField.setAccessible(true);
-
-        // Set the valid token
-        AtomicReference<Object> tokenInfoRef = (AtomicReference<Object>) tokenInfoRefField.get(authManager);
-        tokenInfoRef.set(tokenInfo);
-    }
-
-    private Object createTokenInfo(String accessToken, String refreshToken, Instant expiresAt) throws Exception {
-        // Use reflection to create a TokenInfo instance (since it's a private static class)
-        Class<?> tokenInfoClass = Class.forName(
-                "com.hotel.backendservice.sync.easyms.EasyMsAuthenticationManager$TokenInfo");
-        return tokenInfoClass
-                .getDeclaredConstructor(String.class, String.class, Instant.class)
-                .newInstance(accessToken, refreshToken, expiresAt);
     }
 }

@@ -33,8 +33,8 @@ public class EasyMsAuthenticationManager {
     @Value("${easyms.auth.token-url}")
     private String tokenUrl;
 
-    private final RestTemplate plainRestTemplate;
-    private final AtomicReference<TokenInfo> tokenInfoRef = new AtomicReference<>();
+    protected final RestTemplate plainRestTemplate;
+    protected final AtomicReference<TokenInfo> tokenInfoRef = new AtomicReference<>();
 
     public EasyMsAuthenticationManager() {
         this.plainRestTemplate = new RestTemplate();
@@ -128,7 +128,7 @@ public class EasyMsAuthenticationManager {
         }
     }
 
-    private record TokenInfo(String accessToken, String refreshToken, Instant expiresAt) {
+    protected record TokenInfo(String accessToken, String refreshToken, Instant expiresAt) {
     }
 
     /**
