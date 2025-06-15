@@ -11,7 +11,8 @@ CREATE TABLE client
   middle_name VARCHAR(255),
   full_name   TEXT GENERATED ALWAYS AS
                 (COALESCE(first_name, '') || ' ' || COALESCE(last_name, '') || ' ' || COALESCE(middle_name, '')) STORED,
-  phones      TEXT[],
+  phone       VARCHAR(50),
+  phone2      VARCHAR(50),
   email       VARCHAR(255),
   notes       TEXT,
   created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -124,7 +125,8 @@ CREATE TABLE audit_log
 CREATE INDEX idx_clients_email ON client (LOWER(email));
 
 -- Create index on phone
-CREATE INDEX idx_clients_phone ON client USING GIN (phones);
+CREATE INDEX idx_clients_phone ON client (phone);
+CREATE INDEX idx_clients_phone2 ON client (phone2);
 
 -- Create extension for fuzzy search
 CREATE EXTENSION IF NOT EXISTS pg_trgm;

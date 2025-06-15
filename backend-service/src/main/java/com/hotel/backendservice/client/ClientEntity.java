@@ -31,8 +31,11 @@ public class ClientEntity {
     @Column(name = "full_name", insertable = false, updatable = false)
     private String fullName;
 
-    @Column(columnDefinition = "text[]")
-    private String[] phones;
+    @Column(length = 50)
+    private String phone;
+
+    @Column(length = 50)
+    private String phone2;
 
     private String email;
 

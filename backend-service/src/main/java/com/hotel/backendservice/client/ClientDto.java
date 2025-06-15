@@ -27,7 +27,11 @@ public class ClientDto {
     @Size(max = 50, message = "Middle name must be less than 50 characters")
     private String middleName;
 
-    private String[] phones;
+    @Size(max = 50, message = "Phone must be less than 50 characters")
+    private String phone;
+
+    @Size(max = 50, message = "Second phone must be less than 50 characters")
+    private String phone2;
 
     @Email(message = "Email should be valid")
     private String email;

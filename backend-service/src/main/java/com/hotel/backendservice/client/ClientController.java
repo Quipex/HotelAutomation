@@ -27,14 +27,6 @@ public class ClientController {
         return ResponseEntity.ok(clientService.findById(id));
     }
 
-    @PostMapping
-    @Operation(summary = "Create a new client", description = "Creates a new client and returns the created entity")
-    public ResponseEntity<ClientDto> create(
-        @Parameter(description = "Client data", required = true)
-        @Valid @RequestBody ClientDto clientDto) {
-        return ResponseEntity.ok(clientService.create(clientDto));
-    }
-
     @PatchMapping("/{id}")
     @Operation(summary = "Update client", description = "Updates an existing client and returns the updated entity")
     public ResponseEntity<ClientDto> update(

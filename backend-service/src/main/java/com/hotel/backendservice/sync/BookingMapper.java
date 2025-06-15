@@ -138,7 +138,7 @@ public final class BookingMapper {
         
         // Set phone
         if (customer.getTelephone() != null && !customer.getTelephone().isEmpty()) {
-            entity.setPhones(new String[]{customer.getTelephone()});
+            entity.setPhone(customer.getTelephone());
         }
         
         entity.setEmail(customer.getEmail());

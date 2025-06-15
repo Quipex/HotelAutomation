@@ -42,7 +42,8 @@ class ClientServiceTest {
         clientDto.setFirstName("John");
         clientDto.setLastName("Doe");
         clientDto.setEmail("john.doe@example.com");
-        clientDto.setPhones(new String[]{"123-456-7890"});
+        clientDto.setPhone("123-456-7890");
+        clientDto.setPhone2("098-765-4321");
         clientDto.setNotes("Test client");
 
         // Setup ClientEntity
