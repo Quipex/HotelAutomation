@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Primary
 @Slf4j
-@RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
     @Qualifier("telegram")
@@ -24,6 +23,12 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationService loggingNotificationService;
 
     private final MeterRegistry meterRegistry;
+
+    public NotificationServiceImpl(NotificationService telegramNotificationService, NotificationService loggingNotificationService, MeterRegistry meterRegistry) {
+        this.telegramNotificationService = telegramNotificationService;
+        this.loggingNotificationService = loggingNotificationService;
+        this.meterRegistry = meterRegistry;
+    }
 
     @Override
     public void notify(String channel, String message) {

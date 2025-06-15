@@ -65,11 +65,9 @@
   - Фоновый процесс (Spring Scheduler) опрашивает очередь, отправляет через Telegram API, обновляет статус.
   - Учитывать `retry_count` и фиксировать задержку (`scheduled_at` vs фактическая отправка).
 
-## Этап 9. Аудит и ABAC
+## Этап 9. Аудит
 - Внедрить аннотацию `@AuditableAction` и `AuditAspect` (Spring AOP).
 - Реализовать `AuditContextHolder` и запись в `Audit_Log`.
-- Настроить ABAC по YML (`abac-policies.yml`) с условием на SpEL.
-- Добавить REST‑эндпоинт `/api/policies/reload` и команду `/reload_abac` в боте.
 
 ## Этап 10. Безопасность и обработка ошибок
 - Добавить `@ControllerAdvice` для единого формата ошибок (код, описание, traceId).

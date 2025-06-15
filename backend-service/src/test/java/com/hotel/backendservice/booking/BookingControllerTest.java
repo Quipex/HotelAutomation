@@ -2,8 +2,6 @@ package com.hotel.backendservice.booking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel.backendservice.audit.AuditContextHolder;
-import com.hotel.backendservice.security.abac.AbacAspect;
-import com.hotel.backendservice.security.abac.PolicyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -32,7 +30,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BookingController.class)
-@Import(AbacAspect.class)
 class BookingControllerTest {
 
     @Autowired
@@ -43,9 +40,6 @@ class BookingControllerTest {
 
     @MockBean
     private BookingService bookingService;
-
-    @MockBean
-    private PolicyService policyService;
 
     private final SpelExpressionParser parser = new SpelExpressionParser();
     private final Map<String, Expression> policies = new HashMap<>();

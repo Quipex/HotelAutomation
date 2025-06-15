@@ -1,7 +1,6 @@
 package com.hotel.backendservice.booking;
 
 import com.hotel.backendservice.audit.*;
-import com.hotel.backendservice.security.abac.PolicyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +26,6 @@ public class BookingAuditTest {
 
     @Mock
     private BookingService bookingService;
-
-    @Mock
-    private PolicyService policyService;
 
     @Mock
     private AuditService auditService;

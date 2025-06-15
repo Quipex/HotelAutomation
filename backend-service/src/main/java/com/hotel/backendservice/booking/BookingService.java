@@ -10,103 +10,110 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-    private final BookingMapper bookingMapper;
     private final ClientRepository clientRepository;
     private final RoomRepository roomRepository;
+    private final BookingMapper bookingMapper;
 
-    /**
-     * Create a new booking
-     *
-     * @param dto The booking data
-     * @return The created booking DTO
-     */
-    @Transactional
-    public BookingDto create(BookingDto dto) {
-        // Validate client and room exist
-        clientRepository.findById(dto.getClientId())
-            .orElseThrow(() -> new RuntimeException("Client not found with ID: " + dto.getClientId()));
-
-        roomRepository.findById(dto.getRoomId())
-            .orElseThrow(() -> new RuntimeException("Room not found with ID: " + dto.getRoomId()));
-
-        if (dto.getId() == null) {
-            dto.setId(UUID.randomUUID());
-        }
-
-        BookingEntity entity = bookingMapper.toEntity(dto);
-        BookingEntity savedEntity = bookingRepository.save(entity);
-        return bookingMapper.toDto(savedEntity);
-    }
-
-    /**
-     * Update an existing booking
-     *
-     * @param id  The booking ID
-     * @param dto The updated booking data
-     * @return The updated booking DTO
-     */
-    @Transactional
-    public BookingDto update(UUID id, BookingDto dto) {
+    public BookingDto findById(UUID id) {
         BookingEntity entity = bookingRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + id));
 
-        // Set client ID in the audit context for ABAC evaluation
-        AuditContextHolder.setAttribute("bookingUserId", entity.getClient().getId());
+        return bookingMapper.toDto(entity);
+    }
+
+    public List<BookingDto> findAll() {
+        return bookingRepository.findAll().stream()
+            .map(bookingMapper::toDto)
+            .collect(Collectors.toList());
+    }
+
+    public List<BookingDto> findByClientId(UUID clientId) {
+        return bookingRepository.findByClientId(clientId).stream()
+            .map(bookingMapper::toDto)
+            .collect(Collectors.toList());
+    }
+
+    public BookingDto create(BookingCreateDto dto) {
+        // Validate client and room exist
+        ClientEntity client = clientRepository.findById(dto.getClientId())
+            .orElseThrow(() -> new RuntimeException("Client not found with ID: " + dto.getClientId()));
+
+        RoomEntity room = roomRepository.findById(dto.getRoomId())
+            .orElseThrow(() -> new RuntimeException("Room not found with ID: " + dto.getRoomId()));
+
+        // Create booking entity
+        BookingEntity entity = new BookingEntity();
+        entity.setClient(client);
+        entity.setRoom(room);
+        entity.setFromDate(dto.getFromDate());
+        entity.setNumDays(dto.getNumDays());
+        entity.setNumGuests(dto.getNumGuests());
+        entity.setStatus("PENDING");
+        entity.setNotes(dto.getNotes());
+
+        // Save and return
+        entity = bookingRepository.save(entity);
+        return bookingMapper.toDto(entity);
+    }
+
+    public BookingDto update(UUID id, BookingUpdateDto dto) {
+        BookingEntity entity = bookingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + id));
 
         // Validate client and room exist if they are being changed
         if (dto.getClientId() != null && !dto.getClientId().equals(entity.getClient().getId())) {
-            clientRepository.findById(dto.getClientId())
+            ClientEntity client = clientRepository.findById(dto.getClientId())
                 .orElseThrow(() -> new RuntimeException("Client not found with ID: " + dto.getClientId()));
+            entity.setClient(client);
         }
 
         if (dto.getRoomId() != null && !dto.getRoomId().equals(entity.getRoom().getId())) {
-            roomRepository.findById(dto.getRoomId())
+            RoomEntity room = roomRepository.findById(dto.getRoomId())
                 .orElseThrow(() -> new RuntimeException("Room not found with ID: " + dto.getRoomId()));
+            entity.setRoom(room);
         }
 
-        dto.setId(id);
-        bookingMapper.updateEntity(dto, entity);
+        // Update other fields if provided
+        if (dto.getFromDate() != null) {
+            entity.setFromDate(dto.getFromDate());
+        }
+        if (dto.getNumDays() != null) {
+            entity.setNumDays(dto.getNumDays());
+        }
+        if (dto.getNumGuests() != null) {
+            entity.setNumGuests(dto.getNumGuests());
+        }
+        if (dto.getStatus() != null) {
+            entity.setStatus(dto.getStatus());
+        }
+        if (dto.getNotes() != null) {
+            entity.setNotes(dto.getNotes());
+        }
 
-        BookingEntity savedEntity = bookingRepository.save(entity);
-        return bookingMapper.toDto(savedEntity);
+        // Save and return
+        entity = bookingRepository.save(entity);
+        return bookingMapper.toDto(entity);
     }
 
-    /**
-     * Cancel a booking
-     *
-     * @param id The booking ID
-     */
-    @Transactional
     public void cancel(UUID id) {
         BookingEntity entity = bookingRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + id));
-
-        // Set client ID in the audit context for ABAC evaluation
-        AuditContextHolder.setAttribute("bookingUserId", entity.getClient().getId());
 
         entity.setStatus("CANCELLED");
         bookingRepository.save(entity);
     }
 
-    /**
-     * Find a booking by ID
-     *
-     * @param id The booking ID
-     * @return The booking DTO
-     */
-    @Transactional(readOnly = true)
-    public BookingDto findById(UUID id) {
+    public BookingDto getBookingDetails(UUID id) {
         BookingEntity entity = bookingRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + id));
-
-        // Set client ID in the audit context for ABAC evaluation
-        AuditContextHolder.setAttribute("bookingUserId", entity.getClient().getId());
 
         return bookingMapper.toDto(entity);
     }
@@ -121,8 +128,6 @@ public class BookingService {
      */
     @Transactional(readOnly = true)
     public List<BookingDto> search(LocalDate from, Boolean prepaid, String source) {
-        // For search operation we don't set specific booking user context
-        // The ABAC policy will need to check the user's role
         return bookingRepository.search(from, prepaid, source);
     }
 }

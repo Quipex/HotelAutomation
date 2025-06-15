@@ -9,7 +9,7 @@ import { setupTelegramContextInterceptor } from './interceptors/TelegramContextI
 // Initialize the bot
 const bot = new Telegraf(botToken);
 
-// Set up the Telegram context interceptor for audit logging and ABAC
+// Set up the Telegram context interceptor for audit logging
 setupTelegramContextInterceptor();
 
 // Set up commands description for Telegram UI
@@ -18,7 +18,6 @@ bot.telegram.setMyCommands([
   { command: 'sync', description: 'Запустить синхронизацию с PMS' },
   { command: 'syncstatus', description: 'Получить статус последней синхронизации' },
   { command: 'available', description: 'Поиск свободных номеров по дате, дням и гостям' },
-  { command: 'reload_abac', description: 'Перезагрузить ABAC политики (только для админов)' },
   { command: 'help', description: 'Показать справку по командам' }
 ]);
 
@@ -31,7 +30,6 @@ bot.command('help', (ctx) => {
     + '/syncstatus - Получить статус последней синхронизации\n'
     + '/available <дата> <дни> <гости> - Поиск свободных номеров\n'
     + '  Пример: /available 2023-12-25 3 2\n'
-    + '/reload_abac - Перезагрузить ABAC политики (только для админов)\n'
     + '/help - Показать это сообщение'
   );
 });

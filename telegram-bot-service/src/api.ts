@@ -42,11 +42,6 @@ export const api = {
 
   syncData: async () => {
     return apiClient.post('/sync');
-  },
-
-  // ABAC policy endpoints
-  reloadPolicies: async () => {
-    return apiClient.post('/policies/reload');
   }
 };
 

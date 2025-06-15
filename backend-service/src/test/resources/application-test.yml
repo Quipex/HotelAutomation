@@ -53,16 +53,3 @@ management:
 springdoc:
   swagger-ui:
     enabled: false
-
-# ABAC policies for testing
-abac:
-  policies:
-    - name: admin
-      description: Admin can access everything
-      target: "role == 'ADMIN'"
-    - name: manager
-      description: Manager can manage rooms and staff
-      target: "role == 'MANAGER'"
-    - name: receptionist
-      description: Receptionist can manage bookings
-      target: "role == 'RECEPTIONIST'"

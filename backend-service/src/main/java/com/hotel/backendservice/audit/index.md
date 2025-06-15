@@ -69,13 +69,3 @@ public Booking createBooking(BookingRequest booking) {
 // Get all audit logs for a specific booking
 List<AuditLogEntity> logs = auditService.findAuditLogsForObject("booking", bookingId);
 ```
-
-## Integration with ABAC
-
-The audit system integrates with the Attribute-Based Access Control (ABAC) system by:
-
-1. Providing user context information that ABAC policies can use to make authorization decisions
-2. Recording access control decisions and violations in the audit log
-3. Using the same context holder mechanism for both audit information and ABAC attributes
-
-This integration ensures consistent security enforcement and comprehensive auditing of all system activities. 

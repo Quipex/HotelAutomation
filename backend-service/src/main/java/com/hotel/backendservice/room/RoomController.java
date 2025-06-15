@@ -1,6 +1,5 @@
 package com.hotel.backendservice.room;
 
-import com.hotel.backendservice.security.abac.CheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +26,6 @@ public class RoomController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Find room by ID", description = "Returns a room based on ID")
-    @CheckPermission("view_room")
     public ResponseEntity<RoomDto> findById(
         @Parameter(description = "Room ID", required = true)
         @PathVariable UUID id) {
@@ -36,7 +34,6 @@ public class RoomController {
 
     @GetMapping("/search")
     @Operation(summary = "Search rooms", description = "Search rooms by number")
-    @CheckPermission("view_rooms")
     public ResponseEntity<List<RoomDto>> searchByNumber(
         @Parameter(description = "Room number pattern to search for")
         @RequestParam(required = false) String number) {
@@ -48,7 +45,6 @@ public class RoomController {
 
     @GetMapping("/available")
     @Operation(summary = "Find available rooms", description = "Find rooms available for a given date range and guest count")
-    @CheckPermission("view_available_rooms")
     public ResponseEntity<List<RoomDto>> findAvailableRooms(
         @Parameter(description = "Check-in date", required = true)
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,

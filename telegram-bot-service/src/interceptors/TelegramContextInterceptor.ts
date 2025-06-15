@@ -3,7 +3,7 @@ import axios, { InternalAxiosRequestConfig } from 'axios';
 
 /**
  * Interceptor for Telegram requests to include user context information
- * in the HTTP headers for audit logging and ABAC
+ * in the HTTP headers for audit logging
  */
 export function setupTelegramContextInterceptor() {
   // Add a request interceptor to axios
