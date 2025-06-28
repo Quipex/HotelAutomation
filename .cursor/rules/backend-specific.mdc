@@ -8,13 +8,3 @@ alwaysApply: true
 1. For the spring configurations use .yml files. Don't create .properties files.
 
 2. Use JOOQ only when it's required to have complex queries and conditions need to be set conditionally. When using JOOQ, never use conditions as raw strings.
-
-3. Inside the project there are packages. Each package must contain file index.md. The index.md will describe the contents of the package. If it does not exists, create it. 
-
-  3.1. When editing any file in the backend, make sure to update the index.md with the corresponding changes.
-
-  3.2. When indexing the files in the project, always try to read the index.md first. If there is something unclear, read the files directly.
-
-4. When creating a new functionality, make sure it's audited.
-
-  4.1. Audit is inside src/main/java/com/hotel/backendservice/audit/index.md
