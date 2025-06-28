@@ -30,3 +30,64 @@ logging:
     org.springframework: WARN
     org.hibernate: WARN
     org.jooq: INFO
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+  retry:
+    instances:
+      default:
+        maxAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+  ratelimiter:
+    instances:
+      default:
+        limitForPeriod: 10
+        limitRefreshPeriod: 1s
+        timeoutDuration: 3s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+# EasyMS PMS Integration
+easyms:
+  base-url: ${EASYMS_BASE_URL:https://my.easyms.co/api}
+  organization-id: 446
+  sync:
+    start-month: 5  # May
+    end-month: 9    # September
+  auth:
+    login: ${EASYMS_LOGIN}
+    password: ${EASYMS_PASSWORD}
+    token-url: ${EASYMS_TOKEN_URL:https://my.easyms.co/oauth/token}
+    token-refresh-threshold-seconds: 300
+    basic-auth:
+      username: ${EASYMS_BASIC_AUTH_USERNAME:easyms}
+      password: ${EASYMS_BASIC_AUTH_PASSWORD:secret}
+  timeouts:
+    connect: 10s
+    read: 30s
+  retry:
+    max-attempts: 3
+    backoff-delay: 2s

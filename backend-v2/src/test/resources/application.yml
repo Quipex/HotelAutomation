@@ -20,4 +20,32 @@ logging:
     org.springframework: INFO
     org.hibernate: INFO
     org.testcontainers: INFO
-    org.flywaydb: DEBUG 
+    org.flywaydb: DEBUG
+    com.github.tomakehurst.wiremock: DEBUG
+
+easyms:
+  base-url: ${EASYMS_BASE_URL:http://localhost/api}
+  organization-id: 446
+  sync:
+    start-month: 5  # May
+    end-month: 9    # September
+  auth:
+    login: test
+    password: test
+    token-url: ${EASYMS_TOKEN_URL:https://localhost/oauth/token}
+    token-refresh-threshold-seconds: 300
+    basic-auth:
+      username: ${EASYMS_BASIC_AUTH_USERNAME:test}
+      password: ${EASYMS_BASIC_AUTH_PASSWORD:test}
+  timeouts:
+    connect: 10s
+    read: 30s
+  retry:
+    max-attempts: 3
+    backoff-delay: 2s
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true

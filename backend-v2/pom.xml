@@ -22,6 +22,10 @@
         <postgresql.version>42.7.7</postgresql.version>
         <flyway.version>9.22.3</flyway.version>
         <lombok.version>1.18.38</lombok.version>
+        <resilience4j.version>2.3.0</resilience4j.version>
+        <micrometer.version>1.15.1</micrometer.version>
+        <wiremock.version>3.13.1</wiremock.version>
+        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
     <dependencies>
@@ -58,6 +62,47 @@
             <artifactId>spring-boot-starter-jooq</artifactId>
         </dependency>
 
+        <!-- Resilience4j -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot3</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-circuitbreaker</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-retry</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-ratelimiter</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+
+        <!-- Micrometer -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+            <version>${micrometer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -70,6 +115,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- WireMock for API mocking -->
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
             <scope>test</scope>
         </dependency>
 
