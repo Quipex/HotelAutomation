@@ -30,10 +30,3 @@ logging:
     org.springframework: WARN
     org.hibernate: WARN
     org.jooq: INFO
-
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    operationsSorter: method 
