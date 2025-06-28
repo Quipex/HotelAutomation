@@ -1,0 +1,23 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+server:
+  port: 0
+
+logging:
+  level:
+    com.hotel.backendv2: DEBUG
+    org.springframework: INFO
+    org.hibernate: INFO
+    org.testcontainers: INFO
+    org.flywaydb: DEBUG 

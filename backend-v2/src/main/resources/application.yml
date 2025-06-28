@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: hotel-backend-v2
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hotel_v2
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+server:
+  port: 8081
+  servlet:
+    context-path: /api/v2
+
+logging:
+  level:
+    com.hotel.backendv2: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.jooq: INFO
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method 
