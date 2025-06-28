@@ -1,0 +1,35 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  main:
+    allow-bean-definition-overriding: true
+notification:
+  telegram:
+    bot-token: "fake-token"
+    admin-chat-id: "fake-chat-id" 
+  retry:
+    max-retries: 3
+    retry-threshold-minutes: 15
+    interval-minutes: 30
+easyms:
+  auth:
+    token-refresh-threshold-seconds: 300
+    login: "test-user"
+    password: "test-password"
+    token-url: "http://localhost:8080/oauth/token"
+    basic-auth:
+      username: "client"
+      password: "secret"
+  base-url: "http://localhost:8080/api"
+  timeouts:
+    connect: 5s
+    read: 10s
+  retry:
+    max-attempts: 3
+    backoff-delay: 1s
+  organization-id: 1
+  sync:
+    start-month: 1
+    end-month: 12 

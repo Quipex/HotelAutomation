@@ -6,12 +6,11 @@
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 -- Client table indexes
--- GIN index on full_name for fuzzy text search with pg_trgm
-CREATE INDEX idx_client_full_name ON client USING GIN (full_name gin_trgm_ops);
--- GIN index on phones array
-CREATE INDEX idx_client_phones ON client USING GIN (phones);
--- B-tree index on email (case-insensitive)
-CREATE INDEX idx_client_email ON client (LOWER(email));
+-- Note: The following indexes are already created in V1:
+-- - idx_clients_email on LOWER(email)
+-- - idx_clients_phone on phone
+-- - idx_clients_phone2 on phone2
+-- - idx_clients_full_name_trgm on full_name using GIN
 
 -- Booking table indexes
 -- B-tree indexes on checkin and checkout dates for range queries

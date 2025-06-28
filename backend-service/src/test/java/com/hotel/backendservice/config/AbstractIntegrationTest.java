@@ -1,28 +1,56 @@
 package com.hotel.backendservice.config;
 
-import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 /**
  * Base class for integration tests in the application
  * Uses a mocked DataSource instead of TestContainers to avoid Docker dependency
  */
-@Tag("integration")
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Import(TestConfig.class)
 public abstract class AbstractIntegrationTest {
 
-    @MockitoBean
-    DataSource dataSource;
+    private static final PostgreSQLContainer<?> POSTGRES =
+            new PostgreSQLContainer<>("postgres:13-alpine")
+                    .withDatabaseName("testdb")
+                    .withUsername("test")
+                    .withPassword("test");
 
-    // Instead of connecting to a real database with TestContainers,
-    // we use a mocked DataSource. This allows tests to run without Docker.
+    static {
+        POSTGRES.start();
+    }
+
+    @DynamicPropertySource
+    static void overrideProps(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
+        registry.add("spring.datasource.username", POSTGRES::getUsername);
+        registry.add("spring.datasource.password", POSTGRES::getPassword);
+    }
+
+    @Autowired
+    protected TestDataLoader loader;
+
+    @BeforeAll
+    void initDefaultData() {
+        loader.setupDefault();
+    }
+
+    @AfterEach
+    void resetData() {
+        loader.clearDatabase();
+        loader.setupDefault();
+    }
 }

@@ -19,6 +19,12 @@ public class ClientController {
 
     private final ClientService clientService;
 
+    @PostMapping
+    @Operation(summary = "Create a new client", description = "Creates a new client and returns the created entity")
+    public ResponseEntity<ClientDto> create(@Valid @RequestBody ClientDto clientDto) {
+        return ResponseEntity.ok(clientService.create(clientDto));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Find client by ID", description = "Returns a client based on ID")
     public ResponseEntity<ClientDto> findById(
