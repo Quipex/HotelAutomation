@@ -1,4 +1,4 @@
-package com.hotel.backendv2.integration.channel.manager.client.easyms;
+package com.hotel.backendv2.integration.channel.manager.api.client.easyms;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.PostConstruct;

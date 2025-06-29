@@ -1,4 +1,4 @@
-package com.hotel.backendv2.integration.channel.manager.client.easyms;
+package com.hotel.backendv2.integration.channel.manager.api.client.easyms;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.http.Fault;
@@ -53,6 +53,11 @@ public abstract class AbstractEasymsWireMockTest extends AbstractIntegrationTest
         registry.add("easyms.auth.password", () -> TEST_PASSWORD);
         registry.add("easyms.auth.basic-auth.username", () -> BASIC_AUTH_USERNAME);
         registry.add("easyms.auth.basic-auth.password", () -> BASIC_AUTH_PASSWORD);
+
+        registry.add("easyms.timeouts.connect", () -> "10s");
+        registry.add("easyms.timeouts.read", () -> "30s");
+        registry.add("easyms.retry.max-attempts", () -> 3);
+        registry.add("easyms.retry.backoff-delay", () -> "200ms");
     }
 
     /**

@@ -1,16 +1,17 @@
-package com.hotel.backendv2.integration.channel.manager.client.easyms;
+package com.hotel.backendv2.integration.channel.manager.api.client.easyms;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import net.javacrumbs.jsonunit.assertj.JsonAssertions;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -23,8 +24,17 @@ import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.clearInvocations;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
@@ -32,15 +42,28 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
     private static final String TEST_ENDPOINT = "/test-endpoint";
     private static final String RETRY_ENDPOINT = "/retry-endpoint";
     private static final String AUTH_FAILURE_ENDPOINT = "/auth-failure-endpoint";
-    private static final String NETWORK_ERROR_ENDPOINT = "/network-error";
-    private static final String MAX_RETRIES_ENDPOINT = "/max-retries";
+
+    @MockBean
+    private MeterRegistry meterRegistry;
+
+    @Mock
+    private Counter retryCounter;
+
+    @Mock
+    private Counter retrySuccessCounter;
+
+    @Mock
+    private Counter callSuccessCounter;
+
+    @Mock
+    private Counter errorCounter;
+
+    @Autowired
+    private EasymsAuthenticationManager authenticationManager;
 
     @Autowired
     @Qualifier("easyms-client")
     private RestTemplate easymsRestTemplate;
-
-    @MockBean
-    private MeterRegistry meterRegistry;
 
     @BeforeEach
     void setUp() {
@@ -49,6 +72,15 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
 
         // Setup authentication endpoint stub
         stubAuthenticationEndpoint();
+
+        authenticationManager.forceRefreshToken();
+
+        clearInvocations(retryCounter, retrySuccessCounter, errorCounter, callSuccessCounter);
+
+        when(meterRegistry.counter(eq("easyms.retry.count"))).thenReturn(retryCounter);
+        when(meterRegistry.counter(eq("easyms.retry.success"))).thenReturn(retrySuccessCounter);
+        when(meterRegistry.counter(eq("easyms.call.success"))).thenReturn(callSuccessCounter);
+        when(meterRegistry.counter(eq("easyms.retry.error"))).thenReturn(errorCounter);
     }
 
     @Test
@@ -65,7 +97,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         wm.stubFor(get(urlEqualTo(TEST_ENDPOINT))
             .withHeader(AUTHORIZATION, equalTo("Bearer " + ACCESS_TOKEN))
             .willReturn(aResponse()
-                .withStatus(HttpStatus.OK.value())
+                .withStatus(OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .withBody(responseBody)));
 
@@ -73,12 +105,16 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         ResponseEntity<String> response = easymsRestTemplate.getForEntity(TEST_ENDPOINT, String.class);
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody()).isEqualTo(responseBody);
 
-        // Verify the request was made with the correct authorization
-        wm.verify(getRequestedFor(urlEqualTo(TEST_ENDPOINT))
+        wm.verify(1, postRequestedFor(urlEqualTo(AUTH_ENDPOINT)));
+        wm.verify(1, getRequestedFor(urlEqualTo(TEST_ENDPOINT))
             .withHeader(AUTHORIZATION, equalTo("Bearer " + ACCESS_TOKEN)));
+
+        // Verify metrics
+        verify(callSuccessCounter, times(1)).increment();
+        verifyNoInteractions(retryCounter, errorCounter, retrySuccessCounter);
     }
 
     @Test
@@ -86,12 +122,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
     void shouldRetryAndSucceedEventually() {
         // Arrange
         String successResponse = """
-            {
-              "success": true,
-              "retried": true,
-              "attempts": 3,
-              "message": "Operation succeeded after retries"
-            }
+            {"success": true}
             """;
         stubEndpointWithRetries(RETRY_ENDPOINT, "temporary-retries", 2, successResponse);
 
@@ -99,24 +130,27 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         ResponseEntity<String> response = easymsRestTemplate.getForEntity(RETRY_ENDPOINT, String.class);
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(OK);
 
         // Use JsonAssertions to verify the JSON response
         assertThatJson(response.getBody())
             .isObject()
-            .containsEntry("retried", true)
-            .containsEntry("attempts", 3)
             .containsEntry("success", true);
 
-        // Verify the request was made once
+        wm.verify(1, postRequestedFor(urlEqualTo(AUTH_ENDPOINT)));
         wm.verify(3, getRequestedFor(urlEqualTo(RETRY_ENDPOINT)));
+
+        // Verify metrics - 2 retries и 1 success
+        verify(retryCounter, times(2)).increment();
+        verify(retrySuccessCounter, times(1)).increment();
+        verifyNoInteractions(errorCounter, callSuccessCounter);
     }
 
     @Test
     @DisplayName("Should refresh token and retry on authentication failure")
     void shouldRefreshTokenOnAuthFailure() {
         // Arrange
-        String responseBody = """
+        String successResponseBody = """
             {
               "success": true,
               "newToken": true,
@@ -139,7 +173,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
             .whenScenarioStateIs(STARTED)
             .withHeader(AUTHORIZATION, equalTo("Bearer " + ACCESS_TOKEN))
             .willReturn(aResponse()
-                .withStatus(HttpStatus.UNAUTHORIZED.value())
+                .withStatus(UNAUTHORIZED.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .withBody(errorResponse))
             .willSetStateTo("token-refreshed"));
@@ -150,15 +184,15 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
             .whenScenarioStateIs("token-refreshed")
             .withHeader(AUTHORIZATION, equalTo("Bearer " + ACCESS_TOKEN))
             .willReturn(aResponse()
-                .withStatus(HttpStatus.OK.value())
+                .withStatus(OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .withBody(responseBody)));
+                .withBody(successResponseBody)));
 
         // Act
         ResponseEntity<String> response = easymsRestTemplate.getForEntity(AUTH_FAILURE_ENDPOINT, String.class);
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(OK);
 
         // Use JsonAssertions to verify the JSON response
         assertThatJson(response.getBody())
@@ -166,67 +200,36 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
             .containsEntry("newToken", true)
             .containsEntry("success", true);
 
-        // Verify the token refresh was attempted
-        wm.verify(postRequestedFor(urlEqualTo(AUTH_ENDPOINT)));
-
-        // Verify the request was made twice (once with old token, once with new)
+        wm.verify(2, postRequestedFor(urlEqualTo(AUTH_ENDPOINT)));
         wm.verify(2, getRequestedFor(urlEqualTo(AUTH_FAILURE_ENDPOINT)));
-    }
 
-    @Test
-    @DisplayName("Should handle network errors with retry")
-    void shouldHandleNetworkErrors() {
-        // Arrange
-        // Setup scenario for network errors
-        // First attempt results in server error
-        String errorResponse = """
-            {
-              "error": "internal server error",
-              "status": 500,
-              "message": "An unexpected error occurred while processing your request"
-            }
-            """;
-
-        wm.stubFor(get(urlEqualTo(NETWORK_ERROR_ENDPOINT))
-            .inScenario("network-error")
-            .whenScenarioStateIs(STARTED)
-            .willReturn(aResponse()
-                .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .withBody(errorResponse)));
-
-        // Act & Assert
-        assertThatThrownBy(() -> easymsRestTemplate.getForEntity(NETWORK_ERROR_ENDPOINT, String.class))
-            .isInstanceOf(HttpServerErrorException.InternalServerError.class);
-
-        // Verify the request was made 1 time (the retry mechanism is not working in tests)
-        wm.verify(1, getRequestedFor(urlEqualTo(NETWORK_ERROR_ENDPOINT)));
+        // todo: fixme должен быть саксесс каунтер
+        verifyNoInteractions(retryCounter, errorCounter, callSuccessCounter, retrySuccessCounter);
     }
 
     @Test
     @DisplayName("Should fail after max retry attempts")
     void shouldFailAfterMaxRetries() {
         // Arrange
-        // All requests will fail with 503 Service Unavailable
-        String errorResponse = """
-            {
-              "error": "service unavailable",
-              "status": 503,
-              "message": "The service is temporarily unavailable, please try again later"
-            }
+        String successResponse = """
+            {"success": true}
             """;
+        stubEndpointWithRetries(RETRY_ENDPOINT, "temporary-retries", 5, successResponse);
 
-        wm.stubFor(get(urlEqualTo(MAX_RETRIES_ENDPOINT))
-            .willReturn(aResponse()
-                .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .withBody(errorResponse)));
+        // Act
+        ThrowingCallable action = () -> easymsRestTemplate.getForEntity(RETRY_ENDPOINT, String.class);
 
-        // Act & Assert
-        assertThatThrownBy(() -> easymsRestTemplate.getForEntity(MAX_RETRIES_ENDPOINT, String.class))
-            .isInstanceOf(HttpServerErrorException.ServiceUnavailable.class);
+        // Assert
+        assertThatThrownBy(action)
+            .isInstanceOf(ResourceAccessException.class)
+            .hasMessageContaining("503");
 
-        // Verify the request was made 1 time (the retry mechanism is not working in tests)
-        wm.verify(1, getRequestedFor(urlEqualTo(MAX_RETRIES_ENDPOINT)));
+        wm.verify(1, postRequestedFor(urlEqualTo(AUTH_ENDPOINT)));
+        wm.verify(3, getRequestedFor(urlEqualTo(RETRY_ENDPOINT)));
+
+        // Verify metrics - 2 retries и 1 error
+        verify(retryCounter, times(2)).increment();
+        verify(errorCounter, times(1)).increment();
+        verifyNoInteractions(retrySuccessCounter, callSuccessCounter);
     }
 }

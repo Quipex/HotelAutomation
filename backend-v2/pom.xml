@@ -26,6 +26,7 @@
         <micrometer.version>1.15.1</micrometer.version>
         <wiremock.version>3.13.1</wiremock.version>
         <slf4j.version>2.0.17</slf4j.version>
+        <json-unit.version>2.38.0</json-unit.version>
     </properties>
 
     <dependencies>
@@ -103,14 +104,6 @@
             <version>${slf4j.version}</version>
         </dependency>
 
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <optional>true</optional>
-        </dependency>
-
         <!-- Test Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -123,6 +116,14 @@
             <groupId>org.wiremock</groupId>
             <artifactId>wiremock-standalone</artifactId>
             <version>${wiremock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JSON Unit for JSON assertions in tests -->
+        <dependency>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>json-unit-assertj</artifactId>
+            <version>${json-unit.version}</version>
             <scope>test</scope>
         </dependency>
 

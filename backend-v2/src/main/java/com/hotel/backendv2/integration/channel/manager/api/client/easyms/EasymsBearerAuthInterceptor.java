@@ -1,4 +1,4 @@
-package com.hotel.backendv2.integration.channel.manager.client.easyms;
+package com.hotel.backendv2.integration.channel.manager.api.client.easyms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,8 @@ import java.io.IOException;
 public class EasymsBearerAuthInterceptor implements ClientHttpRequestInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(EasymsBearerAuthInterceptor.class);
-    
     private final EasymsAuthenticationManager authManager;
-    
+
     public EasymsBearerAuthInterceptor(EasymsAuthenticationManager authManager) {
         this.authManager = authManager;
     }
@@ -30,26 +29,23 @@ public class EasymsBearerAuthInterceptor implements ClientHttpRequestInterceptor
         @NonNull byte[] body,
         ClientHttpRequestExecution execution
     ) throws IOException {
-        // Add the Bearer token to the request
         applyBearerToken(request);
 
-        // Execute the request
         ClientHttpResponse response = execution.execute(request, body);
+        int status = response.getStatusCode().value();
 
-        // Check for auth errors (401 Unauthorized, 403 Forbidden)
-        int statusCode = response.getStatusCode().value();
-        if (statusCode == 401 || statusCode == 403) {
-            logger.debug("Received {} status code from EasyMS API, refreshing token and retrying", statusCode);
+        if (status == 401 || status == 403) {
+            logger.debug("AuthInterceptor: got {} — refreshing token and retrying", status);
+            response.close();
 
-            // Force token refresh
             authManager.forceRefreshToken();
 
-            // Create a new request since the original one can't be reused
-            HttpRequest newRequest = new HttpRequestWrapper(request);
-            applyBearerToken(newRequest);
+            HttpRequest newReq = new HttpRequestWrapper(request);
+            applyBearerToken(newReq);
 
-            // Return the new response
-            return execution.execute(newRequest, body);
+            ClientHttpResponse retryResp = execution.execute(newReq, body);
+            logger.debug("AuthInterceptor: retry response {} {}", retryResp.getStatusCode(), retryResp.getStatusText());
+            return retryResp;
         }
 
         return response;

@@ -22,6 +22,9 @@ logging:
     org.testcontainers: INFO
     org.flywaydb: DEBUG
     com.github.tomakehurst.wiremock: DEBUG
+    org.springframework.web.client.RestTemplate: DEBUG
+    org.springframework.http.client: DEBUG
+    io.github.resilience4j.retry: DEBUG
 
 easyms:
   base-url: unset
