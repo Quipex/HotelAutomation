@@ -16,14 +16,10 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Instant;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -89,7 +85,7 @@ public abstract class AbstractEasymsWireMockTest extends AbstractIntegrationTest
 
     /**
      * Helper method to stub an endpoint with retries
-     * 
+     *
      * @param endpoint The endpoint path to stub
      * @param scenarioName The name of the scenario for state tracking
      * @param failureCount Number of times the endpoint should fail before succeeding
@@ -110,7 +106,7 @@ public abstract class AbstractEasymsWireMockTest extends AbstractIntegrationTest
         for (int i = 1; i < failureCount; i++) {
             String currentState = "failure-" + i;
             String nextState = (i == failureCount - 1) ? "success" : "failure-" + (i + 1);
-            
+
             wm.stubFor(get(urlEqualTo(endpoint))
                     .inScenario(scenarioName)
                     .whenScenarioStateIs(currentState)
