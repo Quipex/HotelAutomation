@@ -6,9 +6,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.hotel.backendv2.config.AbstractIntegrationTest;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -74,10 +71,10 @@ public abstract class AbstractEasymsWireMockTest extends AbstractIntegrationTest
         try {
             String authResponseJson = objectMapper.writeValueAsString(authResponse);
             wm.stubFor(post(urlEqualTo(AUTH_ENDPOINT))
-                    .willReturn(aResponse()
-                            .withStatus(HttpStatus.OK.value())
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                            .withBody(authResponseJson)));
+                .willReturn(aResponse()
+                    .withStatus(HttpStatus.OK.value())
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBody(authResponseJson)));
         } catch (Exception e) {
             throw new RuntimeException("Failed to stub authentication endpoint", e);
         }
@@ -86,21 +83,25 @@ public abstract class AbstractEasymsWireMockTest extends AbstractIntegrationTest
     /**
      * Helper method to stub an endpoint with retries
      *
-     * @param endpoint The endpoint path to stub
-     * @param scenarioName The name of the scenario for state tracking
-     * @param failureCount Number of times the endpoint should fail before succeeding
+     * @param endpoint        The endpoint path to stub
+     * @param scenarioName    The name of the scenario for state tracking
+     * @param failureCount    Number of times the endpoint should fail before succeeding
      * @param successResponse The response body to return on success
      */
-    protected void stubEndpointWithRetries(String endpoint, String scenarioName, int failureCount, String successResponse) {
+    protected void stubEndpointWithRetries(String endpoint, String scenarioName, int failureCount,
+                                           String successResponse) {
         // First request fails with 503 Service Unavailable
+        var body = """
+            {"error":"service unavailable"}
+        """;
         wm.stubFor(get(urlEqualTo(endpoint))
-                .inScenario(scenarioName)
-                .whenScenarioStateIs(STARTED)
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
-                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody("{\"error\":\"service unavailable\"}"))
-                .willSetStateTo("failure-1"));
+            .inScenario(scenarioName)
+            .whenScenarioStateIs(STARTED)
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .withBody(body))
+            .willSetStateTo("failure-1"));
 
         // Setup intermediate failure states if needed
         for (int i = 1; i < failureCount; i++) {
@@ -108,23 +109,23 @@ public abstract class AbstractEasymsWireMockTest extends AbstractIntegrationTest
             String nextState = (i == failureCount - 1) ? "success" : "failure-" + (i + 1);
 
             wm.stubFor(get(urlEqualTo(endpoint))
-                    .inScenario(scenarioName)
-                    .whenScenarioStateIs(currentState)
-                    .willReturn(aResponse()
-                            .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                            .withBody("{\"error\":\"service unavailable\"}"))
-                    .willSetStateTo(nextState));
+                .inScenario(scenarioName)
+                .whenScenarioStateIs(currentState)
+                .willReturn(aResponse()
+                    .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBody(body))
+                .willSetStateTo(nextState));
         }
 
         // Final request succeeds
         wm.stubFor(get(urlEqualTo(endpoint))
-                .inScenario(scenarioName)
-                .whenScenarioStateIs("success")
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.OK.value())
-                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(successResponse)));
+            .inScenario(scenarioName)
+            .whenScenarioStateIs("success")
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .withBody(successResponse)));
     }
 
     /**
@@ -147,15 +148,4 @@ public abstract class AbstractEasymsWireMockTest extends AbstractIntegrationTest
                 .withBody("{\"error\":\"unauthorized\",\"error_description\":\"Invalid token\"}")));
     }
 
-    /**
-     * Test configuration to override beans for testing
-     */
-    @TestConfiguration
-    static class EasymsTestConfig {
-        @Bean
-        @Primary
-        public ObjectMapper objectMapper() {
-            return new ObjectMapper();
-        }
-    }
 }

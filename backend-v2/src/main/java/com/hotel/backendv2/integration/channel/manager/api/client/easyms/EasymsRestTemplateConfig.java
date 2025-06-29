@@ -1,8 +1,6 @@
 package com.hotel.backendv2.integration.channel.manager.client.easyms;
 
-import io.github.resilience4j.retry.Retry;
-import io.github.resilience4j.retry.RetryConfig;
-import io.github.resilience4j.retry.RetryRegistry;
+import com.hotel.backendv2.integration.Resilience4jRetryInterceptor;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -13,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.Supplier;
 
 @Configuration
 public class EasymsRestTemplateConfig {
@@ -41,37 +38,31 @@ public class EasymsRestTemplateConfig {
 
     @Bean("easyms-client")
     public RestTemplate easyMsRestTemplate(MeterRegistry meterRegistry) {
-        // Create request factory with timeouts
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout((int) connectTimeout.toMillis());
         requestFactory.setReadTimeout((int) readTimeout.toMillis());
 
-        // Create RestTemplate with root URI
+        // 2. Базовый RestTemplate с authInterceptor
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .rootUri(baseUrl)
-                .requestFactory(() -> requestFactory)
-                .interceptors(List.of(authInterceptor))
-                .build();
+            .rootUri(baseUrl)
+            .requestFactory(() -> requestFactory)
+            .interceptors(List.of(authInterceptor))
+            .build();
 
-        // Configure retry
-        RetryConfig retryConfig = RetryConfig.custom()
-                .maxAttempts(maxRetryAttempts)
-                .waitDuration(backoffDelay)
-                .build();
+        // 3. Создаём и настраиваем наш retry-interceptor
+        Resilience4jRetryInterceptor retryInterceptor =
+            new Resilience4jRetryInterceptor(maxRetryAttempts, backoffDelay);
 
-        RetryRegistry retryRegistry = RetryRegistry.of(retryConfig);
-        Retry retry = retryRegistry.retry("easyMsRetry");
+        // 4. Подписываемся на метрики
+        retryInterceptor.getRetry().getEventPublisher()
+            .onRetry(e -> meterRegistry.counter("easyms.retry.count").increment())
+            .onSuccess(e -> meterRegistry.counter("easyms.call.success").increment())
+            .onError(e -> meterRegistry.counter("easyms.call.error").increment());
 
-        // Monitoring
-        retry.getEventPublisher()
-                .onRetry(event -> meterRegistry.counter("easyms.retry.count").increment())
-                .onSuccess(event -> meterRegistry.counter("easyms.call.success").increment())
-                .onError(event -> meterRegistry.counter("easyms.call.error").increment());
+        // 5. Добавляем interceptor **после** authInterceptor
+        restTemplate.getInterceptors().add(retryInterceptor);
 
-        // Wrap the RestTemplate with retry functionality
-        Supplier<RestTemplate> retryableRestTemplateSupplier = Retry.decorateSupplier(retry, () -> restTemplate);
-
-        // Return the decorated RestTemplate
-        return retryableRestTemplateSupplier.get();
+        // 6. Возвращаем готовый RestTemplate
+        return restTemplate;
     }
 }

@@ -1,6 +1,7 @@
 package com.hotel.backendv2.integration.channel.manager.client.easyms;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +20,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -71,8 +73,8 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         ResponseEntity<String> response = easymsRestTemplate.getForEntity(TEST_ENDPOINT, String.class);
 
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(responseBody, response.getBody());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(responseBody);
 
         // Verify the request was made with the correct authorization
         wm.verify(getRequestedFor(urlEqualTo(TEST_ENDPOINT))
@@ -91,51 +93,23 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
               "message": "Operation succeeded after retries"
             }
             """;
+        stubEndpointWithRetries(RETRY_ENDPOINT, "temporary-retries", 2, successResponse);
 
-        String errorResponse = """
-            {
-              "error": "service unavailable",
-              "status": 503,
-              "message": "The service is temporarily unavailable"
-            }
-            """;
+        // Act
+        ResponseEntity<String> response = easymsRestTemplate.getForEntity(RETRY_ENDPOINT, String.class);
 
-        // Setup scenario for retry
-        wm.stubFor(get(urlEqualTo(RETRY_ENDPOINT))
-            .inScenario("retry-scenario")
-            .whenScenarioStateIs(STARTED)
-            .willReturn(aResponse()
-                .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .withBody(errorResponse))
-            .willSetStateTo("attempt-1"));
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        wm.stubFor(get(urlEqualTo(RETRY_ENDPOINT))
-            .inScenario("retry-scenario")
-            .whenScenarioStateIs("attempt-1")
-            .willReturn(aResponse()
-                .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .withBody(errorResponse))
-            .willSetStateTo("attempt-2"));
+        // Use JsonAssertions to verify the JSON response
+        assertThatJson(response.getBody())
+            .isObject()
+            .containsEntry("retried", true)
+            .containsEntry("attempts", 3)
+            .containsEntry("success", true);
 
-        wm.stubFor(get(urlEqualTo(RETRY_ENDPOINT))
-            .inScenario("retry-scenario")
-            .whenScenarioStateIs("attempt-2")
-            .willReturn(aResponse()
-                .withStatus(HttpStatus.OK.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .withBody(successResponse)));
-
-        // Act & Assert
-        // The test will fail with ServiceUnavailable because our RestTemplate is configured
-        // to only retry 3 times (original + 2 retries), but we need 3 attempts to succeed
-        assertThrows(HttpServerErrorException.ServiceUnavailable.class, () -> {
-            easymsRestTemplate.getForEntity(RETRY_ENDPOINT, String.class);
-        });
-
-        // Verify the request was made 1 time (the retry mechanism is not working in tests)
-        wm.verify(1, getRequestedFor(urlEqualTo(RETRY_ENDPOINT)));
+        // Verify the request was made once
+        wm.verify(3, getRequestedFor(urlEqualTo(RETRY_ENDPOINT)));
     }
 
     @Test
@@ -184,8 +158,13 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         ResponseEntity<String> response = easymsRestTemplate.getForEntity(AUTH_FAILURE_ENDPOINT, String.class);
 
         // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(responseBody, response.getBody());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Use JsonAssertions to verify the JSON response
+        assertThatJson(response.getBody())
+            .isObject()
+            .containsEntry("newToken", true)
+            .containsEntry("success", true);
 
         // Verify the token refresh was attempted
         wm.verify(postRequestedFor(urlEqualTo(AUTH_ENDPOINT)));
@@ -217,9 +196,8 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
                 .withBody(errorResponse)));
 
         // Act & Assert
-        assertThrows(HttpServerErrorException.InternalServerError.class, () -> {
-            easymsRestTemplate.getForEntity(NETWORK_ERROR_ENDPOINT, String.class);
-        });
+        assertThatThrownBy(() -> easymsRestTemplate.getForEntity(NETWORK_ERROR_ENDPOINT, String.class))
+            .isInstanceOf(HttpServerErrorException.InternalServerError.class);
 
         // Verify the request was made 1 time (the retry mechanism is not working in tests)
         wm.verify(1, getRequestedFor(urlEqualTo(NETWORK_ERROR_ENDPOINT)));
@@ -245,9 +223,8 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
                 .withBody(errorResponse)));
 
         // Act & Assert
-        assertThrows(HttpServerErrorException.ServiceUnavailable.class, () -> {
-            easymsRestTemplate.getForEntity(MAX_RETRIES_ENDPOINT, String.class);
-        });
+        assertThatThrownBy(() -> easymsRestTemplate.getForEntity(MAX_RETRIES_ENDPOINT, String.class))
+            .isInstanceOf(HttpServerErrorException.ServiceUnavailable.class);
 
         // Verify the request was made 1 time (the retry mechanism is not working in tests)
         wm.verify(1, getRequestedFor(urlEqualTo(MAX_RETRIES_ENDPOINT)));
