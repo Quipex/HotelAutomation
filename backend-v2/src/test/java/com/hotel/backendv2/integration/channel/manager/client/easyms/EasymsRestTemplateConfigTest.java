@@ -28,7 +28,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Disabled
 class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
 
     private static final String TEST_ENDPOINT = "/test-endpoint";
@@ -47,7 +46,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
     void shouldMakeSuccessfulApiCall() {
         // Arrange
         String responseBody = "{\"success\":true}";
-        wireMockServer.stubFor(get(urlEqualTo(TEST_ENDPOINT))
+        wm.stubFor(get(urlEqualTo(TEST_ENDPOINT))
             .withHeader(AUTHORIZATION, equalTo("Bearer " + ACCESS_TOKEN))
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
@@ -63,7 +62,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         verify(meterRegistry).counter("easyms.call.success");
 
         // Verify the request was made with the correct authorization
-        wireMockServer.verify(getRequestedFor(urlEqualTo(TEST_ENDPOINT))
+        wm.verify(getRequestedFor(urlEqualTo(TEST_ENDPOINT))
             .withHeader(AUTHORIZATION, equalTo("Bearer " + ACCESS_TOKEN)));
     }
 
@@ -86,7 +85,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         verify(meterRegistry).counter("easyms.call.success");
 
         // Verify the request was made multiple times
-        wireMockServer.verify(3, getRequestedFor(urlEqualTo(RETRY_ENDPOINT)));
+        wm.verify(3, getRequestedFor(urlEqualTo(RETRY_ENDPOINT)));
     }
 
     @Test
@@ -96,7 +95,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         String responseBody = "{\"success\":true,\"newToken\":true}";
 
         // First request fails with 401
-        wireMockServer.stubFor(get(urlEqualTo(AUTH_FAILURE_ENDPOINT))
+        wm.stubFor(get(urlEqualTo(AUTH_FAILURE_ENDPOINT))
             .inScenario("auth-failure")
             .whenScenarioStateIs(STARTED)
             .withHeader(AUTHORIZATION, containing(ACCESS_TOKEN))
@@ -107,7 +106,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
             .willSetStateTo("token-refreshed"));
 
         // Second request succeeds after token refresh
-        wireMockServer.stubFor(get(urlEqualTo(AUTH_FAILURE_ENDPOINT))
+        wm.stubFor(get(urlEqualTo(AUTH_FAILURE_ENDPOINT))
             .inScenario("auth-failure")
             .whenScenarioStateIs("token-refreshed")
             .withHeader(AUTHORIZATION, containing(ACCESS_TOKEN))
@@ -124,10 +123,10 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         assertEquals(responseBody, response.getBody());
 
         // Verify the token refresh was attempted
-        wireMockServer.verify(postRequestedFor(urlEqualTo(AUTH_ENDPOINT)));
+        wm.verify(postRequestedFor(urlEqualTo(AUTH_ENDPOINT)));
 
         // Verify the request was made twice (once with old token, once with new)
-        wireMockServer.verify(2, getRequestedFor(urlEqualTo(AUTH_FAILURE_ENDPOINT)));
+        wm.verify(2, getRequestedFor(urlEqualTo(AUTH_FAILURE_ENDPOINT)));
     }
 
     @Test
@@ -137,13 +136,13 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         String endpointUrl = "/network-error";
 
         // First two requests will fail with connection reset
-        wireMockServer.stubFor(get(urlEqualTo(endpointUrl))
+        wm.stubFor(get(urlEqualTo(endpointUrl))
             .inScenario("network-error")
             .whenScenarioStateIs(STARTED)
             .willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER))
             .willSetStateTo("error-1"));
 
-        wireMockServer.stubFor(get(urlEqualTo(endpointUrl))
+        wm.stubFor(get(urlEqualTo(endpointUrl))
             .inScenario("network-error")
             .whenScenarioStateIs("error-1")
             .willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER))
@@ -151,7 +150,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
 
         // Third request succeeds
         String successResponse = "{\"success\":true,\"afterNetworkError\":true}";
-        wireMockServer.stubFor(get(urlEqualTo(endpointUrl))
+        wm.stubFor(get(urlEqualTo(endpointUrl))
             .inScenario("network-error")
             .whenScenarioStateIs("success")
             .willReturn(aResponse()
@@ -178,7 +177,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         String endpointUrl = "/max-retries";
 
         // All requests will fail with 503 Service Unavailable
-        wireMockServer.stubFor(get(urlEqualTo(endpointUrl))
+        wm.stubFor(get(urlEqualTo(endpointUrl))
             .willReturn(aResponse()
                 .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -190,7 +189,7 @@ class EasymsRestTemplateConfigTest extends AbstractEasymsWireMockTest {
         });
 
         // Verify the request was made the maximum number of times (1 original + 3 retries)
-        wireMockServer.verify(4, getRequestedFor(urlEqualTo(endpointUrl)));
+        wm.verify(4, getRequestedFor(urlEqualTo(endpointUrl)));
 
         // Verify metrics
         verify(meterRegistry, times(3)).counter("easyms.retry.count");

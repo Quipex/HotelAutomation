@@ -24,10 +24,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 public abstract class AbstractIntegrationTest {
 
     private static final PostgreSQLContainer<?> POSTGRES =
-            new PostgreSQLContainer<>("postgres:17-alpine")
-                    .withDatabaseName("testdb")
-                    .withUsername("test")
-                    .withPassword("test");
+        new PostgreSQLContainer<>("postgres:17-alpine")
+            .withDatabaseName("testdb")
+            .withUsername("test")
+            .withPassword("test");
 
     static {
         POSTGRES.start();
@@ -53,4 +53,4 @@ public abstract class AbstractIntegrationTest {
         loader.clearDatabase();
         loader.setupDefault();
     }
-} 
+}

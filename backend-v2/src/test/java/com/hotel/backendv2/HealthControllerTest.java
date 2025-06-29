@@ -1,15 +1,17 @@
 package com.hotel.backendv2;
 
 import com.hotel.backendv2.config.AbstractIntegrationTest;
-import com.hotel.backendv2.health.HealthController;
+import com.hotel.backendv2.config.NoopEasymsRestLogic;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(NoopEasymsRestLogic.class)
 class HealthControllerTest extends AbstractIntegrationTest {
 
     @Autowired
@@ -18,7 +20,7 @@ class HealthControllerTest extends AbstractIntegrationTest {
     @Test
     void healthEndpointReturnsOk() throws Exception {
         mockMvc.perform(get("/health"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("OK"));
+            .andExpect(status().isOk())
+            .andExpect(content().string("OK"));
     }
-} 
+}
